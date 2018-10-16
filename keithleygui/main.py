@@ -513,7 +513,7 @@ class MeasureThread(QtCore.QThread):
         self.finishedSig.emit(sweepData)
 
 
-def main():
+def run():
 
     import sys
     from keithley2600 import Keithley2600
@@ -526,3 +526,7 @@ def main():
     keithleyGUI.show()
 
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    run()

@@ -15,10 +15,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'keithleygui=keithleygui.main:main'
+            'keithleygui=keithleygui.main:run'
         ],
         'gui_scripts': [
-            'keithleygui=keithleygui.main:main'
+            'keithleygui=keithleygui.main:run'
         ]
     },
     install_requires=[

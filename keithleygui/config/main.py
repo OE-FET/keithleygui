@@ -39,9 +39,6 @@ DEFAULTS = [
               'gate': 'smua',
               'drain': 'smub'
              })
-            ('UI',
-             {
-              }),
             ]
 
 
