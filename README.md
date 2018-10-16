@@ -10,4 +10,4 @@ A high-level user interface for Keithley 2600 series instruments which allows th
 - Python 2.7 or 3.x
 
 ## Acknowledgements
-Config file modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
+Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
