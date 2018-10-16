@@ -11,7 +11,7 @@ setup(
     long_description=open('README.md').read(),
     packages=find_packages(),
     package_data={
-        'keithleygui': ['*.ui']
+        'keithleygui': ['*.ui'],
         'keithleygui': ['*.mplstyle']
     },
     entry_points={
