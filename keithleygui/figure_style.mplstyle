@@ -1,0 +1,20 @@
+# Set white background default line colors to black.
+
+xtick.color: [0.5, 0.5, 0.5, 1]
+xtick.direction: out
+xtick.labelsize : 9
+xtick.major.width: 0.5
+
+ytick.color: [0.5, 0.5, 0.5, 1]
+ytick.direction: out
+ytick.labelsize : 9
+ytick.major.width: 0.5
+
+text.color: [0, 0, 0, 1]
+
+axes.edgecolor: [0.5, 0.5, 0.5, 1]
+axes.labelcolor: [0, 0, 0, 1]
+axes.linewidth : 0.5
+
+axes.titlesize : 10
+axes.labelsize : 9
