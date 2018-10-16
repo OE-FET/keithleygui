@@ -12,6 +12,7 @@ setup(
     packages=find_packages(),
     package_data={
         'keithleygui': ['*.ui']
+        'keithleygui': ['*.mplstyle']
     },
     entry_points={
         'console_scripts': [
@@ -27,10 +28,7 @@ setup(
         'keithley2600',
         'matplotlib',
         'pyvisa',
-        'setuptools',
-        'QDarkStyle',
         'repr',
-        'spyder'
     ],
     zip_safe=False,
     keywords='Ktransfer2600',
