@@ -18,8 +18,8 @@ from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg
                                                 as FigureCanvas)
 
 # local imports
-from utils.led_indicator_widget import LedIndicator
-from config.main import CONF
+from keithleygui.utils.led_indicator_widget import LedIndicator
+from keithleygui.config.main import CONF
 
 direct = os.path.dirname(os.path.realpath(__file__))
 STYLE_PATH = os.path.join(direct, 'figure_style.mplstyle')
