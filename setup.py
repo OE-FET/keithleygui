@@ -26,7 +26,6 @@ setup(
         'QtPy',
         'keithley2600',
         'matplotlib',
-        'pyvisa',
         'repr',
     ],
     zip_safe=False,
