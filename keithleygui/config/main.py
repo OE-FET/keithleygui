@@ -9,7 +9,7 @@ keithleygui configuration options.
 """
 
 # Local import
-from config.user import UserConfig
+from keithleygui.config.user import UserConfig
 
 PACKAGE_NAME = 'keithleygui'
 SUBFOLDER = '.%s' % PACKAGE_NAME
