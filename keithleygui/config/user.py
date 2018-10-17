@@ -13,12 +13,12 @@ import re
 import shutil
 import time
 import codecs
-from utils.py3compat import configparser as cp
-from utils.py3compat import PY2, is_text_string
+from keithleygui.utils.py3compat import configparser as cp
+from keithleygui.utils.py3compat import PY2, is_text_string
 from distutils.version import LooseVersion
 
 # Local imports
-from config.base import get_conf_path, get_home_dir
+from keithleygui.config.base import get_conf_path, get_home_dir
 
 
 def is_stable_version(version):
