@@ -29,7 +29,7 @@ setup(
         'repr',
     ],
     zip_safe=False,
-    keywords='Ktransfer2600',
+    keywords='keithleygui',
     classifiers=[
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
