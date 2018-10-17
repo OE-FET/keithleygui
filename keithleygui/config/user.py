@@ -13,13 +13,25 @@ import re
 import shutil
 import time
 import codecs
-from keithleygui.utils.py3compat import configparser as cp
-from keithleygui.utils.py3compat import PY2, is_text_string
+import configparser as cp
+from utils.py3compat import PY2, is_text_string
 from distutils.version import LooseVersion
 
 # Local imports
-from keithleygui.config.base import get_conf_path, get_home_dir
+from config.base import get_conf_path, get_home_dir
 
+PY3 = sys.version[0] == '3'
+
+
+def is_text_string(obj):
+    """Return True if `obj` is a text string, False if it is anything else,
+    like binary data (Python 3) or QString (Python 2, PyQt API #1)"""
+    if PY3:
+        # Python 3
+        return isinstance(obj, str)
+    else:
+        # Python 2
+        return isinstance(obj, basestring)
 
 def is_stable_version(version):
     """
@@ -98,10 +110,10 @@ class DefaultsConfig(cp.ConfigParser):
     UserConfig
     """
     def __init__(self, name, subfolder):
-        if PY2:
-            cp.ConfigParser.__init__(self)
-        else:
+        if PY3:
             cp.ConfigParser.__init__(self, interpolation=None)
+        else:
+            cp.ConfigParser.__init__(self)
 
         self.name = name
         self.subfolder = subfolder
