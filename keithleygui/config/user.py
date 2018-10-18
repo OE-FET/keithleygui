@@ -9,12 +9,12 @@ It's based on the ConfigParser module (present in the standard library).
 import ast
 import os
 import os.path as osp
+import sys
 import re
 import shutil
 import time
 import codecs
 import configparser as cp
-from utils.py3compat import PY2, is_text_string
 from distutils.version import LooseVersion
 
 # Local imports
@@ -141,7 +141,7 @@ class DefaultsConfig(cp.ConfigParser):
         fname = self.filename()
 
         def _write_file(fname):
-            if PY2:
+            if not PY3:
                 # Python 2
                 with codecs.open(fname, 'w', encoding='utf-8') as configfile:
                     self.write(configfile)
@@ -406,7 +406,7 @@ class UserConfig(DefaultsConfig):
         elif isinstance(default_value, int):
             value = int(value)
         elif is_text_string(default_value):
-            if PY2:
+            if not PY3:
                 try:
                     value = value.decode('utf-8')
                     try:
