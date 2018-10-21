@@ -105,7 +105,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         try:
             return float(string)
         except ValueError:
-            if string.find('trailing') > 0:
+            if 'trailing' in string:
                 return 'trailing'
             else:
                 raise ValueError('Invalid drain voltage.')
