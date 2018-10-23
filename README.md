@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/OE-FET/keithleygui.svg?branch=master)](https://travis-ci.org/OE-FET/keithleygui)
-
 # keithleygui
 A high-level user interface for Keithley 2600 series instruments which allows the user to configure, record and save voltage sweeps such as transfer and output measurements. Since there typically is no need to provide a live stream of readings from the Keithley, the data from an IV-curve is buffered locally on the instrument and only transferred to CustomXepr after completion of a measurement.
 
