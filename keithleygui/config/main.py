@@ -10,6 +10,7 @@ keithleygui configuration options.
 
 # Local import
 from keithleygui.config.user import UserConfig
+from keithley2600 import Keithley2600
 
 PACKAGE_NAME = 'keithleygui'
 SUBFOLDER = '.%s' % PACKAGE_NAME
@@ -36,11 +37,20 @@ DEFAULTS = [
               'tInt': 0.1,
               'pulsed': False,
               'delay': -1,
-              'gate': 'smua',
-              'drain': 'smub'
+              'gate': Keithley2600.SMU_LIST[0],
+              'drain': Keithley2600.SMU_LIST[1],
              })
             ]
 
+
+for smu in Keithley2600.SMU_LIST:
+    smu_settings = (smu,
+                    {
+                     'sense': 'SENSE_LOCAL',
+                     'limitv': 200,
+                     'limiti': 0.1,
+                     })
+    DEFAULTS.append(smu_settings)
 
 # =============================================================================
 # Config instance
@@ -52,7 +62,7 @@ DEFAULTS = [
 #    or if you want to *rename* options, then you need to do a MAJOR update in
 #    version, e.g. from 3.0.0 to 4.0.0
 # 3. You don't need to touch this value if you're just adding a new option
-CONF_VERSION = '1.0.0'
+CONF_VERSION = '2.0.0'
 
 # Main configuration instance
 try:
