@@ -216,6 +216,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """Connect buttons and menues to callbacks."""
         self.pushButtonTransfer.clicked.connect(self._on_sweep_clicked)
         self.pushButtonOutput.clicked.connect(self._on_sweep_clicked)
+        self.pushButtonIV.clicked.connect(self._on_sweep_clicked)
         self.pushButtonAbort.clicked.connect(self._on_abort_clicked)
 
         self.comboBoxGateSMU.currentIndexChanged.connect(self._on_smu_gate_changed)
@@ -268,11 +269,11 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif self.comboBoxes[i].currentIndex() == 1:
                 smu.sense = smu.SENSE_REMOTE
 
-            lim_i = float(self.lineEditsLimitI[i].getText())
+            lim_i = float(self.lineEditsLimitI[i].text())
             smu.source.limiti = lim_i
             smu.trigger.source.limiti = lim_i
 
-            lim_v = float(self.lineEditsLimitV[i].getText())
+            lim_v = float(self.lineEditsLimitV[i].text())
             smu.source.limitv = lim_v
             smu.trigger.source.limitv = lim_v
 
@@ -471,8 +472,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif self.comboBoxes[i].currentIndex() == 1:
                 CONF.set(self.smu_list[i], 'sense', 'SENSE_REMOTE')
 
-            self.lineEditsLimitI[i].setText(str(CONF.get(self.smu_list[i], 'limiti')))
-            self.lineEditsLimitV[i].setText(str(CONF.get(self.smu_list[i], 'limitv')))
+            CONF.set(self.smu_list[i], 'limiti', float(self.lineEditsLimitI[i].text()))
+            CONF.set(self.smu_list[i], 'limitv', float(self.lineEditsLimitV[i].text()))
 
     @QtCore.Slot()
     def _on_load_default(self):
@@ -530,8 +531,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif sense == 'SENSE_REMOTE':
                 self.comboBoxes[i].setCurrentIndex(1)
 
-            CONF.set(self.smu_list[i], 'limiti', float(self.lineEditsLimitI[i].getText()))
-            CONF.set(self.smu_list[i], 'limitv', float(self.lineEditsLimitV[i].getText()))
+            self.lineEditsLimitI[i].setText(str(CONF.get(self.smu_list[i], 'limiti')))
+            self.lineEditsLimitV[i].setText(str(CONF.get(self.smu_list[i], 'limitv')))
 
     @QtCore.Slot()
     def _on_exit_clicked(self):
@@ -562,6 +563,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.pushButtonTransfer.setEnabled(False)
         self.pushButtonOutput.setEnabled(False)
+        self.pushButtonIV.setEnabled(False)
         self.pushButtonAbort.setEnabled(True)
 
         self.actionConnect.setEnabled(False)
@@ -574,6 +576,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.pushButtonTransfer.setEnabled(True)
         self.pushButtonOutput.setEnabled(True)
+        self.pushButtonIV.setEnabled(True)
         self.pushButtonAbort.setEnabled(True)
 
         self.actionConnect.setEnabled(False)
@@ -585,6 +588,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.pushButtonTransfer.setEnabled(False)
         self.pushButtonOutput.setEnabled(False)
+        self.pushButtonIV.setEnabled(False)
         self.pushButtonAbort.setEnabled(False)
 
         self.actionConnect.setEnabled(True)
