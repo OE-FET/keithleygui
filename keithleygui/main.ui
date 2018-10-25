@@ -47,8 +47,14 @@
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="3">
            <widget class="QLabel" name="label_3">
+            <property name="minimumSize">
+             <size>
+              <width>240</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
-             <string>Drain voltage steps (voltage or 'trailing'):</string>
+             <string>Drain voltage steps (voltage / 'trailing'):</string>
             </property>
            </widget>
           </item>
@@ -68,12 +74,6 @@
           </item>
           <item row="1" column="3">
            <widget class="QLineEdit" name="lineEditVdList">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>0</height>
-             </size>
-            </property>
             <property name="text">
              <string>-5, -60</string>
             </property>
@@ -179,6 +179,12 @@
           </item>
           <item row="0" column="3">
            <widget class="QLabel" name="label_10">
+            <property name="minimumSize">
+             <size>
+              <width>240</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Gate voltage steps:</string>
             </property>
@@ -200,12 +206,6 @@
           </item>
           <item row="1" column="3">
            <widget class="QLineEdit" name="lineEditVgList">
-            <property name="minimumSize">
-             <size>
-              <width>250</width>
-              <height>0</height>
-             </size>
-            </property>
             <property name="text">
              <string>0, -20, -40, -60</string>
             </property>
