@@ -223,7 +223,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         self.__value = D(0)
         self.__minimum = -np.inf
         self.__maximum = np.inf
-        self.__decimals = 2  # default in QtDesigner
+        self.__decimals = 1  # default in QtDesigner
         self.__prefix = ''
         self.__suffix = ''
         self.__singleStep = D('0.1')  # must be precise Decimal always, no conversion from float
