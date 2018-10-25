@@ -52,6 +52,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.connect_ui_callbacks()  # connect to callbacks
         self._on_load_default()  # load default settings into GUI
+        self._on_search_clicked()  # search for keithley Address
         self.actionSaveSweepData.setEnabled(False)  # disable save menu
 
         # update when keithley is connected
@@ -193,6 +194,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.pushButtonOutput.clicked.connect(self._on_sweep_clicked)
         self.pushButtonIV.clicked.connect(self._on_sweep_clicked)
         self.pushButtonAbort.clicked.connect(self._on_abort_clicked)
+
+        self.pushButtonSearch.clicked.connect(self._on_search_clicked)
+        self.pushButtonConnect.clicked.connect(self._on_connect_clicked)
 
         self.comboBoxGateSMU.currentIndexChanged.connect(self._on_smu_gate_changed)
         self.comboBoxDrainSMU.currentIndexChanged.connect(self._on_smu_drain_changed)
@@ -357,7 +361,15 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.comboBoxGateSMU.setCurrentIndex(0)
 
     @QtCore.Slot()
+    def _on_search_clicked(self):
+        self.comboBoxAddress.clear()
+        self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
+        self.comboBoxAddress.addItems(self.keithley.list_resources())
+
+    @QtCore.Slot()
     def _on_connect_clicked(self):
+        self.keithley.visa_address = self.comboBoxAddress.currentText()
+        self.keithley.disconnect()
         self.keithley.connect()
         self._update_gui_connection()
         if not self.keithley.connected:
@@ -469,6 +481,16 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # other
         self.ScienDSpinBoxInt.setValue(CONF.get('Sweep', 'tInt'))
         self.ScienDSpinBoxSettling.setValue(CONF.get('Sweep', 'delay'))
+
+        # set Address comboBox status
+        self.comboBoxAddress.clear()
+        self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
+        try:
+            self.comboBoxAddress.setCurrentText(CONF.get('Connection', 'KEITHLEY_ADDRESS'))
+        except ValueError:
+            self.comboBoxGateSMU.setCurrentIndex(0)
+            msg = 'Could not find last used Keithley Address.'
+            QtWidgets.QMessageBox.information(None, str('error'), msg)
 
         # set PULSED comboBox status
         pulsed = CONF.get('Sweep', 'pulsed')
