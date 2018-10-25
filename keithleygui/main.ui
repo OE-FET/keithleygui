@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>472</height>
+    <width>464</width>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
        <widget class="QTabWidget" name="tabWidgetSweeps">
         <property name="minimumSize">
          <size>
-          <width>400</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -128,9 +128,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVgStart">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -141,9 +150,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVgStop">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -154,9 +172,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVgStep">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -253,9 +280,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVdStart">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -266,9 +302,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVdStop">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -279,9 +324,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVdStep">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -320,7 +374,7 @@
            <widget class="QComboBox" name="comboBoxSweepSMU">
             <property name="minimumSize">
              <size>
-              <width>250</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
@@ -372,9 +426,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVStop">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -385,9 +448,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVStep">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -398,9 +470,18 @@
            <widget class="ScienDSpinBox" name="ScienDSpinBoxVStart">
             <property name="minimumSize">
              <size>
-              <width>70</width>
+              <width>80</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="suffix">
              <string>V</string>
@@ -612,9 +693,18 @@
           <widget class="ScienDSpinBox" name="ScienDSpinBoxInt">
            <property name="minimumSize">
             <size>
-             <width>70</width>
+             <width>80</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="suffix">
             <string>s</string>
@@ -625,9 +715,18 @@
           <widget class="ScienDSpinBox" name="ScienDSpinBoxSettling">
            <property name="minimumSize">
             <size>
-             <width>70</width>
+             <width>80</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="suffix">
             <string>s</string>
@@ -666,8 +765,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>450</width>
-     <height>19</height>
+     <width>464</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Keithley_2600">

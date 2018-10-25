@@ -148,8 +148,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
             self.comboBoxes[i] = QtWidgets.QComboBox(self.tabs[i])
             self.comboBoxes[i].setObjectName('comboBox_%s' % str(i))
-            self.comboBoxes[i].setMinimumWidth(150);
-            self.comboBoxes[i].setMaximumWidth(150);
+            self.comboBoxes[i].setMinimumWidth(150)
+            self.comboBoxes[i].setMaximumWidth(150)
             self.comboBoxes[i].addItems(['local (2-wire)', 'remote (4-wire)'])
             if CONF.get(self.smu_list[i], 'sense') is 'SENSE_LOCAL':
                 self.comboBoxes[i].setCurrentIndex(0)
@@ -165,8 +165,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
             self.ScienDSpinBoxsLimitI[i] = ScienDSpinBox(self.tabs[i])
             self.ScienDSpinBoxsLimitI[i].setObjectName('ScienDSpinBoxLimitI_%s' % str(i))
-            self.ScienDSpinBoxsLimitI[i].setMinimumWidth(150);
-            self.ScienDSpinBoxsLimitI[i].setMaximumWidth(150);
+            self.ScienDSpinBoxsLimitI[i].setMinimumWidth(80)
+            self.ScienDSpinBoxsLimitI[i].setMaximumWidth(80)
             self.ScienDSpinBoxsLimitI[i].setAlignment(QtCore.Qt.AlignRight)
             self.ScienDSpinBoxsLimitI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
             self.ScienDSpinBoxsLimitI[i].setSuffix("A")
@@ -180,8 +180,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
             self.ScienDSpinBoxsLimitV[i] = ScienDSpinBox(self.tabs[i])
             self.ScienDSpinBoxsLimitV[i].setObjectName('ScienDSpinBoxLimitV_%s' % str(i))
-            self.ScienDSpinBoxsLimitV[i].setMinimumWidth(150);
-            self.ScienDSpinBoxsLimitV[i].setMaximumWidth(150);
+            self.ScienDSpinBoxsLimitV[i].setMinimumWidth(80)
+            self.ScienDSpinBoxsLimitV[i].setMaximumWidth(80)
             self.ScienDSpinBoxsLimitV[i].setAlignment(QtCore.Qt.AlignRight)
             self.ScienDSpinBoxsLimitV[i].setValue(CONF.get(self.smu_list[i], 'limitv'))
             self.ScienDSpinBoxsLimitV[i].setSuffix("V")
