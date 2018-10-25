@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>626</height>
+    <width>450</width>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab1">
          <attribute name="title">
@@ -666,8 +666,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>519</width>
-     <height>22</height>
+     <width>450</width>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Keithley_2600">
