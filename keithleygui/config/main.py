@@ -26,17 +26,17 @@ DEFAULTS = [
               }),
             ('Sweep',
              {
-              'VgStart': 10,
-              'VgStop': -60,
-              'VgStep': 1,
+              'VgStart': 10.0,
+              'VgStop': -60.0,
+              'VgStep': 1.0,
               'VdList': [-5, -60],
-              'VdStart': 0,
-              'VdStop': -60,
-              'VdStep': 1,
+              'VdStart': 0.0,
+              'VdStop': -60.0,
+              'VdStep': 1.0,
               'VgList': [0, -20, -40, -60],
               'tInt': 0.1,
               'pulsed': False,
-              'delay': -1,
+              'delay': -1.0,
               'gate': Keithley2600.SMU_LIST[0],
               'drain': Keithley2600.SMU_LIST[1],
              })
@@ -47,7 +47,7 @@ for smu in Keithley2600.SMU_LIST:
     smu_settings = (smu,
                     {
                      'sense': 'SENSE_LOCAL',
-                     'limitv': 200,
+                     'limitv': 200.0,
                      'limiti': 0.1,
                      })
     DEFAULTS.append(smu_settings)
