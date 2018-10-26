@@ -696,7 +696,7 @@ class MeasureThread(QtCore.QThread):
                     )
 
         elif self.params['Measurement'] == 'iv':
-            Vsweep, Isweep, = self.keithley.voltageSweep(
+            Vsweep, Isweep, Vfix, Ifix = self.keithley.voltageSweep(
                     self.params['smu_sweep'], self.params['smu_fix'], self.params['VStart'],
                     self.params['VStop'], self.params['VStep'], self.params['VFix'],
                     self.params['tInt'], self.params['delay'], self.params['pulsed']
