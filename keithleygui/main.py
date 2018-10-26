@@ -369,7 +369,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def _on_search_clicked(self):
         self.comboBoxAddress.clear()
         self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
-        self.comboBoxAddress.addItems(self.keithley.list_resources())
+        self.comboBoxAddress.addItems(self.keithley.rm.list_resources())
 
     @QtCore.Slot()
     def _on_connect_clicked(self):
