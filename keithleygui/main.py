@@ -296,8 +296,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             params['smu_fix'] = getattr(self.keithley, other[0])
 
         # get aquisition settings
-        params['tInt'] = self.lineEditInt.value()  # integration time
-        params['delay'] = self.lineEditSettling.value()  # stabilization
+        params['tInt'] = self.scienDSpinBoxInt.value()  # integration time
+        params['delay'] = self.scienDSpinBoxSettling.value()  # stabilization
 
         smugate = self.comboBoxGateSMU.currentText()  # gate SMU
         params['smu_gate'] = getattr(self.keithley, smugate)
