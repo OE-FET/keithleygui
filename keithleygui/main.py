@@ -62,6 +62,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         # create address dialog
         self.addressDialog = KeithleyAddressDialog(self.keithley)
+        # create library dialog
+        self.libraryDialog = LibraryDialog(self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
@@ -204,6 +206,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.comboBoxDrainSMU.currentIndexChanged.connect(self._on_smu_drain_changed)
 
         self.actionSettings.triggered.connect(self._on_settings_clicked)
+        self.actionLibrary.triggered.connect(self._on_library_clicked)
         self.actionConnect.triggered.connect(self._on_connect_clicked)
         self.actionDisconnect.triggered.connect(self._on_disconnect_clicked)
         self.action_Exit.triggered.connect(self._on_exit_clicked)
@@ -366,7 +369,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def _on_search_clicked(self):
         self.comboBoxAddress.clear()
         self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
-        self.comboBoxAddress.addItems(self.keithley.list_resources())
+        self.comboBoxAddress.addItems(self.keithley.rm.list_resources())
 
     @QtCore.Slot()
     def _on_connect_clicked(self):
@@ -389,6 +392,10 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def _on_settings_clicked(self):
         self.addressDialog.show()
+
+    @QtCore.Slot()
+    def _on_library_clicked(self):
+        self.libraryDialog.show()
 
     @QtCore.Slot()
     def _on_save_clicked(self):
@@ -664,6 +671,38 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.canvas.draw()
 
 
+class LibraryDialog(QtWidgets.QDialog):
+    """
+    Provides a user dialog to select the modules for the feed.
+    """
+    def __init__(self, keithley):
+        super(self.__class__, self).__init__()
+        # load user interface layout from .ui file
+        uic.loadUi(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                'library_dialog.ui'), self)
+
+        self.keithley = keithley
+        self.lineEditLibrary.setText(self.keithley.visa_library)
+
+        self.buttonBox.accepted.connect(self._onAccept)
+        self.pushButtonChoose.clicked.connect(self._on_choose_clicked)
+
+    def _on_choose_clicked(self):
+        """Show GUI to load sweep data from file."""
+        prompt = 'Please select a DLL.'
+        filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
+        if not os.path.isfile(filepath[0]):
+            return
+        self.lineEditLibrary.setText(filepath[0])
+
+    def _onAccept(self):
+        # update connection settings in mercury feed
+        self.keithley.visa_library = self.lineEditLibrary.text()
+        CONF.set('Connection', 'VISA_LIBRARY', self.keithley.visa_library)
+        # reconnect with new Library
+        self.keithley.disconnect()
+        self.keithley.connect()
+
 class KeithleyAddressDialog(QtWidgets.QDialog):
     """
     Provides a user dialog to select the modules for the feed.
@@ -734,7 +773,8 @@ def run():
     from keithley2600 import Keithley2600
 
     KEITHLEY_ADDRESS = CONF.get('Connection', 'KEITHLEY_ADDRESS')
-    keithley = Keithley2600(KEITHLEY_ADDRESS)
+    VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
+    keithley = Keithley2600(KEITHLEY_ADDRESS, VISA_LIBRARY)
 
     app = QtWidgets.QApplication(sys.argv)
     keithleyGUI = KeithleyGuiApp(keithley)

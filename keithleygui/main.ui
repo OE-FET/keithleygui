@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
-    <height>694</height>
+    <width>455</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
              <number>0</number>
             </property>
             <property name="horizontalSpacing">
-             <number>-1</number>
+             <number>5</number>
             </property>
             <property name="verticalSpacing">
              <number>7</number>
@@ -859,8 +859,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>555</width>
-     <height>22</height>
+     <width>455</width>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Keithley_2600">
@@ -868,6 +868,7 @@
      <string>&amp;Keithley 2600</string>
     </property>
     <addaction name="actionSettings"/>
+    <addaction name="actionLibrary"/>
     <addaction name="separator"/>
     <addaction name="actionConnect"/>
     <addaction name="actionDisconnect"/>
@@ -942,6 +943,11 @@
   <action name="actionSaveDefaults">
    <property name="text">
     <string> Save Settings as Default</string>
+   </property>
+  </action>
+  <action name="actionLibrary">
+   <property name="text">
+    <string>choose visa library</string>
    </property>
   </action>
  </widget>
