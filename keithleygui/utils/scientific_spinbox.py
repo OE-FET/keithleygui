@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with Qudi. If not, see <http://www.gnu.org/licenses/>.
 """
 
+from __future__ import division, absolute_import, unicode_literals
+from builtins import super
 from qtpy import QtCore, QtGui, QtWidgets
 import numpy as np
 import re
@@ -223,7 +225,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         self.__value = D(0)
         self.__minimum = -np.inf
         self.__maximum = np.inf
-        self.__decimals = 2  # default in QtDesigner
+        self.__decimals = 1  # default in QtDesigner
         self.__prefix = ''
         self.__suffix = ''
         self.__singleStep = D('0.1')  # must be precise Decimal always, no conversion from float

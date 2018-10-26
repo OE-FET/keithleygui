@@ -33,7 +33,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # load user interface layout from .ui file
         uic.loadUi(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 'main.ui'), self)
+
         self.keithley = keithley
+        # create new list of smu's instead of referenceto old list
         self.smu_list = list(self.keithley.SMU_LIST)
 
         self._set_up_tabs()  # create Keithley settings tabs
@@ -123,14 +125,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.comboBoxes = [None]*self.ntabs
 
         self.labelsLimitI = [None]*self.ntabs
-        self.ScienDSpinBoxsLimitI = [None]*self.ntabs
+        self.scienDSpinBoxsLimitI = [None]*self.ntabs
         self.labelsUnitI = [None]*self.ntabs
 
         self.labelsLimitV = [None]*self.ntabs
-        self.ScienDSpinBoxsLimitV = [None]*self.ntabs
+        self.scienDSpinBoxsLimitV = [None]*self.ntabs
         self.labelsUnitV = [None]*self.ntabs
 
-        # create a tab with combobox and ScienDSpinBoxs for each SMU
+        # create a tab with combobox and scienDSpinBoxs for each SMU
         # the tab number i corresonds to the SMU number
         for i in range(0, self.ntabs):
             self.tabs[i] = QtWidgets.QWidget()
@@ -164,14 +166,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.labelsLimitI[i].setText('Current limit:')
             self.gridLayouts[i].addWidget(self.labelsLimitI[i], 1, 0, 1, 1)
 
-            self.ScienDSpinBoxsLimitI[i] = ScienDSpinBox(self.tabs[i])
-            self.ScienDSpinBoxsLimitI[i].setObjectName('ScienDSpinBoxLimitI_%s' % str(i))
-            self.ScienDSpinBoxsLimitI[i].setMinimumWidth(80)
-            self.ScienDSpinBoxsLimitI[i].setMaximumWidth(80)
-            self.ScienDSpinBoxsLimitI[i].setAlignment(QtCore.Qt.AlignRight)
-            self.ScienDSpinBoxsLimitI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
-            self.ScienDSpinBoxsLimitI[i].setSuffix("A")
-            self.gridLayouts[i].addWidget(self.ScienDSpinBoxsLimitI[i], 1, 1, 1, 1)
+            self.scienDSpinBoxsLimitI[i] = ScienDSpinBox(self.tabs[i])
+            self.scienDSpinBoxsLimitI[i].setObjectName('scienDSpinBoxLimitI_%s' % str(i))
+            self.scienDSpinBoxsLimitI[i].setMinimumWidth(90)
+            self.scienDSpinBoxsLimitI[i].setMaximumWidth(90)
+            self.scienDSpinBoxsLimitI[i].setAlignment(QtCore.Qt.AlignRight)
+            self.scienDSpinBoxsLimitI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
+            self.scienDSpinBoxsLimitI[i].setSuffix("A")
+            self.gridLayouts[i].addWidget(self.scienDSpinBoxsLimitI[i], 1, 1, 1, 1)
 
             self.labelsLimitV[i] = QtWidgets.QLabel(self.tabs[i])
             self.labelsLimitV[i].setObjectName('labelLimitV_%s' % str(i))
@@ -179,14 +181,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.labelsLimitV[i].setText('Voltage limit:')
             self.gridLayouts[i].addWidget(self.labelsLimitV[i], 2, 0, 1, 1)
 
-            self.ScienDSpinBoxsLimitV[i] = ScienDSpinBox(self.tabs[i])
-            self.ScienDSpinBoxsLimitV[i].setObjectName('ScienDSpinBoxLimitV_%s' % str(i))
-            self.ScienDSpinBoxsLimitV[i].setMinimumWidth(80)
-            self.ScienDSpinBoxsLimitV[i].setMaximumWidth(80)
-            self.ScienDSpinBoxsLimitV[i].setAlignment(QtCore.Qt.AlignRight)
-            self.ScienDSpinBoxsLimitV[i].setValue(CONF.get(self.smu_list[i], 'limitv'))
-            self.ScienDSpinBoxsLimitV[i].setSuffix("V")
-            self.gridLayouts[i].addWidget(self.ScienDSpinBoxsLimitV[i], 2, 1, 1, 1)
+            self.scienDSpinBoxsLimitV[i] = ScienDSpinBox(self.tabs[i])
+            self.scienDSpinBoxsLimitV[i].setObjectName('scienDSpinBoxLimitV_%s' % str(i))
+            self.scienDSpinBoxsLimitV[i].setMinimumWidth(90)
+            self.scienDSpinBoxsLimitV[i].setMaximumWidth(90)
+            self.scienDSpinBoxsLimitV[i].setAlignment(QtCore.Qt.AlignRight)
+            self.scienDSpinBoxsLimitV[i].setValue(CONF.get(self.smu_list[i], 'limitv'))
+            self.scienDSpinBoxsLimitV[i].setSuffix("V")
+            self.gridLayouts[i].addWidget(self.scienDSpinBoxsLimitV[i], 2, 1, 1, 1)
 
     def connect_ui_callbacks(self):
         """Connect buttons and menues to callbacks."""
@@ -248,11 +250,11 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif self.comboBoxes[i].currentIndex() == 1:
                 smu.sense = smu.SENSE_REMOTE
 
-            lim_i = self.ScienDSpinBoxsLimitI[i].value()
+            lim_i = self.scienDSpinBoxsLimitI[i].value()
             smu.source.limiti = lim_i
             smu.trigger.source.limiti = lim_i
 
-            lim_v = self.ScienDSpinBoxsLimitV[i].value()
+            lim_v = self.scienDSpinBoxsLimitV[i].value()
             smu.source.limitv = lim_v
             smu.trigger.source.limitv = lim_v
 
@@ -266,9 +268,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.statusBar.showMessage('    Recording transfer curve.')
             # get sweep settings
             params = {'Measurement': 'transfer'}
-            params['VgStart'] = self.ScienDSpinBoxVgStart.value()
-            params['VgStop'] = self.ScienDSpinBoxVgStop.value()
-            params['VgStep'] = self.ScienDSpinBoxVgStep.value()
+            params['VgStart'] = self.scienDSpinBoxVgStart.value()
+            params['VgStop'] = self.scienDSpinBoxVgStop.value()
+            params['VgStep'] = self.scienDSpinBoxVgStep.value()
             VdListString = self.lineEditVdList.text()
             VdStringList = VdListString.split(',')
             params['VdList'] = [self._string_to_Vd(x) for x in VdStringList]
@@ -277,9 +279,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.statusBar.showMessage('    Recording output curve.')
             # get sweep settings
             params = {'Measurement': 'output'}
-            params['VdStart'] = self.ScienDSpinBoxVdStart.value()
-            params['VdStop'] = self.ScienDSpinBoxVdStop.value()
-            params['VdStep'] = self.ScienDSpinBoxVdStep.value()
+            params['VdStart'] = self.scienDSpinBoxVdStart.value()
+            params['VdStop'] = self.scienDSpinBoxVdStop.value()
+            params['VdStep'] = self.scienDSpinBoxVdStep.value()
             VgListString = self.lineEditVgList.text()
             VgStringList = VgListString.split(',')
             params['VgList'] = [float(x) for x in VgStringList]
@@ -288,20 +290,20 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.statusBar.showMessage('    Recording IV curve.')
             # get sweep settings
             params = {'Measurement': 'iv'}
-            params['VStart'] = self.ScienDSpinBoxVStart.value()
-            params['VStop'] = self.ScienDSpinBoxVStop.value()
-            params['VStep'] = self.ScienDSpinBoxVStep.value()
+            params['VStart'] = self.scienDSpinBoxVStart.value()
+            params['VStop'] = self.scienDSpinBoxVStop.value()
+            params['VStep'] = self.scienDSpinBoxVStep.value()
             params['VFix'] = 0
 
             smusweep = self.comboBoxSweepSMU.currentText()
-            other = [s for s in self.smu_list if s is not smusweep]
+            other = [s for s in self.smu_list if s != smusweep]
 
             params['smu_sweep'] = getattr(self.keithley, smusweep)
             params['smu_fix'] = getattr(self.keithley, other[0])
 
         # get aquisition settings
-        params['tInt'] = self.lineEditInt.value()  # integration time
-        params['delay'] = self.lineEditSettling.value()  # stabilization
+        params['tInt'] = self.scienDSpinBoxInt.value()  # integration time
+        params['delay'] = self.scienDSpinBoxSettling.value()  # stabilization
 
         smugate = self.comboBoxGateSMU.currentText()  # gate SMU
         params['smu_gate'] = getattr(self.keithley, smugate)
@@ -422,26 +424,33 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """Saves current settings from GUI as defaults."""
 
         # save transfer settings
-        CONF.set('Sweep', 'VgStart', self.ScienDSpinBoxVgStart.value())
-        CONF.set('Sweep', 'VgStop', self.ScienDSpinBoxVgStop.value())
-        CONF.set('Sweep', 'VgStep', self.ScienDSpinBoxVgStep.value())
+        CONF.set('Sweep', 'VgStart', self.scienDSpinBoxVgStart.value())
+        CONF.set('Sweep', 'VgStop', self.scienDSpinBoxVgStop.value())
+        CONF.set('Sweep', 'VgStep', self.scienDSpinBoxVgStep.value())
 
         VdListString = self.lineEditVdList.text()
         VdStringList = VdListString.split(',')
         CONF.set('Sweep', 'VdList', [self._string_to_Vd(x) for x in VdStringList])
 
         # save output settings
-        CONF.set('Sweep', 'VdStart', self.ScienDSpinBoxVdStart.value())
-        CONF.set('Sweep', 'VdStop', self.ScienDSpinBoxVdStop.value())
-        CONF.set('Sweep', 'VdStep', self.ScienDSpinBoxVdStep.value())
+        CONF.set('Sweep', 'VdStart', self.scienDSpinBoxVdStart.value())
+        CONF.set('Sweep', 'VdStop', self.scienDSpinBoxVdStop.value())
+        CONF.set('Sweep', 'VdStep', self.scienDSpinBoxVdStep.value())
 
         VgListString = self.lineEditVgList.text()
         VgStringList = VgListString.split(',')
         CONF.set('Sweep', 'VgList', [float(x) for x in VgStringList])
 
+        # save iv settings
+        CONF.set('Sweep', 'VStart', self.scienDSpinBoxVStart.value())
+        CONF.set('Sweep', 'VStop', self.scienDSpinBoxVStop.value())
+        CONF.set('Sweep', 'VStep', self.scienDSpinBoxVStep.value())
+
+        CONF.set('Sweep', 'smu_sweep', self.comboBoxSweepSMU.currentText())
+
         # save general settings
-        CONF.set('Sweep', 'tInt', self.ScienDSpinBoxInt.value())
-        CONF.set('Sweep', 'delay', self.ScienDSpinBoxSettling.value())
+        CONF.set('Sweep', 'tInt', self.scienDSpinBoxInt.value())
+        CONF.set('Sweep', 'delay', self.scienDSpinBoxSettling.value())
 
         # get combo box status
         if self.comboBoxSweepType.currentIndex() == 0:
@@ -459,28 +468,42 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif self.comboBoxes[i].currentIndex() == 1:
                 CONF.set(self.smu_list[i], 'sense', 'SENSE_REMOTE')
 
-            CONF.set(self.smu_list[i], 'limiti', self.ScienDSpinBoxsLimitI[i].value())
-            CONF.set(self.smu_list[i], 'limitv', self.ScienDSpinBoxsLimitV[i].value())
+            CONF.set(self.smu_list[i], 'limiti', self.scienDSpinBoxsLimitI[i].value())
+            CONF.set(self.smu_list[i], 'limitv', self.scienDSpinBoxsLimitV[i].value())
 
     @QtCore.Slot()
     def _on_load_default(self):
         """Load default settings to interface."""
 
-        # set text box contents
+        # Set SMU selection comboBox status
+        cmbList = list(self.smu_list)  # get list of all SMUs
+
         # transfer curve settings
-        self.ScienDSpinBoxVgStart.setValue(CONF.get('Sweep', 'VgStart'))
-        self.ScienDSpinBoxVgStop.setValue(CONF.get('Sweep', 'VgStop'))
-        self.ScienDSpinBoxVgStep.setValue(CONF.get('Sweep', 'VgStep'))
+        self.scienDSpinBoxVgStart.setValue(CONF.get('Sweep', 'VgStart'))
+        self.scienDSpinBoxVgStop.setValue(CONF.get('Sweep', 'VgStop'))
+        self.scienDSpinBoxVgStep.setValue(CONF.get('Sweep', 'VgStep'))
         self.lineEditVdList.setText(str(CONF.get('Sweep', 'VdList')).strip('[]'))
+
         # output curve settings
-        self.ScienDSpinBoxVdStart.setValue(CONF.get('Sweep', 'VdStart'))
-        self.ScienDSpinBoxVdStop.setValue(CONF.get('Sweep', 'VdStop'))
-        self.ScienDSpinBoxVdStep.setValue(CONF.get('Sweep', 'VdStep'))
+        self.scienDSpinBoxVdStart.setValue(CONF.get('Sweep', 'VdStart'))
+        self.scienDSpinBoxVdStop.setValue(CONF.get('Sweep', 'VdStop'))
+        self.scienDSpinBoxVdStep.setValue(CONF.get('Sweep', 'VdStep'))
         self.lineEditVgList.setText(str(CONF.get('Sweep', 'VgList')).strip('[]'))
 
+        # iv curve settings
+        self.scienDSpinBoxVStart.setValue(CONF.get('Sweep', 'VStart'))
+        self.scienDSpinBoxVStop.setValue(CONF.get('Sweep', 'VStop'))
+        self.scienDSpinBoxVStep.setValue(CONF.get('Sweep', 'VStep'))
+        try:
+            self.comboBoxSweepSMU.setCurrentIndex(cmbList.index(CONF.get('Sweep', 'smu_sweep')))
+        except ValueError:
+            self.comboBoxGateSMU.setCurrentIndex(0)
+            msg = 'Could not find last used SMUs in Keithley driver.'
+            QtWidgets.QMessageBox.information(None, str('error'), msg)
+
         # other
-        self.ScienDSpinBoxInt.setValue(CONF.get('Sweep', 'tInt'))
-        self.ScienDSpinBoxSettling.setValue(CONF.get('Sweep', 'delay'))
+        self.scienDSpinBoxInt.setValue(CONF.get('Sweep', 'tInt'))
+        self.scienDSpinBoxSettling.setValue(CONF.get('Sweep', 'delay'))
 
         # set Address comboBox status
         self.comboBoxAddress.clear()
@@ -499,8 +522,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         elif pulsed is True:
             self.comboBoxSweepType.setCurrentIndex(1)
 
-        # Set SMU selection comboBox status
-        cmbList = list(self.smu_list)  # get list of all SMUs
         # We have to comboBoxes. If there are less SMU's, extend list.
         while len(cmbList) < 2:
             cmbList.append('--')
@@ -528,8 +549,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif sense == 'SENSE_REMOTE':
                 self.comboBoxes[i].setCurrentIndex(1)
 
-            self.ScienDSpinBoxsLimitI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
-            self.ScienDSpinBoxsLimitV[i].setValue(str(CONF.get(self.smu_list[i], 'limitv')))
+            self.scienDSpinBoxsLimitI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
+            self.scienDSpinBoxsLimitV[i].setValue(str(CONF.get(self.smu_list[i], 'limitv')))
 
     @QtCore.Slot()
     def _on_exit_clicked(self):
@@ -697,7 +718,7 @@ class MeasureThread(QtCore.QThread):
                     )
 
         elif self.params['Measurement'] == 'iv':
-            Vsweep, Isweep, = self.voltageSweep(
+            Vsweep, Isweep, Vfix, Ifix = self.keithley.voltageSweep(
                     self.params['smu_sweep'], self.params['smu_fix'], self.params['VStart'],
                     self.params['VStop'], self.params['VStep'], self.params['VFix'],
                     self.params['tInt'], self.params['delay'], self.params['pulsed']
