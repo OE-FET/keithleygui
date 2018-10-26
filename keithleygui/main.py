@@ -77,7 +77,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             else:
                 raise ValueError('Invalid drain voltage.')
 
-    def closeEvent(self):
+    def closeEvent(self, event):
         self.exit_()
 
 # =============================================================================
