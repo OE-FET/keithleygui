@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with Qudi. If not, see <http://www.gnu.org/licenses/>.
 """
 
-from __future__ import division, absolute_import
-from builtins import (str, super, range, int, object)
+from __future__ import division, absolute_import, unicode_literals
+from builtins import super
 from qtpy import QtCore, QtGui, QtWidgets
 import numpy as np
 import re
