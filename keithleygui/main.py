@@ -9,6 +9,7 @@ Created on Tue Feb 20 15:01:18 2018
 # system imports
 from __future__ import division, print_function, absolute_import
 import os
+import pkg_resources
 from visa import InvalidSession
 from qtpy import QtGui, QtCore, QtWidgets, uic
 from matplotlib.figure import Figure
@@ -22,8 +23,7 @@ from keithleygui.utils.led_indicator_widget import LedIndicator
 from keithleygui.utils.scientific_spinbox import ScienDSpinBox
 from keithleygui.config.main import CONF
 
-direct = os.path.dirname(os.path.realpath(__file__))
-STYLE_PATH = os.path.join(direct, 'figure_style.mplstyle')
+STYLE_PATH = pkg_resources.resource_filename('keithleygui', 'figure_style.mplstyle')
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -31,8 +31,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                'main.ui'), self)
+        uic.loadUi(pkg_resources.resource_filename('keithleygui', 'main.ui'), self)
 
         self.keithley = keithley
         # create new list of smu's instead of referenceto old list
@@ -652,8 +651,8 @@ class KeithleyAddressDialog(QtWidgets.QDialog):
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                'address_dialog.ui'), self)
+        uic.loadUi(pkg_resources.resource_filename('keithleygui',
+                                                   'address_dialog.ui'), self)
 
         self.keithley = keithley
         self.lineEditAddress.setText(self.keithley.visa_address)
