@@ -36,7 +36,7 @@ DEFAULTS = [
               'VgList': [0, -20, -40, -60],
               'VStart': -10.0,
               'VStop': 10.0,
-              'VStep': 1.0,   
+              'VStep': 1.0,
               'smu_sweep': Keithley2600.SMU_LIST[0],
               'tInt': 0.1,
               'pulsed': False,

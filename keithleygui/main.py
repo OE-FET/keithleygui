@@ -33,7 +33,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # load user interface layout from .ui file
         uic.loadUi(os.path.join(os.path.dirname(os.path.realpath(__file__)),
                                 'main.ui'), self)
+
         self.keithley = keithley
+        # create new list of smu's instead of referenceto old list
         self.smu_list = list(self.keithley.SMU_LIST)
 
         self._set_up_tabs()  # create Keithley settings tabs
@@ -290,7 +292,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             params['VFix'] = 0
 
             smusweep = self.comboBoxSweepSMU.currentText()
-            other = [s for s in self.smu_list if s is not smusweep]
+            other = [s for s in self.smu_list if s != smusweep]
 
             params['smu_sweep'] = getattr(self.keithley, smusweep)
             params['smu_fix'] = getattr(self.keithley, other[0])
@@ -694,7 +696,7 @@ class MeasureThread(QtCore.QThread):
                     )
 
         elif self.params['Measurement'] == 'iv':
-            Vsweep, Isweep, = self.voltageSweep(
+            Vsweep, Isweep, = self.keithley.voltageSweep(
                     self.params['smu_sweep'], self.params['smu_fix'], self.params['VStart'],
                     self.params['VStop'], self.params['VStep'], self.params['VFix'],
                     self.params['tInt'], self.params['delay'], self.params['pulsed']
