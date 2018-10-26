@@ -427,6 +427,13 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         VgStringList = VgListString.split(',')
         CONF.set('Sweep', 'VgList', [float(x) for x in VgStringList])
 
+        # save iv settings
+        CONF.set('Sweep', 'VStart', self.scienDSpinBoxVStart.value())
+        CONF.set('Sweep', 'VStop', self.scienDSpinBoxVStop.value())
+        CONF.set('Sweep', 'VStep', self.scienDSpinBoxVStep.value())
+
+        CONF.set('Sweep', 'smu_sweep', self.comboBoxSweepSMU.currentText())
+
         # save general settings
         CONF.set('Sweep', 'tInt', self.scienDSpinBoxInt.value())
         CONF.set('Sweep', 'delay', self.scienDSpinBoxSettling.value())
@@ -454,17 +461,31 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def _on_load_default(self):
         """Load default settings to interface."""
 
-        # set text box contents
+        # Set SMU selection comboBox status
+        cmbList = list(self.smu_list)  # get list of all SMUs
+
         # transfer curve settings
         self.scienDSpinBoxVgStart.setValue(CONF.get('Sweep', 'VgStart'))
         self.scienDSpinBoxVgStop.setValue(CONF.get('Sweep', 'VgStop'))
         self.scienDSpinBoxVgStep.setValue(CONF.get('Sweep', 'VgStep'))
         self.lineEditVdList.setText(str(CONF.get('Sweep', 'VdList')).strip('[]'))
+
         # output curve settings
         self.scienDSpinBoxVdStart.setValue(CONF.get('Sweep', 'VdStart'))
         self.scienDSpinBoxVdStop.setValue(CONF.get('Sweep', 'VdStop'))
         self.scienDSpinBoxVdStep.setValue(CONF.get('Sweep', 'VdStep'))
         self.lineEditVgList.setText(str(CONF.get('Sweep', 'VgList')).strip('[]'))
+
+        # iv curve settings
+        self.scienDSpinBoxVStart.setValue(CONF.get('Sweep', 'VStart'))
+        self.scienDSpinBoxVStop.setValue(CONF.get('Sweep', 'VStop'))
+        self.scienDSpinBoxVStep.setValue(CONF.get('Sweep', 'VStep'))
+        try:
+            self.comboBoxSweepSMU.setCurrentIndex(cmbList.index(CONF.get('Sweep', 'smu_sweep')))
+        except ValueError:
+            self.comboBoxGateSMU.setCurrentIndex(0)
+            msg = 'Could not find last used SMUs in Keithley driver.'
+            QtWidgets.QMessageBox.information(None, str('error'), msg)
 
         # other
         self.scienDSpinBoxInt.setValue(CONF.get('Sweep', 'tInt'))
@@ -477,8 +498,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         elif pulsed is True:
             self.comboBoxSweepType.setCurrentIndex(1)
 
-        # Set SMU selection comboBox status
-        cmbList = list(self.smu_list)  # get list of all SMUs
         # We have to comboBoxes. If there are less SMU's, extend list.
         while len(cmbList) < 2:
             cmbList.append('--')
