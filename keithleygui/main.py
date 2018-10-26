@@ -78,6 +78,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             else:
                 raise ValueError('Invalid drain voltage.')
 
+    def closeEvent(self, event):
+        self.exit_()
+
 # =============================================================================
 # GUI setup
 # =============================================================================
@@ -206,7 +209,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionSettings.triggered.connect(self._on_settings_clicked)
         self.actionConnect.triggered.connect(self._on_connect_clicked)
         self.actionDisconnect.triggered.connect(self._on_disconnect_clicked)
-        self.action_Exit.triggered.connect(self._on_exit_clicked)
+        self.action_Exit.triggered.connect(self.exit_)
         self.actionSaveSweepData.triggered.connect(self._on_save_clicked)
         self.actionLoad_data_from_file.triggered.connect(self._on_load_clicked)
         self.actionSaveDefaults.triggered.connect(self._on_save_default)
@@ -553,7 +556,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.scienDSpinBoxsLimitV[i].setValue(str(CONF.get(self.smu_list[i], 'limitv')))
 
     @QtCore.Slot()
-    def _on_exit_clicked(self):
+    def exit_(self):
         self.keithley.disconnect()
         self.timer.stop()
         self.deleteLater()
@@ -723,6 +726,9 @@ class MeasureThread(QtCore.QThread):
                     self.params['VStop'], self.params['VStep'], self.params['VFix'],
                     self.params['tInt'], self.params['delay'], self.params['pulsed']
                     )
+
+            self.keithley.reset()
+
             sweepData = IVSweepData(Vsweep, Isweep)
 
         self.finishedSig.emit(sweepData)
