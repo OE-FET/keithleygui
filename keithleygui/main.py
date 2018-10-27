@@ -27,6 +27,8 @@ from keithleygui.config.main import CONF
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
 ADDRESS_UI_PATH = pkgr.resource_filename('keithleygui', 'address_dialog.ui')
+LIBRARY_UI_PATH = pkgr.resource_filename('keithleygui', 'library_dialog.ui')
+
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -687,8 +689,7 @@ class LibraryDialog(QtWidgets.QDialog):
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                'library_dialog.ui'), self)
+        uic.loadUi(LIBRARY_UI_PATH, self)
 
         self.keithley = keithley
         self.lineEditLibrary.setText(self.keithley.visa_library)
@@ -700,7 +701,7 @@ class LibraryDialog(QtWidgets.QDialog):
         """Show GUI to load sweep data from file."""
         prompt = 'Please select a DLL.'
         filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
-        if not os.path.isfile(filepath[0]):
+        if not ops.isfile(filepath[0]):
             return
         self.lineEditLibrary.setText(filepath[0])
 
