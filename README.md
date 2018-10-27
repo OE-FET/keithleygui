@@ -12,9 +12,9 @@ A high-level user interface for Keithley 2600 series instruments which allows th
 ## Installation
 Download or clone the repository. Install the package by running 
 ```console
-$ pip install /path/to/folder
+$ pip install git+https://github.com/OE-FET/keithleygui
 ```
-where "/path/to/folder" is the path to the folder containing setup.py. 
 
 ## Acknowledgements
 Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
+The SpinBox in scientific way are based on the implementation from [Ulm-IQO](https://github.com/Ulm-IQO)
