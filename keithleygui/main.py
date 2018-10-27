@@ -311,10 +311,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         smudrain = self.comboBoxDrainSMU.currentText()
         params['smu_drain'] = getattr(self.keithley, smudrain)  # drain SMU
 
-        if self.comboBoxSweepType.currentIndex() == 0:
-            params['pulsed'] = False
-        elif self.comboBoxSweepType.currentIndex() == 1:
-            params['pulsed'] = True
+        params['pulsed'] = bool(self.comboBoxSweepType.currentIndex())
 
         # create measurement thread with params dictionary
         self.measureThread = MeasureThread(self.keithley, params)
