@@ -8,8 +8,8 @@ Created on Tue Feb 20 15:01:18 2018
 
 # system imports
 from __future__ import division, print_function, absolute_import
-import os
-import pkg_resources
+import os.path as ops
+import pkg_resources as pkgr
 from visa import InvalidSession
 from qtpy import QtGui, QtCore, QtWidgets, uic
 from matplotlib.figure import Figure
@@ -23,7 +23,10 @@ from keithleygui.utils.led_indicator_widget import LedIndicator
 from keithleygui.utils.scientific_spinbox import ScienDSpinBox
 from keithleygui.config.main import CONF
 
-STYLE_PATH = pkg_resources.resource_filename('keithleygui', 'figure_style.mplstyle')
+
+MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
+MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
+ADDRESS_UI_PATH = pkgr.resource_filename('keithleygui', 'address_dialog.ui')
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -31,7 +34,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(pkg_resources.resource_filename('keithleygui', 'main.ui'), self)
+        uic.loadUi(MAIN_UI_PATH, self)
 
         self.keithley = keithley
         # create new list of smu's instead of referenceto old list
@@ -91,7 +94,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         color = [x/255 for x in color]
 
         # set up figure itself
-        with mpl.style.context(['default', STYLE_PATH]):
+        with mpl.style.context(['default', MPL_STYLE_PATH]):
             self.fig = Figure(facecolor=color)
             self.fig.set_tight_layout('tight')
             self.ax = self.fig.add_subplot(111)
@@ -397,7 +400,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """Show GUI to load sweep data from file."""
         prompt = 'Please select a data file.'
         filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
-        if not os.path.isfile(filepath[0]):
+        if not ops.isfile(filepath[0]):
             return
         try:
             self.sweepData = TransistorSweepData()
@@ -651,8 +654,7 @@ class KeithleyAddressDialog(QtWidgets.QDialog):
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(pkg_resources.resource_filename('keithleygui',
-                                                   'address_dialog.ui'), self)
+        uic.loadUi(ADDRESS_UI_PATH, self)
 
         self.keithley = keithley
         self.lineEditAddress.setText(self.keithley.visa_address)
