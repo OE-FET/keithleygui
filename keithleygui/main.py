@@ -26,6 +26,7 @@ from keithleygui.config.main import CONF
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
 ADDRESS_UI_PATH = pkgr.resource_filename('keithleygui', 'address_dialog.ui')
+LIBRARY_UI_PATH = pkgr.resource_filename('keithleygui', 'library_dialog.ui')
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -55,13 +56,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.connect_ui_callbacks()  # connect to callbacks
         self._on_load_default()  # load default settings into GUI
+        self._on_search_clicked()  # search for keithley Address
         self.actionSaveSweepData.setEnabled(False)  # disable save menu
 
         # update when keithley is connected
         self._update_gui_connection()
 
-        # create address dialog
-        self.addressDialog = KeithleyAddressDialog(self.keithley)
+        # create library dialog
+        self.libraryDialog = LibraryDialog(self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
@@ -199,10 +201,13 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.pushButtonIV.clicked.connect(self._on_sweep_clicked)
         self.pushButtonAbort.clicked.connect(self._on_abort_clicked)
 
+        self.pushButtonSearch.clicked.connect(self._on_search_clicked)
+        self.pushButtonConnect.clicked.connect(self._on_connect_clicked)
+
         self.comboBoxGateSMU.currentIndexChanged.connect(self._on_smu_gate_changed)
         self.comboBoxDrainSMU.currentIndexChanged.connect(self._on_smu_drain_changed)
 
-        self.actionSettings.triggered.connect(self._on_settings_clicked)
+        self.actionLibrary.triggered.connect(self._on_library_clicked)
         self.actionConnect.triggered.connect(self._on_connect_clicked)
         self.actionDisconnect.triggered.connect(self._on_disconnect_clicked)
         self.action_Exit.triggered.connect(self.exit_)
@@ -359,7 +364,15 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.comboBoxGateSMU.setCurrentIndex(0)
 
     @QtCore.Slot()
+    def _on_search_clicked(self):
+        self.comboBoxAddress.clear()
+        self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
+        self.comboBoxAddress.addItems(self.keithley.rm.list_resources())
+
+    @QtCore.Slot()
     def _on_connect_clicked(self):
+        self.keithley.visa_address = self.comboBoxAddress.currentText()
+        self.keithley.disconnect()
         self.keithley.connect()
         self._update_gui_connection()
         if not self.keithley.connected:
@@ -375,8 +388,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.statusBar.showMessage('    No Keithley connected.')
 
     @QtCore.Slot()
-    def _on_settings_clicked(self):
-        self.addressDialog.show()
+    def _on_library_clicked(self):
+        self.libraryDialog.show()
 
     @QtCore.Slot()
     def _on_save_clicked(self):
@@ -493,6 +506,17 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # other
         self.scienDSpinBoxInt.setValue(CONF.get('Sweep', 'tInt'))
         self.scienDSpinBoxSettling.setValue(CONF.get('Sweep', 'delay'))
+
+        # set Address comboBox status
+        self.comboBoxAddress.clear()
+        self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
+        try:
+            self.comboBoxAddress.setCurrentText(CONF.get('Connection', 'KEITHLEY_ADDRESS'))
+        except ValueError:
+            self.comboBoxGateSMU.setCurrentIndex(0)
+            msg = 'Could not find last used Keithley Address.'
+            QtWidgets.QMessageBox.information(None, str('error'), msg)
+
 
         # set PULSED comboBox index (0 if pulsed == False, 1 if pulsed == True)
         pulsed = CONF.get('Sweep', 'pulsed')
@@ -645,25 +669,34 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.canvas.draw()
 
 
-class KeithleyAddressDialog(QtWidgets.QDialog):
+class LibraryDialog(QtWidgets.QDialog):
     """
     Provides a user dialog to select the modules for the feed.
     """
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(ADDRESS_UI_PATH, self)
+        uic.loadUi(LIBRARY_UI_PATH, self)
 
         self.keithley = keithley
-        self.lineEditAddress.setText(self.keithley.visa_address)
+        self.lineEditLibrary.setText(self.keithley.visa_library)
 
         self.buttonBox.accepted.connect(self._onAccept)
+        self.pushButtonChoose.clicked.connect(self._on_choose_clicked)
+
+    def _on_choose_clicked(self):
+        """Show GUI to load sweep data from file."""
+        prompt = 'Please select a DLL.'
+        filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
+        if not ops.isfile(filepath[0]):
+            return
+        self.lineEditLibrary.setText(filepath[0])
 
     def _onAccept(self):
         # update connection settings in mercury feed
-        self.keithley.visa_address = self.lineEditAddress.text()
-        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.keithley.visa_address)
-        # reconnect to new IP address
+        self.keithley.visa_library = self.lineEditLibrary.text()
+        CONF.set('Connection', 'VISA_LIBRARY', self.keithley.visa_library)
+        # reconnect with new Library
         self.keithley.disconnect()
         self.keithley.connect()
 
@@ -717,7 +750,8 @@ def run():
     from keithley2600 import Keithley2600
 
     KEITHLEY_ADDRESS = CONF.get('Connection', 'KEITHLEY_ADDRESS')
-    keithley = Keithley2600(KEITHLEY_ADDRESS)
+    VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
+    keithley = Keithley2600(KEITHLEY_ADDRESS, VISA_LIBRARY)
 
     app = QtWidgets.QApplication(sys.argv)
     keithleyGUI = KeithleyGuiApp(keithley)

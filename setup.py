@@ -15,7 +15,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'keithleygui=keithleygui.main:run'
+            'keithleygui_con=keithleygui.main:run'
         ],
         'gui_scripts': [
             'keithleygui=keithleygui.main:run'
