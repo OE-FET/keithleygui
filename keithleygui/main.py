@@ -30,7 +30,6 @@ ADDRESS_UI_PATH = pkgr.resource_filename('keithleygui', 'address_dialog.ui')
 LIBRARY_UI_PATH = pkgr.resource_filename('keithleygui', 'library_dialog.ui')
 
 
-
 class KeithleyGuiApp(QtWidgets.QMainWindow):
     """ Provides a GUI for transfer and output sweeps on the Keithley 2600."""
     def __init__(self, keithley):
@@ -64,8 +63,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # update when keithley is connected
         self._update_gui_connection()
 
-        # create address dialog
-        self.addressDialog = KeithleyAddressDialog(self.keithley)
         # create library dialog
         self.libraryDialog = LibraryDialog(self.keithley)
 
@@ -212,7 +209,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.comboBoxGateSMU.currentIndexChanged.connect(self._on_smu_gate_changed)
         self.comboBoxDrainSMU.currentIndexChanged.connect(self._on_smu_drain_changed)
 
-        self.actionSettings.triggered.connect(self._on_settings_clicked)
         self.actionLibrary.triggered.connect(self._on_library_clicked)
         self.actionConnect.triggered.connect(self._on_connect_clicked)
         self.actionDisconnect.triggered.connect(self._on_disconnect_clicked)
@@ -392,10 +388,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.keithley.disconnect()
         self._update_gui_connection()
         self.statusBar.showMessage('    No Keithley connected.')
-
-    @QtCore.Slot()
-    def _on_settings_clicked(self):
-        self.addressDialog.show()
 
     @QtCore.Slot()
     def _on_library_clicked(self):
@@ -710,28 +702,6 @@ class LibraryDialog(QtWidgets.QDialog):
         self.keithley.visa_library = self.lineEditLibrary.text()
         CONF.set('Connection', 'VISA_LIBRARY', self.keithley.visa_library)
         # reconnect with new Library
-        self.keithley.disconnect()
-        self.keithley.connect()
-
-class KeithleyAddressDialog(QtWidgets.QDialog):
-    """
-    Provides a user dialog to select the modules for the feed.
-    """
-    def __init__(self, keithley):
-        super(self.__class__, self).__init__()
-        # load user interface layout from .ui file
-        uic.loadUi(ADDRESS_UI_PATH, self)
-
-        self.keithley = keithley
-        self.lineEditAddress.setText(self.keithley.visa_address)
-
-        self.buttonBox.accepted.connect(self._onAccept)
-
-    def _onAccept(self):
-        # update connection settings in mercury feed
-        self.keithley.visa_address = self.lineEditAddress.text()
-        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.keithley.visa_address)
-        # reconnect to new IP address
         self.keithley.disconnect()
         self.keithley.connect()
 
