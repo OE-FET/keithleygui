@@ -32,7 +32,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QTabWidget" name="tabWidgetSweeps">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab1">
          <attribute name="title">
@@ -957,6 +957,31 @@
    <header>keithleygui.utils.scientific_spinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidgetSweeps</tabstop>
+  <tabstop>scienDSpinBoxVgStart</tabstop>
+  <tabstop>scienDSpinBoxVgStop</tabstop>
+  <tabstop>scienDSpinBoxVgStep</tabstop>
+  <tabstop>lineEditVdList</tabstop>
+  <tabstop>pushButtonTransfer</tabstop>
+  <tabstop>scienDSpinBoxVdStart</tabstop>
+  <tabstop>scienDSpinBoxVdStop</tabstop>
+  <tabstop>scienDSpinBoxVdStep</tabstop>
+  <tabstop>lineEditVgList</tabstop>
+  <tabstop>pushButtonOutput</tabstop>
+  <tabstop>scienDSpinBoxVStart</tabstop>
+  <tabstop>scienDSpinBoxVStop</tabstop>
+  <tabstop>scienDSpinBoxVStep</tabstop>
+  <tabstop>comboBoxSweepSMU</tabstop>
+  <tabstop>pushButtonIV</tabstop>
+  <tabstop>pushButtonAbort</tabstop>
+  <tabstop>scienDSpinBoxInt</tabstop>
+  <tabstop>scienDSpinBoxSettling</tabstop>
+  <tabstop>comboBoxSweepType</tabstop>
+  <tabstop>comboBoxGateSMU</tabstop>
+  <tabstop>comboBoxDrainSMU</tabstop>
+  <tabstop>tabWidgetSettings</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
