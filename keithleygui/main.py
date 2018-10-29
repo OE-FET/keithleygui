@@ -62,7 +62,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self._update_gui_connection()
 
         # create address dialog
-        self.addressDialog = KeithleyAddressDialog(self.keithley)
+        self.addressDialog = AddressDialog(self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
@@ -642,27 +642,27 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.canvas.draw()
 
 
-class KeithleyAddressDialog(QtWidgets.QDialog):
+class AddressDialog(QtWidgets.QDialog):
     """
     Provides a user dialog to select the modules for the feed.
     """
-    def __init__(self, keithley):
+    def __init__(self, device):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
         uic.loadUi(ADDRESS_UI_PATH, self)
 
-        self.keithley = keithley
-        self.lineEditAddress.setText(self.keithley.visa_address)
+        self.device = device
+        self.lineEditAddress.setText(self.device.visa_address)
 
         self.buttonBox.accepted.connect(self._onAccept)
 
     def _onAccept(self):
         # update connection settings in mercury feed
-        self.keithley.visa_address = self.lineEditAddress.text()
-        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.keithley.visa_address)
+        self.device.visa_address = self.lineEditAddress.text()
+        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.device.visa_address)
         # reconnect to new IP address
-        self.keithley.disconnect()
-        self.keithley.connect()
+        self.device.disconnect()
+        self.device.connect()
 
 
 class MeasureThread(QtCore.QThread):
