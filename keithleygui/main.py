@@ -10,7 +10,7 @@ Created on Tue Feb 20 15:01:18 2018
 from __future__ import division, print_function, absolute_import
 import os.path as ops
 import pkg_resources as pkgr
-from visa import InvalidSession
+import visa
 from qtpy import QtGui, QtCore, QtWidgets, uic
 from matplotlib.figure import Figure
 from keithley2600 import TransistorSweepData, IVSweepData
@@ -26,7 +26,6 @@ from keithleygui.config.main import CONF
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
 CONNECTION_UI_PATH = pkgr.resource_filename('keithleygui', 'connection_dialog.ui')
-
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -222,7 +221,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if self.keithley.connected and not self.keithley.busy:
             try:
                 self.keithley.localnode.model
-            except (InvalidSession, OSError):
+            except (visa.InvalidSession, OSError):
                 self.keithley.disconnect()
                 self._update_gui_connection()
 
@@ -645,16 +644,17 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.ax.set_ylabel('Current [A]')
             self.canvas.draw()
 
+
 class ConnectionDialog(QtWidgets.QDialog):
 
-    def __init__(self, keithley):
+    def __init__(self, instrument):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
         uic.loadUi(CONNECTION_UI_PATH, self)
 
-        self.keithley = keithley
-        self.lineEditLibrary.setText(self.keithley.visa_library)
-        self._on_search_clicked()  # search for keithley Address
+        self.instrument = instrument
+        self.lineEditLibrary.setText(self.instrument.visa_library)
+        self._on_search_clicked()  # search for instrument addresses
 
         self.buttonBox.accepted.connect(self._onAccept)
         self.pushButtonChoose.clicked.connect(self._on_choose_clicked)
@@ -662,7 +662,7 @@ class ConnectionDialog(QtWidgets.QDialog):
 
     @QtCore.Slot()
     def _on_choose_clicked(self):
-        """Show GUI to load sweep data from file."""
+        """Select path to VISA library."""
         prompt = 'Please select a DLL.'
         filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
         if not ops.isfile(filepath[0]):
@@ -673,27 +673,25 @@ class ConnectionDialog(QtWidgets.QDialog):
     def _on_search_clicked(self):
         # set Address comboBox status
         self.comboBoxAddress.clear()
-        self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
-        try:
-            self.comboBoxAddress.setCurrentText(CONF.get('Connection', 'KEITHLEY_ADDRESS'))
-        except ValueError:
-            self.comboBoxGateSMU.setCurrentIndex(0)
-            msg = 'Could not find last used Keithley Address.'
-            QtWidgets.QMessageBox.information(None, str('error'), msg)
-
-        self.comboBoxAddress.addItems(self.keithley.rm.list_resources())
+        self.comboBoxAddress.addItems([self.instrument.visa_address])
+        self.comboBoxAddress.addItems(self.instrument.rm.list_resources())
+        self.comboBoxAddress.setCurrentIndex(0)
 
     @QtCore.Slot()
     def _onAccept(self):
         # update connection settings
-        self.keithley.visa_library = self.lineEditLibrary.text()
-        CONF.set('Connection', 'VISA_LIBRARY', self.keithley.visa_library)
-        self.keithley.visa_address = self.comboBoxAddress.currentText()
-        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.keithley.visa_address)
+        self.instrument.visa_library = self.lineEditLibrary.text()
+        self.instrument.visa_address = self.comboBoxAddress.currentText()
+
+        CONF.set('Connection', 'VISA_LIBRARY', self.instrument.visa_library)
+        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.instrument.visa_address)
 
         # reconnect with new Library
-        self.keithley.disconnect()
-        self.keithley.connect()
+        # TODO: this needs testing
+        self.instrument.disconnect()
+        self.instrument.rm.close()
+        self.instrument.rm = visa.ResourceManager(self.instrument.visa_library)
+        self.instrument.connect()
 
 
 class MeasureThread(QtCore.QThread):
