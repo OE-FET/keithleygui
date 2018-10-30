@@ -14,6 +14,7 @@ from qtpy import QtGui, QtCore, QtWidgets, uic
 from matplotlib.figure import Figure
 from keithley2600 import TransistorSweepData, IVSweepData
 import matplotlib as mpl
+import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # local imports
@@ -291,13 +292,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             params['VStart'] = self.scienDSpinBoxVStart.value()
             params['VStop'] = self.scienDSpinBoxVStop.value()
             params['VStep'] = self.scienDSpinBoxVStep.value()
-            params['VFix'] = 0
 
             smusweep = self.comboBoxSweepSMU.currentText()
-            other = [s for s in self.smu_list if s != smusweep]
-
             params['smu_sweep'] = getattr(self.keithley, smusweep)
-            params['smu_fix'] = getattr(self.keithley, other[0])
 
         # get aquisition settings
         params['tInt'] = self.scienDSpinBoxInt.value()  # integration time
@@ -697,15 +694,16 @@ class MeasureThread(QtCore.QThread):
                     )
 
         elif self.params['Measurement'] == 'iv':
-            Vsweep, Isweep, Vfix, Ifix = self.keithley.voltageSweep(
-                    self.params['smu_sweep'], self.params['smu_fix'], self.params['VStart'],
-                    self.params['VStop'], self.params['VStep'], self.params['VFix'],
-                    self.params['tInt'], self.params['delay'], self.params['pulsed']
+            step = np.sign(self.params['VStop'] - self.params['VStart']) * abs(self.params['VStep'])
+            sweeplist = np.arange(self.params['VStart'], self.params['VStop'] + step, step)
+            vSweep, iSweep = self.keithley.voltageSweepSingleSMU(
+                    self.params['smu_sweep'], sweeplist, self.params['tInt'], self.params['delay'],
+                    self.params['pulsed']
                     )
 
             self.keithley.reset()
 
-            sweepData = IVSweepData(Vsweep, Isweep)
+            sweepData = IVSweepData(vSweep, iSweep)
 
         self.finishedSig.emit(sweepData)
 
