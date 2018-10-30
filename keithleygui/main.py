@@ -656,7 +656,8 @@ class ConnectionDialog(QtWidgets.QDialog):
         self.lineEditLibrary.setText(self.instrument.visa_library)
         self._on_search_clicked()  # search for instrument addresses
 
-        self.buttonBox.accepted.connect(self._onAccept)
+        self.buttonBox.accepted.connect(self._on_accept)
+        self.buttonBox.rejected.connect(self._on_reject)
         self.pushButtonChoose.clicked.connect(self._on_choose_clicked)
         self.pushButtonSearch.clicked.connect(self._on_search_clicked)
 
@@ -678,8 +679,8 @@ class ConnectionDialog(QtWidgets.QDialog):
         self.comboBoxAddress.setCurrentIndex(0)
 
     @QtCore.Slot()
-    def _onAccept(self):
-        # update connection settings
+    def _on_accept(self):
+        """ Update connection settings, reconnect with new settings."""
         self.instrument.visa_library = self.lineEditLibrary.text()
         self.instrument.visa_address = self.comboBoxAddress.currentText()
 
@@ -692,6 +693,12 @@ class ConnectionDialog(QtWidgets.QDialog):
         self.instrument.rm.close()
         self.instrument.rm = visa.ResourceManager(self.instrument.visa_library)
         self.instrument.connect()
+
+    @QtCore.Slot()
+    def _on_reject(self):
+        """ Discard user input to text fields."""
+        self.lineEditLibrary.setText(self.instrument.visa_library)
+        self._on_search_clicked()  # search for instrument addresses
 
 
 class MeasureThread(QtCore.QThread):
