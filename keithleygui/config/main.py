@@ -22,7 +22,8 @@ SUBFOLDER = '.%s' % PACKAGE_NAME
 DEFAULTS = [
             ('Connection',
              {
-              'KEITHLEY_ADDRESS': 'TCPIP0::192.168.2.121::INSTR'
+              'KEITHLEY_ADDRESS': 'TCPIP0::192.168.2.121::INSTR',
+              'VISA_LIBRARY': '@py'
               }),
             ('Sweep',
              {

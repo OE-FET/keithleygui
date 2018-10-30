@@ -25,7 +25,8 @@ from keithleygui.config.main import CONF
 
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
-ADDRESS_UI_PATH = pkgr.resource_filename('keithleygui', 'address_dialog.ui')
+CONNECTION_UI_PATH = pkgr.resource_filename('keithleygui', 'connection_dialog.ui')
+
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -60,8 +61,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # update when keithley is connected
         self._update_gui_connection()
 
-        # create address dialog
-        self.addressDialog = KeithleyAddressDialog(self.keithley)
+        # create connection dialog
+        self.connectionDialog = ConnectionDialog(self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
@@ -376,7 +377,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     @QtCore.Slot()
     def _on_settings_clicked(self):
-        self.addressDialog.show()
+        self.connectionDialog.show()
 
     @QtCore.Slot()
     def _on_save_clicked(self):
@@ -644,26 +645,53 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.ax.set_ylabel('Current [A]')
             self.canvas.draw()
 
+class ConnectionDialog(QtWidgets.QDialog):
 
-class KeithleyAddressDialog(QtWidgets.QDialog):
-    """
-    Provides a user dialog to select the modules for the feed.
-    """
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
-        uic.loadUi(ADDRESS_UI_PATH, self)
+        uic.loadUi(CONNECTION_UI_PATH, self)
 
         self.keithley = keithley
-        self.lineEditAddress.setText(self.keithley.visa_address)
+        self.lineEditLibrary.setText(self.keithley.visa_library)
+        self._on_search_clicked()  # search for keithley Address
 
         self.buttonBox.accepted.connect(self._onAccept)
+        self.pushButtonChoose.clicked.connect(self._on_choose_clicked)
+        self.pushButtonSearch.clicked.connect(self._on_search_clicked)
 
+    @QtCore.Slot()
+    def _on_choose_clicked(self):
+        """Show GUI to load sweep data from file."""
+        prompt = 'Please select a DLL.'
+        filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
+        if not ops.isfile(filepath[0]):
+            return
+        self.lineEditLibrary.setText(filepath[0])
+
+    @QtCore.Slot()
+    def _on_search_clicked(self):
+        # set Address comboBox status
+        self.comboBoxAddress.clear()
+        self.comboBoxAddress.addItems([CONF.get('Connection', 'KEITHLEY_ADDRESS')])
+        try:
+            self.comboBoxAddress.setCurrentText(CONF.get('Connection', 'KEITHLEY_ADDRESS'))
+        except ValueError:
+            self.comboBoxGateSMU.setCurrentIndex(0)
+            msg = 'Could not find last used Keithley Address.'
+            QtWidgets.QMessageBox.information(None, str('error'), msg)
+
+        self.comboBoxAddress.addItems(self.keithley.rm.list_resources())
+
+    @QtCore.Slot()
     def _onAccept(self):
-        # update connection settings in mercury feed
-        self.keithley.visa_address = self.lineEditAddress.text()
+        # update connection settings
+        self.keithley.visa_library = self.lineEditLibrary.text()
+        CONF.set('Connection', 'VISA_LIBRARY', self.keithley.visa_library)
+        self.keithley.visa_address = self.comboBoxAddress.currentText()
         CONF.set('Connection', 'KEITHLEY_ADDRESS', self.keithley.visa_address)
-        # reconnect to new IP address
+
+        # reconnect with new Library
         self.keithley.disconnect()
         self.keithley.connect()
 
@@ -717,7 +745,8 @@ def run():
     from keithley2600 import Keithley2600
 
     KEITHLEY_ADDRESS = CONF.get('Connection', 'KEITHLEY_ADDRESS')
-    keithley = Keithley2600(KEITHLEY_ADDRESS)
+    VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
+    keithley = Keithley2600(KEITHLEY_ADDRESS, VISA_LIBRARY)
 
     app = QtWidgets.QApplication(sys.argv)
     keithleyGUI = KeithleyGuiApp(keithley)
