@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright © keithleygui Project Contributors
+# Licensed under the terms of the MIT License
+# (see LICENSE.txt for details)
+
 from __future__ import division, absolute_import, print_function
 from qtpy import QtGui, QtCore, QtWidgets
 

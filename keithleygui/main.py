@@ -1,10 +1,9 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Feb 20 15:01:18 2018
+#
+# Copyright © keithleygui Project Contributors
+# Licensed under the terms of the MIT License
+# (see LICENSE.txt for details)
 
-@author: SamSchott
-"""
 
 # system imports
 from __future__ import division, print_function, absolute_import

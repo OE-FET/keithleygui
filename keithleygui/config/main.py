@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright © Spyder Project Contributors
+# Copyright © keithleygui Project Contributors
 # Licensed under the terms of the MIT License
-# (see spyder/__init__.py for details)
+# (see LICENSE.txt for details)
 
 """
 keithleygui configuration options.
