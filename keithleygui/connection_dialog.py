@@ -53,7 +53,7 @@ class ConnectionDialog(QtWidgets.QDialog):
             self.labelVisaLib.close()
             self.lineEditLibrary.close()
             self.pushButtonChoose.close()
-            self.lineEditLibrary.setText(self.instr.rm.visalib.library_path)
+            self.lineEditLibrary.setText('')
         else:
             self.labelVisaLib.show()
             self.lineEditLibrary.show()
