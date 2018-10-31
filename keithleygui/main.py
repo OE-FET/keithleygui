@@ -7,9 +7,9 @@
 
 # system imports
 from __future__ import division, print_function, absolute_import
-import os.path as ops
+import os.path as osp
 import pkg_resources as pkgr
-from visa import InvalidSession
+import visa
 from qtpy import QtGui, QtCore, QtWidgets, uic
 from matplotlib.figure import Figure
 from keithley2600 import TransistorSweepData, IVSweepData
@@ -21,11 +21,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from keithleygui.utils.led_indicator_widget import LedIndicator
 from keithleygui.utils.scientific_spinbox import ScienDSpinBox
 from keithleygui.config.main import CONF
+from keithleygui.connection_dialog import ConnectionDialog
 
 
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
-ADDRESS_UI_PATH = pkgr.resource_filename('keithleygui', 'address_dialog.ui')
 
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
@@ -60,8 +60,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # update when keithley is connected
         self._update_gui_connection()
 
-        # create address dialog
-        self.addressDialog = KeithleyAddressDialog(self.keithley)
+        # create connection dialog
+        self.connectionDialog = ConnectionDialog(self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
@@ -221,7 +221,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if self.keithley.connected and not self.keithley.busy:
             try:
                 self.keithley.localnode.model
-            except (InvalidSession, OSError):
+            except (visa.InvalidSession, OSError):
                 self.keithley.disconnect()
                 self._update_gui_connection()
 
@@ -229,7 +229,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if self.keithley.busy:
             msg = ('Keithley is currently used by antoher program. ' +
                    'Please try again later.')
-            QtWidgets.QMessageBox.information(None, str('error'), msg)
+            QtWidgets.QMessageBox.information(self, str('error'), msg)
 
 # =============================================================================
 # Measurement callbacks
@@ -362,7 +362,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             msg = ('Keithley cannot be reached at %s. ' % self.keithley.visa_address
                    + 'Please check if address is correct and Keithley is ' +
                    'turned on.')
-            QtWidgets.QMessageBox.information(None, str('error'), msg)
+            QtWidgets.QMessageBox.information(self, str('error'), msg)
 
     @QtCore.Slot()
     def _on_disconnect_clicked(self):
@@ -372,7 +372,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     @QtCore.Slot()
     def _on_settings_clicked(self):
-        self.addressDialog.show()
+        self.connectionDialog.show()
 
     @QtCore.Slot()
     def _on_save_clicked(self):
@@ -390,7 +390,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """Show GUI to load sweep data from file."""
         prompt = 'Please select a data file.'
         filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
-        if not ops.isfile(filepath[0]):
+        if not osp.isfile(filepath[0]):
             return
         try:
             self.sweepData = TransistorSweepData()
@@ -482,7 +482,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         except ValueError:
             idx_sweep = 0
             msg = 'Could not find last used SMUs in Keithley driver.'
-            QtWidgets.QMessageBox.information(None, str('error'), msg)
+            QtWidgets.QMessageBox.information(self, str('error'), msg)
 
         self.comboBoxGateSMU.setCurrentIndex(idx_sweep)
 
@@ -514,7 +514,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.comboBoxGateSMU.setCurrentIndex(0)
             self.comboBoxDrainSMU.setCurrentIndex(1)
             msg = 'Could not find last used SMUs in Keithley driver.'
-            QtWidgets.QMessageBox.information(None, str('error'), msg)
+            QtWidgets.QMessageBox.information(self, str('error'), msg)
 
         for i in range(0, self.ntabs):
             sense = CONF.get(self.smu_list[i], 'sense')
@@ -569,7 +569,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.pushButtonTransfer.setEnabled(True)
         self.pushButtonOutput.setEnabled(True)
         self.pushButtonIV.setEnabled(True)
-        self.pushButtonAbort.setEnabled(True)
+        self.pushButtonAbort.setEnabled(False)
 
         self.actionConnect.setEnabled(False)
         self.actionDisconnect.setEnabled(True)
@@ -641,29 +641,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.canvas.draw()
 
 
-class KeithleyAddressDialog(QtWidgets.QDialog):
-    """
-    Provides a user dialog to select the modules for the feed.
-    """
-    def __init__(self, keithley):
-        super(self.__class__, self).__init__()
-        # load user interface layout from .ui file
-        uic.loadUi(ADDRESS_UI_PATH, self)
-
-        self.keithley = keithley
-        self.lineEditAddress.setText(self.keithley.visa_address)
-
-        self.buttonBox.accepted.connect(self._onAccept)
-
-    def _onAccept(self):
-        # update connection settings in mercury feed
-        self.keithley.visa_address = self.lineEditAddress.text()
-        CONF.set('Connection', 'KEITHLEY_ADDRESS', self.keithley.visa_address)
-        # reconnect to new IP address
-        self.keithley.disconnect()
-        self.keithley.connect()
-
-
 class MeasureThread(QtCore.QThread):
 
     startedSig = QtCore.Signal()
@@ -713,8 +690,9 @@ def run():
     import sys
     from keithley2600 import Keithley2600
 
-    KEITHLEY_ADDRESS = CONF.get('Connection', 'KEITHLEY_ADDRESS')
-    keithley = Keithley2600(KEITHLEY_ADDRESS)
+    KEITHLEY_ADDRESS = CONF.get('Connection', 'VISA_ADDRESS')
+    VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
+    keithley = Keithley2600(KEITHLEY_ADDRESS, VISA_LIBRARY)
 
     app = QtWidgets.QApplication(sys.argv)
     keithleyGUI = KeithleyGuiApp(keithley)
