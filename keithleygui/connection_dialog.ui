@@ -6,74 +6,113 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
-    <height>119</height>
+    <width>513</width>
+    <height>162</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Keithley address</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Address:</string>
+  <layout class="QGridLayout">
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pushButtonChoose">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose NI-VISA library to use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <property name="text">
+      <string>Choose</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <widget class="QComboBox" name="comboBoxAddress">
      <property name="editable">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="lineEditLibrary">
+   <item row="3" column="0">
+    <widget class="QLabel" name="labelVisaAdress">
      <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Library:</string>
+      <string>Instrument address:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QPushButton" name="pushButtonChoose">
-     <property name="text">
-      <string>Choose</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
+   <item row="3" column="2">
     <widget class="QPushButton" name="pushButtonSearch">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Search for available instruments. Some instruments may not be detected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Search</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelVisaLib">
+     <property name="text">
+      <string>Visa library:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lineEditLibrary">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Manually select the NI-VISA library path or choose a pyvisa-py backend by entering &amp;quot;@py&amp;quot; in the path field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="placeholderText">
+      <string>path to NI-VISA or &quot;@py&quot;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QCheckBox" name="checkBoxAutoVisa">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Automically detect installed NI-VISA library or fall back to pyvisa-py.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Automatically select the visa backend</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>checkBoxAutoVisa</tabstop>
+  <tabstop>lineEditLibrary</tabstop>
+  <tabstop>pushButtonChoose</tabstop>
+  <tabstop>comboBoxAddress</tabstop>
+  <tabstop>pushButtonSearch</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
