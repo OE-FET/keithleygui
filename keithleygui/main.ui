@@ -856,7 +856,7 @@
   </widget>
   <action name="actionSettings">
    <property name="text">
-    <string> Preferences...</string>
+    <string> Connection Settings...</string>
    </property>
   </action>
   <action name="actionConnect">

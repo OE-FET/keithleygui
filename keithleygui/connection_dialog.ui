@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>513</width>
-    <height>162</height>
+    <width>441</width>
+    <height>167</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Keithley address</string>
+   <string>Connection settings</string>
   </property>
   <layout class="QGridLayout">
    <item row="1" column="2">
@@ -94,7 +94,7 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="5" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
