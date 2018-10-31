@@ -89,7 +89,8 @@ class ConnectionDialog(QtWidgets.QDialog):
         # reconnect with new address
         # close and reopen ResourceManager for visa_lib path change to take effect
         # TODO: this needs testing
-        self.instr.disconnect()
+        if self.instr.connected:
+            self.instr.disconnect()
         self.instr.rm.close()
 
         try:
