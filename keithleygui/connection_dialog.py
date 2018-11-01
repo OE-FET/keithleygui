@@ -115,24 +115,28 @@ class ConnectionDialog(QtWidgets.QDialog):
         ni_visa_link = 'https://www.ni.com/visa/'
 
         msg = """
-        <p>If "%s" is selectd, NI-VISA will be automatically detected and used. If NI-VISA is not
-        installed, pyvisa-py we will be used as a fallback. Alternatively, you may manually select
-        the NI-VISA library path or choose a pyvisa-py backend by entering "@py" in the path
+        <p><br/>If "%s" is selectd, NI-VISA will be automatically detected and used. If NI-VISA is
+        not installed, pyvisa-py we will be used as a fallback. Alternatively, you may manually
+        select the NI-VISA library path or choose a pyvisa-py backend by entering "@py" in the path
         field.</p>
 
         <p>All detected visa instruments will be listed, but automatic detection may not work with
         instruments connected via Ethernet or on remote computers.</p>
 
-        <p>You can get NI-VISA from <a href="%s"> %s</a>.</p>
+        <p>You can get NI-VISA here: <a href="%s"> %s</a>.</p>
 
         <p><b>PyVisa detected the following setup:</b></p>
         """ % (self.checkBoxAutoVisa.text(), ni_visa_link, ni_visa_link)
 
         visa_info = pyvisa.util.get_debug_info(to_screen=False)
-        visa_info = '<p style="white-space: pre-wrap;">' + visa_info + '</p>'
+        visa_info = '<p style="white-space: pre-wrap;">' + visa_info + '\n </p>'
+
+        text = ('<body style="margin-right:20px; margin-left:20px;">' +
+                msg + visa_info + '</body>')
 
         self.helpText = QtWidgets.QTextBrowser()
         self.helpText.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.helpText.setHtml(msg + visa_info)
+        self.helpText.setHtml(text)
+        self.helpText.setOpenExternalLinks(True)
         self.helpText.resize(500, 400)
         self.helpText.show()
