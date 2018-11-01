@@ -48,11 +48,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.statusBar.addPermanentWidget(self.led)
         self.led.setChecked(False)
 
-        # change style of status bar
-        self.statusBar.setStyleSheet(
-                'QStatusBar{background:transparent}; ' +
-                'QStatusBar::item {border: 0px solid black };')
-
         self.connect_ui_callbacks()  # connect to callbacks
         self._on_load_default()  # load default settings into GUI
         self.actionSaveSweepData.setEnabled(False)  # disable save menu
