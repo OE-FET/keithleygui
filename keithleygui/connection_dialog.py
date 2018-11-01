@@ -116,7 +116,7 @@ class ConnectionDialog(QtWidgets.QDialog):
 
         msg = """
         <p><br/>If "%s" is selectd, NI-VISA will be automatically detected and used. If NI-VISA is
-        not installed, pyvisa-py we will be used as a fallback. Alternatively, you may manually
+        not installed, pyvisa-py will be used as a fallback. Alternatively, you may manually
         select the NI-VISA library path or choose a pyvisa-py backend by entering "@py" in the path
         field.</p>
 
