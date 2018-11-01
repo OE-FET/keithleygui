@@ -104,7 +104,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.canvas = FigureCanvas(self.fig)
 
-        height = self.frameGeometry().height() * 0.9
+        height = self.frameGeometry().height()
         self.canvas.setMinimumWidth(height)
         self.canvas.draw()
 
@@ -137,7 +137,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.tabWidgetSettings.addTab(self.tabs[i], self.smu_list[i])
 
             self.gridLayouts[i] = QtWidgets.QGridLayout(self.tabs[i])
-            # self.gridLayouts[i].setContentsMargins(0, 0, 0, 0)
             self.gridLayouts[i].setObjectName('gridLayout_%s' % str(i))
 
             self.labelsCbx[i] = QtWidgets.QLabel(self.tabs[i])
