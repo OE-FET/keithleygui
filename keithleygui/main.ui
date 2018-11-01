@@ -6,15 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
-    <height>579</height>
+    <width>1125</width>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Keithley 2600</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,3">
+    <property name="leftMargin">
+     <number>20</number>
+    </property>
+    <property name="topMargin">
+     <number>20</number>
+    </property>
+    <property name="rightMargin">
+     <number>20</number>
+    </property>
+    <property name="bottomMargin">
+     <number>20</number>
+    </property>
     <item>
      <layout class="QGridLayout" name="gridLayout">
       <item row="4" column="0" colspan="2">
@@ -816,7 +828,11 @@
      </spacer>
     </item>
     <item>
-     <layout class="QGridLayout" name="gridLayout2"/>
+     <layout class="QGridLayout" name="gridLayout2">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -831,7 +847,7 @@ QStatusBar::item {border: 0px solid black };</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>995</width>
+     <width>1125</width>
      <height>22</height>
     </rect>
    </property>
