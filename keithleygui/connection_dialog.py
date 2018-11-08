@@ -117,8 +117,8 @@ class ConnectionDialog(QtWidgets.QDialog):
         msg = """
         <p><br/>If "%s" is selectd, NI-VISA will be automatically detected and used. If NI-VISA is
         not installed, pyvisa-py will be used as a fallback. Alternatively, you may manually
-        select the NI-VISA library path or choose a pyvisa-py backend by entering "@py" in the path
-        field.</p>
+        select the NI-VISA library path or select the pyvisa-py backend by entering "@py" in the
+        path field.</p>
 
         <p>All detected visa instruments will be listed, but automatic detection may not work with
         instruments connected via Ethernet or on remote computers.</p>
