@@ -83,8 +83,12 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 # =============================================================================
 
     def restoreGeometry(self):
-        self.move(CONF.get('Window', 'x'), CONF.get('Window', 'y'))
-        self.resize(CONF.get('Window', 'width'), CONF.get('Window', 'height'))
+        x = CONF.get('Window', 'x')
+        y = CONF.get('Window', 'y')
+        w = CONF.get('Window', 'width')
+        h = CONF.get('Window', 'height')
+
+        self.setGeometry(x, y, w, h)
 
     def saveGeometry(self):
         geo = self.geometry()
