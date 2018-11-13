@@ -391,24 +391,24 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         prompt = 'Save as .txt file.'
         filename = 'untitled.txt'
         formats = 'Text file (*.txt)'
-        filepath = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename, formats)
-        if len(filepath[0]) < 4:
+        filepath, *_ = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename, formats)
+        if len(filepath) < 4:
             return
-        self.sweepData.save(filepath[0])
+        self.sweepData.save(filepath)
 
     @QtCore.Slot()
     def _on_load_clicked(self):
         """Show GUI to load sweep data from file."""
         prompt = 'Please select a data file.'
-        filepath = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
-        if not osp.isfile(filepath[0]):
+        filepath, *_ = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
+        if not osp.isfile(filepath):
             return
         try:
             self.sweepData = TransistorSweepData()
-            self.sweepData.load(filepath[0])
+            self.sweepData.load(filepath)
         except RuntimeError:
             self.sweepData = IVSweepData()
-            self.sweepData.load(filepath[0])
+            self.sweepData.load(filepath)
 
         self.plot_new_data()
         self.actionSaveSweepData.setEnabled(True)

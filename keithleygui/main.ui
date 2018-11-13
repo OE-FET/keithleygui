@@ -156,10 +156,16 @@
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="suffix">
-            <string>s</string>
+            <string> s</string>
            </property>
            <property name="decimals">
             <number>1</number>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.100000000000000</double>
            </property>
           </widget>
          </item>
@@ -181,10 +187,19 @@
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
            <property name="suffix">
-            <string>s</string>
+            <string> s</string>
            </property>
            <property name="decimals">
             <number>1</number>
+           </property>
+           <property name="minimum">
+            <double>-1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>-1.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -250,7 +265,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QTabWidget" name="tabWidgetSweeps">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="tab1">
          <attribute name="title">
@@ -261,9 +276,6 @@
            <layout class="QGridLayout" name="gridLayout_4">
             <property name="leftMargin">
              <number>0</number>
-            </property>
-            <property name="horizontalSpacing">
-             <number>-1</number>
             </property>
             <property name="verticalSpacing">
              <number>7</number>
@@ -285,7 +297,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -293,7 +305,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -337,7 +349,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -345,7 +357,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -362,7 +374,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -370,7 +382,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -476,7 +488,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -484,7 +496,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -508,7 +520,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -516,7 +528,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -533,7 +545,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -541,7 +553,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -662,7 +674,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -670,7 +682,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -701,7 +713,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -709,7 +721,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
@@ -733,7 +745,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
+                <width>90</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -741,7 +753,7 @@
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="suffix">
-               <string>V</string>
+               <string> V</string>
               </property>
               <property name="decimals">
                <number>1</number>
