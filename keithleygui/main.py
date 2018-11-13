@@ -42,6 +42,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self._set_up_tabs()  # create Keithley settings tabs
         self._set_up_fig()  # create figure area
 
+        # restore last position and size
+        self.restoreGeometry()
+
         # create LED indicator
         self.led = LedIndicator(self)
         self.led.setDisabled(True)  # Make the led non clickable
@@ -79,6 +82,17 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 # =============================================================================
 # GUI setup
 # =============================================================================
+
+    def restoreGeometry(self):
+        self.move(CONF.get('Window', 'x'), CONF.get('Window', 'y'))
+        self.resize(CONF.get('Window', 'width'), CONF.get('Window', 'height'))
+
+    def saveGeometry(self):
+        geo = self.geometry()
+        CONF.set('Window', 'height', geo.height())
+        CONF.set('Window', 'width', geo.width())
+        CONF.set('Window', 'x', geo.x())
+        CONF.set('Window', 'y', geo.y())
 
     def _set_up_fig(self):
 
@@ -524,6 +538,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def exit_(self):
         self.keithley.disconnect()
         self.timer.stop()
+        self.saveGeometry()
         self.deleteLater()
 
 # =============================================================================
@@ -689,10 +704,12 @@ def run():
     keithley = Keithley2600(KEITHLEY_ADDRESS, VISA_LIBRARY)
 
     app = QtWidgets.QApplication(sys.argv)
+    app.aboutToQuit.connect(app.deleteLater)
+
     keithleyGUI = KeithleyGuiApp(keithley)
     keithleyGUI.show()
 
-    sys.exit(app.exec_())
+    app.exec_()
 
 
 if __name__ == '__main__':
