@@ -20,9 +20,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # local imports
 from keithleygui.utils.led_indicator_widget import LedIndicator
 from keithleygui.utils.scientific_spinbox import ScienDSpinBox
-from keithleygui.config.main import CONF
 from keithleygui.connection_dialog import ConnectionDialog
-
+from keithleygui.config.main import CONF
 
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
