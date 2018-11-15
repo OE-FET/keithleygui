@@ -392,7 +392,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         prompt = 'Save as .txt file.'
         filename = 'untitled.txt'
         formats = 'Text file (*.txt)'
-        filepath, *_ = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename, formats)
+        filepath, _ = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename, formats)
         if len(filepath) < 4:
             return
         self.sweepData.save(filepath)
@@ -401,7 +401,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def _on_load_clicked(self):
         """Show GUI to load sweep data from file."""
         prompt = 'Please select a data file.'
-        filepath, *_ = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
+        filepath, _ = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
         if not osp.isfile(filepath):
             return
         try:
