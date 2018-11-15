@@ -215,7 +215,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if self.keithley.connected and not self.keithley.busy:
             try:
                 self.keithley.localnode.model
-            except (visa.InvalidSession, OSError):
+                self._update_gui_connection()
+            except (visa.VisaIOError, visa.InvalidSession, OSError):
                 self.keithley.disconnect()
                 self._update_gui_connection()
 
