@@ -63,7 +63,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self._check_connection)
+        self.timer.timeout.connect(self._update_gui_connection)
         self.timer.start(10000)  # Call every 10 seconds
 
     def _string_to_Vd(self, string):
@@ -223,27 +223,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionLoadDefaults.triggered.connect(self._on_load_default)
 
 # =============================================================================
-# Keithley status
-# =============================================================================
-
-    @QtCore.Slot()
-    def _check_connection(self):
-        # disconncet if keithley does not respond, test by querying model
-        if self.keithley.connected and not self.keithley.busy:
-            try:
-                self.keithley.localnode.model
-                self._update_gui_connection()
-            except (visa.VisaIOError, visa.InvalidSession, OSError):
-                self.keithley.disconnect()
-                self._update_gui_connection()
-
-    def _check_if_busy(self):
-        if self.keithley.busy:
-            msg = ('Keithley is currently used by antoher program. ' +
-                   'Please try again later.')
-            QtWidgets.QMessageBox.information(self, str('error'), msg)
-
-# =============================================================================
 # Measurement callbacks
 # =============================================================================
 
@@ -272,7 +251,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def _on_sweep_clicked(self):
         """ Start a transfer measurement with current settings."""
-        self._check_if_busy()
+
+        if self.keithley.busy:
+            msg = ('Keithley is currently used by antoher program. ' +
+                   'Please try again later.')
+            QtWidgets.QMessageBox.information(self, str('error'), msg)
+
+            return
+
         self.apply_smu_settings()
 
         if self.sender() == self.pushButtonTransfer:
@@ -318,6 +304,16 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         params['smu_drain'] = getattr(self.keithley, smudrain)  # drain SMU
 
         params['pulsed'] = bool(self.comboBoxSweepType.currentIndex())
+
+        # check if integration time is valid, return otherwise
+        freq = self.localnode.linefreq
+
+        if params['tInt'] > 25.0/freq or params['tInt'] < 0.001/freq:
+            msg = ('Integration time must be between 0.001 and 25 ' +
+                   'power line cycles of 1/(%s Hz).' % freq)
+            QtWidgets.QMessageBox.information(self, str('error'), msg)
+
+            return
 
         # create measurement thread with params dictionary
         self.measureThread = MeasureThread(self.keithley, params)
@@ -552,16 +548,18 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def _update_gui_connection(self):
         """Check if Keithley is connected and update GUI."""
         if self.keithley.connected and not self.keithley.busy:
-            self._gui_state_idle()
-            self.led.setChecked(True)
+            try:
+                self.keithley.localnode.model
+                self._gui_state_idle()
+            except (visa.VisaIOError, visa.InvalidSession, OSError):
+                self.keithley.disconnect()
+                self._gui_state_disconnected()
 
         elif self.keithley.connected and self.keithley.busy:
             self._gui_state_busy()
-            self.led.setChecked(True)
 
         elif not self.keithley.connected:
             self._gui_state_disconnected()
-            self.led.setChecked(False)
 
     def _gui_state_busy(self):
         """Set GUI to state for running measurement."""
@@ -575,6 +573,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionDisconnect.setEnabled(False)
 
         self.statusBar.showMessage('    Measuring.')
+        self.led.setChecked(True)
 
     def _gui_state_idle(self):
         """Set GUI to state for IDLE Keithley."""
@@ -587,6 +586,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionConnect.setEnabled(False)
         self.actionDisconnect.setEnabled(True)
         self.statusBar.showMessage('    Ready.')
+        self.led.setChecked(True)
 
     def _gui_state_disconnected(self):
         """Set GUI to state for disconnected Keithley."""
@@ -599,6 +599,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionConnect.setEnabled(True)
         self.actionDisconnect.setEnabled(False)
         self.statusBar.showMessage('    No Keithley connected.')
+        self.led.setChecked(False)
 
 # =============================================================================
 # Plotting commands
