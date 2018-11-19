@@ -21,7 +21,7 @@ CONNECTION_UI_PATH = pkgr.resource_filename('keithleygui', 'connection_dialog.ui
 
 class ConnectionDialog(QtWidgets.QDialog):
 
-    def __init__(self, parent=None, instr):
+    def __init__(self, parent, instr):
         super(self.__class__, self).__init__(parent=parent)
         # load user interface layout from .ui file
         uic.loadUi(CONNECTION_UI_PATH, self)

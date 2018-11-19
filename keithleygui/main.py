@@ -58,7 +58,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self._update_gui_connection()
 
         # create connection dialog
-        self.connectionDialog = ConnectionDialog(self.keithley)
+        self.connectionDialog = ConnectionDialog(self, self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
