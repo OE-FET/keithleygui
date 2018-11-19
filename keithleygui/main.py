@@ -44,21 +44,22 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # restore last position and size
         self.restoreGeometry()
 
+        # create connection dialog
+        self.connectionDialog = ConnectionDialog(self, self.keithley)
+
         # create LED indicator
         self.led = LedIndicator(self)
         self.led.setDisabled(True)  # Make the led non clickable
         self.statusBar.addPermanentWidget(self.led)
         self.led.setChecked(False)
 
+        # prepare GUI
         self.connect_ui_callbacks()  # connect to callbacks
         self._on_load_default()  # load default settings into GUI
         self.actionSaveSweepData.setEnabled(False)  # disable save menu
 
         # update when keithley is connected
         self._update_gui_connection()
-
-        # create connection dialog
-        self.connectionDialog = ConnectionDialog(self, self.keithley)
 
         # connection update timer: check periodically if keithley is connected
         # and busy, act accordingly
@@ -213,7 +214,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.comboBoxGateSMU.currentIndexChanged.connect(self._on_smu_gate_changed)
         self.comboBoxDrainSMU.currentIndexChanged.connect(self._on_smu_drain_changed)
 
-        self.actionSettings.triggered.connect(self._on_settings_clicked)
+        self.actionSettings.triggered.connect(self.connectionDialog.open)
         self.actionConnect.triggered.connect(self._on_connect_clicked)
         self.actionDisconnect.triggered.connect(self._on_disconnect_clicked)
         self.action_Exit.triggered.connect(self.exit_)
@@ -377,10 +378,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.keithley.disconnect()
         self._update_gui_connection()
         self.statusBar.showMessage('    No Keithley connected.')
-
-    @QtCore.Slot()
-    def _on_settings_clicked(self):
-        self.connectionDialog.open()
 
     @QtCore.Slot()
     def _on_save_clicked(self):
