@@ -886,7 +886,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
                 fractional_str = helper_str[3 * prefix_index:3 * prefix_index + self.__decimals]
 
         # Create the actual string representation of value scaled in a scientific way
-        space = '' if si_prefix.startswith('e') else ' '
+        space = '' if si_prefix.startswith('e') else ' '
         if self.__decimals > 0:
             string = '{0}{1}.{2}{3}{4}'.format(sign, integer_str, fractional_str, space, si_prefix)
         else:
