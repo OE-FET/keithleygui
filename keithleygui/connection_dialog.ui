@@ -2,8 +2,19 @@
 <ui version="4.0">
  <class>LibraryDialog</class>
  <widget class="QDialog" name="LibraryDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>492</width>
+    <height>176</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Connection Settings</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout">
    <property name="verticalSpacing">
