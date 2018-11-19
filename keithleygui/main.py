@@ -380,7 +380,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     @QtCore.Slot()
     def _on_settings_clicked(self):
-        self.connectionDialog.show()
+        self.connectionDialog.open()
 
     @QtCore.Slot()
     def _on_save_clicked(self):
