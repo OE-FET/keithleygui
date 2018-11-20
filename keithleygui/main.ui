@@ -890,23 +890,40 @@ QStatusBar::item {border: 0px solid black };</string>
      <string>Edit</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionMinimize"/>
+    <addaction name="actionZoom"/>
+   </widget>
    <addaction name="menu_Keithley_2600"/>
    <addaction name="menu_File"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuWindow"/>
   </widget>
   <action name="actionSettings">
    <property name="text">
-    <string> Connection Settings...</string>
+    <string>Connection Settings...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionConnect">
    <property name="text">
-    <string> Connect</string>
+    <string>Connect</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionDisconnect">
    <property name="text">
-    <string> Disconnect</string>
+    <string>Disconnect</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionExit">
@@ -921,7 +938,10 @@ QStatusBar::item {border: 0px solid black };</string>
   </action>
   <action name="action_Exit">
    <property name="text">
-    <string> &amp;Quit Keithley 2600</string>
+    <string>&amp;Quit Keithley 2600</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionTb1">
@@ -936,12 +956,34 @@ QStatusBar::item {border: 0px solid black };</string>
   </action>
   <action name="actionLoadDefaults">
    <property name="text">
-    <string> Revert to Default Settings</string>
+    <string>Revert to Default Settings</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionSaveDefaults">
    <property name="text">
-    <string> Save Settings as Default</string>
+    <string>Save Settings as Default</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionMinimize">
+   <property name="text">
+    <string>Minimize</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionZoom">
+   <property name="text">
+    <string>Zoom</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+Ctrl+Z</string>
    </property>
   </action>
  </widget>
@@ -978,5 +1020,38 @@ QStatusBar::item {border: 0px solid black };</string>
   <tabstop>tabWidgetSettings</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionMinimize</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMinimized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>328</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionZoom</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>showMaximized()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>328</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
