@@ -307,7 +307,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         params['pulsed'] = bool(self.comboBoxSweepType.currentIndex())
 
         # check if integration time is valid, return otherwise
-        freq = self.localnode.linefreq
+        freq = self.keithley.localnode.linefreq
 
         if params['tInt'] > 25.0/freq or params['tInt'] < 0.001/freq:
             msg = ('Integration time must be between 0.001 and 25 ' +

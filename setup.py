@@ -18,7 +18,7 @@ setup(
             'keithleygui=keithleygui.main:run'
         ],
         'gui_scripts': [
-            'keithleygui=keithleygui.main:run'
+            'keithleygui_gui=keithleygui.main:run'
         ]
     },
     install_requires=[
