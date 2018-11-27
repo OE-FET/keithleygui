@@ -699,7 +699,18 @@ class MeasureThread(QtCore.QThread):
 def run():
 
     import sys
+    import argparse
     from keithley2600 import Keithley2600
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--verbose", help="increase output verbosity",
+                        action="store_true")
+    args = parser.parse_args()
+    if args.verbose:
+        import logging
+        logger = logging.getLogger('keithley2600')
+        logger.addHandler(logging.StreamHandler())
+        logger.setLevel(logging.DEBUG)
 
     KEITHLEY_ADDRESS = CONF.get('Connection', 'VISA_ADDRESS')
     VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
@@ -710,7 +721,6 @@ def run():
 
     keithleyGUI = KeithleyGuiApp(keithley)
     keithleyGUI.show()
-
     app.exec_()
 
 
