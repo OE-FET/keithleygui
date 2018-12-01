@@ -100,14 +100,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     def _set_up_fig(self):
 
-        # get figure frame to match window color, may differ between operating
-        # systems, installs, etc.
-        color = QtGui.QPalette().window().color().getRgb()
-        color = [x/255 for x in color]
-
         # set up figure itself
         with mpl.style.context(['default', MPL_STYLE_PATH]):
-            self.fig = Figure(facecolor=color)
+            self.fig = Figure(facecolor="None")
             self.fig.set_tight_layout('tight')
             self.ax = self.fig.add_subplot(111)
 
@@ -121,6 +116,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
                             color=[0.5, 0.5, 0.5, 1], labelsize=9)
 
         self.canvas = FigureCanvas(self.fig)
+        self.canvas.setStyleSheet("background-color:transparent;")
 
         height = self.frameGeometry().height()
         self.canvas.setMinimumWidth(height)
