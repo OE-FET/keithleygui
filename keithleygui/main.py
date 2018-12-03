@@ -10,7 +10,7 @@ from __future__ import division, print_function, absolute_import
 import os.path as osp
 import pkg_resources as pkgr
 import visa
-from qtpy import QtGui, QtCore, QtWidgets, uic
+from qtpy import QtCore, QtWidgets, uic
 from matplotlib.figure import Figure
 from keithley2600 import TransistorSweepData, IVSweepData
 import matplotlib as mpl
@@ -303,7 +303,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         params['pulsed'] = bool(self.comboBoxSweepType.currentIndex())
 
         # check if integration time is valid, return otherwise
-        freq = self.localnode.linefreq
+        freq = self.keithley.localnode.linefreq
 
         if params['tInt'] > 25.0/freq or params['tInt'] < 0.001/freq:
             msg = ('Integration time must be between 0.001 and 25 ' +
