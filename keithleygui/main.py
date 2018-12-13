@@ -707,10 +707,8 @@ def run():
                         action="store_true")
     args = parser.parse_args()
     if args.verbose:
-        import logging
-        logger = logging.getLogger('keithley2600')
-        logger.addHandler(logging.StreamHandler())
-        logger.setLevel(logging.DEBUG)
+        import keithley2600
+        keithley2600.log_to_screen()
 
     KEITHLEY_ADDRESS = CONF.get('Connection', 'VISA_ADDRESS')
     VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
