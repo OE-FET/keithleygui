@@ -221,7 +221,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
     }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(self.__class__, self).__init__(*args, **kwargs)
         self.__value = D(0)
         self.__minimum = -np.inf
         self.__maximum = np.inf
@@ -626,7 +626,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
             self.update_display()
 
         if (QtCore.Qt.ControlModifier | QtCore.Qt.MetaModifier) & event.modifiers():
-            super().keyPressEvent(event)
+            super(self.__class__, self).keyPressEvent(event)
             return
 
         # The rest is to avoid editing suffix and prefix
@@ -664,23 +664,23 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
             self.lineEdit().setCursorPosition(len(self.text()) - len(self.__suffix))
             return
 
-        super().keyPressEvent(event)
+        super(self.__class__, self).keyPressEvent(event)
 
     def focusInEvent(self, event):
-        super().focusInEvent(event)
+        super(self.__class__, self).focusInEvent(event)
         self.selectAll()
         return
 
     def focusOutEvent(self, event):
+        super(self.__class__, self).focusOutEvent(event)
         self.update_display()
-        super().focusOutEvent(event)
         return
 
     def paintEvent(self, ev):
         """
         Add drawing of a red frame around the spinbox if the is_valid flag is False
         """
-        super().paintEvent(ev)
+        super(self.__class__, self).paintEvent(ev)
 
         # draw red frame if is_valid = False
         if not self.is_valid:
@@ -983,7 +983,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
     }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(self.__class__, self).__init__(*args, **kwargs)
         self.__value = 0
         self.__minimum = -2 ** 63  # Use a 64bit integer size by default.
         self.__maximum = 2 ** 63 - 1  # Use a 64bit integer size by default.
@@ -1251,7 +1251,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
             self.update_display()
 
         if (QtCore.Qt.ControlModifier | QtCore.Qt.MetaModifier) & event.modifiers():
-            super().keyPressEvent(event)
+            super(self.__class__, self).keyPressEvent(event)
             return
 
         # The rest is to avoid editing suffix and prefix
@@ -1291,16 +1291,16 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
             self.lineEdit().setCursorPosition(len(self.text()) - len(self.__suffix))
             return
 
-        super().keyPressEvent(event)
+        super(self.__class__, self).keyPressEvent(event)
 
     def focusInEvent(self, event):
-        super().focusInEvent(event)
+        super(self.__class__, self).focusInEvent(event)
         self.selectAll()
         return
 
     def focusOutEvent(self, event):
+        super(self.__class__, self).focusOutEvent(event)
         self.update_display()
-        super().focusOutEvent(event)
         return
 
     def validate(self, text, position):
