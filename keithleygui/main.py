@@ -668,7 +668,8 @@ class MeasureThread(QtCore.QThread):
             self.keithley.reset()
 
             sweep_data = IVSweepData(v_sweep, i_sweep)
-            sweep_data.params = self.params
+            sweep_data.params = {'sweep_type': 'iv', 't_int': self.params['tInt'],
+                                 'delay': self.params['delay'], 'pulsed': self.params['pulsed']}
 
         self.finishedSig.emit(sweep_data)
 
