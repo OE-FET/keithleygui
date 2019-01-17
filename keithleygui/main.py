@@ -621,8 +621,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.ax.set_title('IV sweep data')
             lines = self.ax.plot(xdata, ydata)
 
-        self.ax.legend(lines, self.sweep_data.names[1:])
-        self.ax.set_xlabel('%s [%s]' % (self.sweep_data.names[0], self.sweep_data.units[0]))
+        self.ax.legend(lines, self.sweep_data.column_names[1:])
+        self.ax.set_xlabel(str(self.sweep_data.titles[0]))
         self.ax.set_ylabel('Current [A]')
         self.ax.autoscale(axis='x', tight=True)
         self.canvas.draw()
