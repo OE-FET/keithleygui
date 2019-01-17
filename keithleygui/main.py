@@ -35,14 +35,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         uic.loadUi(MAIN_UI_PATH, self)
 
         self.keithley = keithley
-        # create new list of smu's instead of referenceto old list
+        # create new list of smu's instead of reference to old list
         self.smu_list = list(self.keithley.SMU_LIST)
 
         self._set_up_tabs()  # create Keithley settings tabs
         self._set_up_fig()  # create figure area
 
         # restore last position and size
-        self.restoreGeometry()
+        self.restore_geometry()
 
         # create connection dialog
         self.connectionDialog = ConnectionDialog(self, self.keithley)
@@ -67,7 +67,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self._update_gui_connection)
         self.timer.start(10000)  # Call every 10 seconds
 
-    def _string_to_Vd(self, string):
+    @staticmethod
+    def _string_to_vd(string):
         try:
             return float(string)
         except ValueError:
@@ -83,7 +84,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 # GUI setup
 # =============================================================================
 
-    def restoreGeometry(self):
+    def restore_geometry(self):
         x = CONF.get('Window', 'x')
         y = CONF.get('Window', 'y')
         w = CONF.get('Window', 'width')
@@ -91,7 +92,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.setGeometry(x, y, w, h)
 
-    def saveGeometry(self):
+    def save_geometry(self):
         geo = self.geometry()
         CONF.set('Window', 'height', geo.height())
         CONF.set('Window', 'width', geo.width())
@@ -110,8 +111,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.ax.set_xlabel('Voltage [V]', fontsize=9)
         self.ax.set_ylabel('Current [A]', fontsize=9)
 
-        # This needs to be done programatically: it is impossible to specify
-        # different labelcolors and tickcolors in a .mplstyle file
+        # This needs to be done programmatically: it is impossible to specify
+        # different label colors and tick colors in a .mplstyle file
         self.ax.tick_params(axis='both', which='major', direction='out', labelcolor='black',
                             color=[0.5, 0.5, 0.5, 1], labelsize=9)
 
@@ -144,7 +145,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.labelsUnitV = [None]*self.ntabs
 
         # create a tab with combobox and scienDSpinBoxs for each SMU
-        # the tab number i corresonds to the SMU number
+        # the tab number i corresponds to the SMU number
         for i in range(0, self.ntabs):
             self.tabs[i] = QtWidgets.QWidget()
             self.tabs[i].setObjectName('tab_%s' % str(i))
@@ -201,7 +202,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.gridLayouts[i].addWidget(self.scienDSpinBoxsLimV[i], 2, 1, 1, 1)
 
     def connect_ui_callbacks(self):
-        """Connect buttons and menues to callbacks."""
+        """Connect buttons and menus to callbacks."""
         self.pushButtonTransfer.clicked.connect(self._on_sweep_clicked)
         self.pushButtonOutput.clicked.connect(self._on_sweep_clicked)
         self.pushButtonIV.clicked.connect(self._on_sweep_clicked)
@@ -261,29 +262,29 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if self.sender() == self.pushButtonTransfer:
             self.statusBar.showMessage('    Recording transfer curve.')
             # get sweep settings
-            params = {'Measurement': 'transfer'}
+            params = {'sweep_type': 'transfer'}
             params['VgStart'] = self.scienDSpinBoxVgStart.value()
             params['VgStop'] = self.scienDSpinBoxVgStop.value()
             params['VgStep'] = self.scienDSpinBoxVgStep.value()
-            VdListString = self.lineEditVdList.text()
-            VdStringList = VdListString.split(',')
-            params['VdList'] = [self._string_to_Vd(x) for x in VdStringList]
+            vd_list_string = self.lineEditVdList.text()
+            vd_string_list = vd_list_string.split(',')
+            params['VdList'] = [self._string_to_vd(x) for x in vd_string_list]
 
         elif self.sender() == self.pushButtonOutput:
             self.statusBar.showMessage('    Recording output curve.')
             # get sweep settings
-            params = {'Measurement': 'output'}
+            params = {'sweep_type': 'output'}
             params['VdStart'] = self.scienDSpinBoxVdStart.value()
             params['VdStop'] = self.scienDSpinBoxVdStop.value()
             params['VdStep'] = self.scienDSpinBoxVdStep.value()
-            VgListString = self.lineEditVgList.text()
-            VgStringList = VgListString.split(',')
-            params['VgList'] = [float(x) for x in VgStringList]
+            vg_list_string = self.lineEditVgList.text()
+            vg_string_list = vg_list_string.split(',')
+            params['VgList'] = [float(x) for x in vg_string_list]
 
         elif self.sender() == self.pushButtonIV:
             self.statusBar.showMessage('    Recording IV curve.')
             # get sweep settings
-            params = {'Measurement': 'iv'}
+            params = {'sweep_type': 'iv'}
             params['VStart'] = self.scienDSpinBoxVStart.value()
             params['VStop'] = self.scienDSpinBoxVStop.value()
             params['VStep'] = self.scienDSpinBoxVStep.value()
@@ -291,7 +292,10 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             smusweep = self.comboBoxSweepSMU.currentText()
             params['smu_sweep'] = getattr(self.keithley, smusweep)
 
-        # get aquisition settings
+        else:
+            return
+
+        # get acquisition settings
         params['tInt'] = self.scienDSpinBoxInt.value()  # integration time
         params['delay'] = self.scienDSpinBoxSettling.value()  # stabilization
 
@@ -325,7 +329,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self._gui_state_idle()
         self.actionSaveSweepData.setEnabled(True)
 
-        self.sweepData = sd
+        self.sweep_data = sd
         self.plot_new_data()
         if not self.keithley.abort_event.is_set():
             self._on_save_clicked()
@@ -342,21 +346,21 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 # =============================================================================
 
     @QtCore.Slot(int)
-    def _on_smu_gate_changed(self, intSMU):
+    def _on_smu_gate_changed(self, int_smu):
         """ Triggered when the user selects a different gate SMU. """
 
-        if intSMU == 0 and len(self.smu_list) < 3:
+        if int_smu == 0 and len(self.smu_list) < 3:
             self.comboBoxDrainSMU.setCurrentIndex(1)
-        elif intSMU == 1 and len(self.smu_list) < 3:
+        elif int_smu == 1 and len(self.smu_list) < 3:
             self.comboBoxDrainSMU.setCurrentIndex(0)
 
     @QtCore.Slot(int)
-    def _on_smu_drain_changed(self, intSMU):
+    def _on_smu_drain_changed(self, int_smu):
         """ Triggered when the user selects a different drain SMU. """
 
-        if intSMU == 0 and len(self.smu_list) < 3:
+        if int_smu == 0 and len(self.smu_list) < 3:
             self.comboBoxGateSMU.setCurrentIndex(1)
-        elif intSMU == 1 and len(self.smu_list) < 3:
+        elif int_smu == 1 and len(self.smu_list) < 3:
             self.comboBoxGateSMU.setCurrentIndex(0)
 
     @QtCore.Slot()
@@ -384,7 +388,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         filepath, _ = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename, formats)
         if len(filepath) < 4:
             return
-        self.sweepData.save(filepath)
+        self.sweep_data.save(filepath)
 
     @QtCore.Slot()
     def _on_load_clicked(self):
@@ -393,14 +397,12 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(self, prompt)
         if not osp.isfile(filepath):
             return
-        try:
-            self.sweepData = TransistorSweepData()
-            self.sweepData.load(filepath)
-        except RuntimeError:
-            self.sweepData = IVSweepData()
-            self.sweepData.load(filepath)
 
-        self.plot_new_data()
+        self.sweep_data = TransistorSweepData()
+        self.sweep_data.load(filepath)
+
+        with mpl.style.context(['default', MPL_STYLE_PATH]):
+            self.plot_new_data()
         self.actionSaveSweepData.setEnabled(True)
 
     @QtCore.Slot()
@@ -413,7 +415,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         CONF.set('Sweep', 'VgStep', self.scienDSpinBoxVgStep.value())
 
         vdlist_str = self.lineEditVdList.text().split(',')
-        vd_list = [self._string_to_Vd(x) for x in vdlist_str]
+        vd_list = [self._string_to_vd(x) for x in vdlist_str]
         CONF.set('Sweep', 'VdList', vd_list)
 
         # save output settings
@@ -531,7 +533,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def exit_(self):
         self.keithley.disconnect()
         self.timer.stop()
-        self.saveGeometry()
+        self.save_geometry()
         self.deleteLater()
 
 # =============================================================================
@@ -542,7 +544,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """Check if Keithley is connected and update GUI."""
         if self.keithley.connected and not self.keithley.busy:
             try:
-                self.keithley.localnode.model
+                test = self.keithley.localnode.model
                 self._gui_state_idle()
             except (visa.VisaIOError, visa.InvalidSession, OSError):
                 self.keithley.disconnect()
@@ -600,52 +602,30 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     def plot_new_data(self):
         """
-        Plots the transfer or output curves.
+        Plots the sweep data curves.
         """
         self.ax.clear()  # clear current plot
 
-        if self.sweepData.sweepType == 'transfer':
-            for v in self.sweepData.step_list():
-                self.ax.semilogy(self.sweepData.vSweep[v], abs(self.sweepData.iDrain[v]), '-',
-                                 label='Drain current, Vd = %s' % v)
-                self.ax.semilogy(self.sweepData.vSweep[v], abs(self.sweepData.iGate[v]), '--',
-                                 label='Gate current, Vd = %s' % v)
-                self.ax.legend(loc=3)
+        xdata = self.sweep_data.get_column(0)
+        ydata = self.sweep_data.data[:, 1:]
 
-            self.ax.autoscale(axis='x', tight=True)
+        if self.sweep_data.sweep_type == 'transfer':
             self.ax.set_title('Transfer data')
-            self.ax.set_xlabel('Gate voltage [V]')
-            self.ax.set_ylabel('Current [A]')
+            lines = self.ax.semilogy(xdata, np.abs(ydata))
 
-            self.canvas.draw()
-
-        elif self.sweepData.sweepType == 'output':
-            for v in self.sweepData.step_list():
-                self.ax.plot(self.sweepData.vSweep[v],
-                             abs(self.sweepData.iDrain[v]),
-                             '-', label='Drain current, Vg = %s' % v)
-                self.ax.plot(self.sweepData.vSweep[v],
-                             abs(self.sweepData.iGate[v]),
-                             '--', label='Gate current, Vg = %s' % v)
-                self.ax.legend()
-
-            self.ax.autoscale(axis='x', tight=True)
+        elif self.sweep_data.sweep_type == 'output':
             self.ax.set_title('Output data')
-            self.ax.set_xlabel('Drain voltage [V]')
-            self.ax.set_ylabel('Current [A]')
-            self.canvas.draw()
+            lines = self.ax.semilogy(xdata, np.abs(ydata))
 
-        elif self.sweepData.sweepType == 'iv':
-
-            self.ax.plot(self.sweepData.v, self.sweepData.i, '-',
-                         label='Current')
-            self.ax.legend()
-
-            self.ax.autoscale(axis='x', tight=True)
+        elif self.sweep_data.sweep_type == 'iv':
             self.ax.set_title('IV sweep data')
-            self.ax.set_xlabel('Voltage [V]')
-            self.ax.set_ylabel('Current [A]')
-            self.canvas.draw()
+            lines = self.ax.plot(xdata, ydata)
+
+        self.ax.legend(lines, self.sweep_data.names[1:])
+        self.ax.set_xlabel('%s [%s]' % (self.sweep_data.names[0], self.sweep_data.units[0]))
+        self.ax.set_ylabel('Current [A]')
+        self.ax.autoscale(axis='x', tight=True)
+        self.canvas.draw()
 
 
 class MeasureThread(QtCore.QThread):
@@ -664,32 +644,33 @@ class MeasureThread(QtCore.QThread):
     def run(self):
         self.startedSig.emit()
 
-        if self.params['Measurement'] == 'transfer':
-            sweepData = self.keithley.transferMeasurement(
+        if self.params['sweep_type'] == 'transfer':
+            sweep_data = self.keithley.transferMeasurement(
                     self.params['smu_gate'], self.params['smu_drain'], self.params['VgStart'],
                     self.params['VgStop'], self.params['VgStep'], self.params['VdList'],
                     self.params['tInt'], self.params['delay'], self.params['pulsed']
                     )
-        elif self.params['Measurement'] == 'output':
-            sweepData = self.keithley.outputMeasurement(
+        elif self.params['sweep_type'] == 'output':
+            sweep_data = self.keithley.outputMeasurement(
                     self.params['smu_gate'], self.params['smu_drain'], self.params['VdStart'],
                     self.params['VdStop'], self.params['VdStep'], self.params['VgList'],
                     self.params['tInt'], self.params['delay'], self.params['pulsed']
                     )
 
-        elif self.params['Measurement'] == 'iv':
+        elif self.params['sweep_type'] == 'iv':
             step = np.sign(self.params['VStop'] - self.params['VStart']) * abs(self.params['VStep'])
             sweeplist = np.arange(self.params['VStart'], self.params['VStop'] + step, step)
-            vSweep, iSweep = self.keithley.voltageSweepSingleSMU(
+            v_sweep, i_sweep = self.keithley.voltageSweepSingleSMU(
                     self.params['smu_sweep'], sweeplist, self.params['tInt'], self.params['delay'],
                     self.params['pulsed']
                     )
 
             self.keithley.reset()
 
-            sweepData = IVSweepData(vSweep, iSweep)
+            sweep_data = IVSweepData(v_sweep, i_sweep)
+            sweep_data.params = self.params
 
-        self.finishedSig.emit(sweepData)
+        self.finishedSig.emit(sweep_data)
 
 
 def run():
@@ -706,15 +687,15 @@ def run():
         import keithley2600
         keithley2600.log_to_screen()
 
-    KEITHLEY_ADDRESS = CONF.get('Connection', 'VISA_ADDRESS')
-    VISA_LIBRARY = CONF.get('Connection', 'VISA_LIBRARY')
-    keithley = Keithley2600(KEITHLEY_ADDRESS, VISA_LIBRARY)
+    keithley_address = CONF.get('Connection', 'VISA_ADDRESS')
+    visa_library = CONF.get('Connection', 'VISA_LIBRARY')
+    keithley = Keithley2600(keithley_address, visa_library)
 
     app = QtWidgets.QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
 
-    keithleyGUI = KeithleyGuiApp(keithley)
-    keithleyGUI.show()
+    keithley_gui = KeithleyGuiApp(keithley)
+    keithley_gui.show()
     app.exec_()
 
 

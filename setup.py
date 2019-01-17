@@ -26,6 +26,7 @@ setup(
         'QtPy',
         'keithley2600',
         'matplotlib',
+        'numpy',
         'repr',
     ],
     zip_safe=False,
