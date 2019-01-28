@@ -27,6 +27,65 @@ MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
 MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
 
 
+class SMUSettingsTab(QtWidgets.QWidget):
+
+    def __init__(self, smu_name):
+        super(self.__class__, self).__init__()
+
+        self.smu_name = smu_name
+        self.setObjectName('tab_%s' % self.smu_name)
+
+        self.gridLayouts = QtWidgets.QGridLayout(self)
+        self.gridLayouts.setObjectName('gridLayout')
+
+        self.labelComboBox = QtWidgets.QLabel(self)
+        self.labelComboBox.setObjectName('labelComboBox')
+        self.labelComboBox.setAlignment(QtCore.Qt.AlignRight)
+        self.labelComboBox.setText('Sense type:')
+        self.gridLayouts.addWidget(self.labelComboBox, 0, 0, 1, 1)
+
+        self.comboBox = QtWidgets.QComboBox(self)
+        self.comboBox.setObjectName('comboBox')
+        self.comboBox.setMinimumWidth(150)
+        self.comboBox.setMaximumWidth(150)
+        self.comboBox.addItems(['local (2-wire)', 'remote (4-wire)'])
+        if CONF.get(self.smu_name, 'sense') is 'SENSE_LOCAL':
+            self.comboBox.setCurrentIndex(0)
+        elif CONF.get(self.smu_name, 'sense') is 'SENSE_REMOTE':
+            self.comboBox.setCurrentIndex(1)
+        self.gridLayouts.addWidget(self.comboBox, 0, 1, 1, 2)
+
+        self.labelLimI = QtWidgets.QLabel(self)
+        self.labelLimI.setObjectName('labelLimI')
+        self.labelLimI.setAlignment(QtCore.Qt.AlignRight)
+        self.labelLimI.setText('Current limit:')
+        self.gridLayouts.addWidget(self.labelLimI, 1, 0, 1, 1)
+
+        self.scienceSpinBoxLimI = ScienDSpinBox(self)
+        self.scienceSpinBoxLimI.setObjectName('scienceSpinBoxLimI')
+        self.scienceSpinBoxLimI.setMinimumWidth(90)
+        self.scienceSpinBoxLimI.setMaximumWidth(90)
+        self.scienceSpinBoxLimI.setAlignment(QtCore.Qt.AlignRight)
+        self.scienceSpinBoxLimI.setValue(CONF.get(self.smu_name, 'limiti'))
+        self.scienceSpinBoxLimI.setSuffix("A")
+        self.gridLayouts.addWidget(self.scienceSpinBoxLimI, 1, 1, 1, 1)
+
+        self.labelLimV = QtWidgets.QLabel(self)
+        self.labelLimV.setObjectName('labelLimV')
+        self.labelLimV.setAlignment(QtCore.Qt.AlignRight)
+        self.labelLimV.setText('Voltage limit:')
+        self.gridLayouts.addWidget(self.labelLimV, 2, 0, 1, 1)
+
+        self.scienceSpinBoxLimV = ScienDSpinBox(self)
+        self.scienceSpinBoxLimV.setObjectName('scienceSpinBoxLimV')
+        self.scienceSpinBoxLimV.setMinimumWidth(90)
+        self.scienceSpinBoxLimV.setMaximumWidth(90)
+        self.scienceSpinBoxLimV.setAlignment(QtCore.Qt.AlignRight)
+        self.scienceSpinBoxLimV.setValue(CONF.get(self.smu_name, 'limitv'))
+        self.scienceSpinBoxLimV.setSuffix("V")
+        self.gridLayouts.addWidget(self.scienceSpinBoxLimV, 2, 1, 1, 1)
+
+
 class KeithleyGuiApp(QtWidgets.QMainWindow):
     """ Provides a GUI for transfer and output sweeps on the Keithley 2600."""
     def __init__(self, keithley):
@@ -49,7 +108,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         # create LED indicator
         self.led = LedIndicator(self)
-        self.led.setDisabled(True)  # Make the led non clickable
         self.statusBar.addPermanentWidget(self.led)
         self.led.setChecked(False)
 
@@ -112,7 +170,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.ax.set_ylabel('Current [A]', fontsize=9)
 
         # This needs to be done programmatically: it is impossible to specify
-        # different label colors and tick colors in a .mplstyle file
+        # differing label colors and tick colors in a '.mplstyle' file
         self.ax.tick_params(axis='both', which='major', direction='out', labelcolor='black',
                             color=[0.5, 0.5, 0.5, 1], labelsize=9)
 
@@ -128,78 +186,13 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def _set_up_tabs(self):
         """Create a settings tab for every SMU."""
 
-        # get number of SMUs, create tab and grid tayout lists
+        self.smu_tabs = []
         self.ntabs = len(self.smu_list)
-        self.tabs = [None]*self.ntabs
-        self.gridLayouts = [None]*self.ntabs
 
-        self.labelsCbx = [None]*self.ntabs
-        self.comboBoxes = [None]*self.ntabs
-
-        self.labelsLimI = [None]*self.ntabs
-        self.scienDSpinBoxsLimI = [None]*self.ntabs
-        self.labelsUnitI = [None]*self.ntabs
-
-        self.labelsLimV = [None]*self.ntabs
-        self.scienDSpinBoxsLimV = [None]*self.ntabs
-        self.labelsUnitV = [None]*self.ntabs
-
-        # create a tab with combobox and scienDSpinBoxs for each SMU
-        # the tab number i corresponds to the SMU number
-        for i in range(0, self.ntabs):
-            self.tabs[i] = QtWidgets.QWidget()
-            self.tabs[i].setObjectName('tab_%s' % str(i))
-            self.tabWidgetSettings.addTab(self.tabs[i], self.smu_list[i])
-
-            self.gridLayouts[i] = QtWidgets.QGridLayout(self.tabs[i])
-            self.gridLayouts[i].setObjectName('gridLayout_%s' % str(i))
-
-            self.labelsCbx[i] = QtWidgets.QLabel(self.tabs[i])
-            self.labelsCbx[i].setObjectName('labelsCbx_%s' % str(i))
-            self.labelsCbx[i].setAlignment(QtCore.Qt.AlignRight)
-            self.labelsCbx[i].setText('Sense type:')
-            self.gridLayouts[i].addWidget(self.labelsCbx[i], 0, 0, 1, 1)
-
-            self.comboBoxes[i] = QtWidgets.QComboBox(self.tabs[i])
-            self.comboBoxes[i].setObjectName('comboBox_%s' % str(i))
-            self.comboBoxes[i].setMinimumWidth(150)
-            self.comboBoxes[i].setMaximumWidth(150)
-            self.comboBoxes[i].addItems(['local (2-wire)', 'remote (4-wire)'])
-            if CONF.get(self.smu_list[i], 'sense') is 'SENSE_LOCAL':
-                self.comboBoxes[i].setCurrentIndex(0)
-            elif CONF.get(self.smu_list[i], 'sense') is 'SENSE_REMOTE':
-                self.comboBoxes[i].setCurrentIndex(1)
-            self.gridLayouts[i].addWidget(self.comboBoxes[i], 0, 1, 1, 2)
-
-            self.labelsLimI[i] = QtWidgets.QLabel(self.tabs[i])
-            self.labelsLimI[i].setObjectName('labelLimI_%s' % str(i))
-            self.labelsLimI[i].setAlignment(QtCore.Qt.AlignRight)
-            self.labelsLimI[i].setText('Current limit:')
-            self.gridLayouts[i].addWidget(self.labelsLimI[i], 1, 0, 1, 1)
-
-            self.scienDSpinBoxsLimI[i] = ScienDSpinBox(self.tabs[i])
-            self.scienDSpinBoxsLimI[i].setObjectName('scienDSpinBoxLimI_%s' % str(i))
-            self.scienDSpinBoxsLimI[i].setMinimumWidth(90)
-            self.scienDSpinBoxsLimI[i].setMaximumWidth(90)
-            self.scienDSpinBoxsLimI[i].setAlignment(QtCore.Qt.AlignRight)
-            self.scienDSpinBoxsLimI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
-            self.scienDSpinBoxsLimI[i].setSuffix("A")
-            self.gridLayouts[i].addWidget(self.scienDSpinBoxsLimI[i], 1, 1, 1, 1)
-
-            self.labelsLimV[i] = QtWidgets.QLabel(self.tabs[i])
-            self.labelsLimV[i].setObjectName('labelLimV_%s' % str(i))
-            self.labelsLimV[i].setAlignment(QtCore.Qt.AlignRight)
-            self.labelsLimV[i].setText('Voltage limit:')
-            self.gridLayouts[i].addWidget(self.labelsLimV[i], 2, 0, 1, 1)
-
-            self.scienDSpinBoxsLimV[i] = ScienDSpinBox(self.tabs[i])
-            self.scienDSpinBoxsLimV[i].setObjectName('scienDSpinBoxLimV_%s' % str(i))
-            self.scienDSpinBoxsLimV[i].setMinimumWidth(90)
-            self.scienDSpinBoxsLimV[i].setMaximumWidth(90)
-            self.scienDSpinBoxsLimV[i].setAlignment(QtCore.Qt.AlignRight)
-            self.scienDSpinBoxsLimV[i].setValue(CONF.get(self.smu_list[i], 'limitv'))
-            self.scienDSpinBoxsLimV[i].setSuffix("V")
-            self.gridLayouts[i].addWidget(self.scienDSpinBoxsLimV[i], 2, 1, 1, 1)
+        for smu_name in self.smu_list:
+            tab = SMUSettingsTab(smu_name)
+            self.tabWidgetSettings.addTab(tab, smu_name)
+            self.smu_tabs.append(tab)
 
     def connect_ui_callbacks(self):
         """Connect buttons and menus to callbacks."""
@@ -229,20 +222,20 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         Applies SMU settings to Keithley before a measurement.
         Warning: self.keithley.reset() will reset those settings.
         """
-        for i in range(0, self.ntabs):
+        for tab in self.smu_tabs:
 
-            smu = getattr(self.keithley, self.smu_list[i])
+            smu = getattr(self.keithley, tab.smu_name)
 
-            if self.comboBoxes[i].currentIndex() == 0:
+            if tab.comboBox.currentIndex() == 0:
                 smu.sense = smu.SENSE_LOCAL
-            elif self.comboBoxes[i].currentIndex() == 1:
+            elif tab.comboBox.currentIndex() == 1:
                 smu.sense = smu.SENSE_REMOTE
 
-            lim_i = self.scienDSpinBoxsLimI[i].value()
+            lim_i = tab.comboBox.scienceSpinBoxLimI.value()
             smu.source.limiti = lim_i
             smu.trigger.source.limiti = lim_i
 
-            lim_v = self.scienDSpinBoxsLimV[i].value()
+            lim_v = tab.comboBox.scienceSpinBoxLimV.value()
             smu.source.limitv = lim_v
             smu.trigger.source.limitv = lim_v
 
@@ -251,7 +244,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """ Start a transfer measurement with current settings."""
 
         if self.keithley.busy:
-            msg = ('Keithley is currently used by antoher program. ' +
+            msg = ('Keithley is currently used by another program. ' +
                    'Please try again later.')
             QtWidgets.QMessageBox.information(self, str('error'), msg)
 
@@ -259,10 +252,12 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         self.apply_smu_settings()
 
+        params = dict()
+
         if self.sender() == self.pushButtonTransfer:
             self.statusBar.showMessage('    Recording transfer curve.')
             # get sweep settings
-            params = {'sweep_type': 'transfer'}
+            params['sweep_type'] = 'transfer'
             params['VgStart'] = self.scienDSpinBoxVgStart.value()
             params['VgStop'] = self.scienDSpinBoxVgStop.value()
             params['VgStep'] = self.scienDSpinBoxVgStep.value()
@@ -273,7 +268,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         elif self.sender() == self.pushButtonOutput:
             self.statusBar.showMessage('    Recording output curve.')
             # get sweep settings
-            params = {'sweep_type': 'output'}
+            params['sweep_type'] = 'output'
             params['VdStart'] = self.scienDSpinBoxVdStart.value()
             params['VdStop'] = self.scienDSpinBoxVdStop.value()
             params['VdStep'] = self.scienDSpinBoxVdStep.value()
@@ -284,11 +279,10 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         elif self.sender() == self.pushButtonIV:
             self.statusBar.showMessage('    Recording IV curve.')
             # get sweep settings
-            params = {'sweep_type': 'iv'}
+            params['sweep_type'] = 'iv'
             params['VStart'] = self.scienDSpinBoxVStart.value()
             params['VStop'] = self.scienDSpinBoxVStop.value()
             params['VStep'] = self.scienDSpinBoxVStep.value()
-
             smusweep = self.comboBoxSweepSMU.currentText()
             params['smu_sweep'] = getattr(self.keithley, smusweep)
 
@@ -445,15 +439,15 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         CONF.set('Sweep', 'gate', self.comboBoxGateSMU.currentText())
         CONF.set('Sweep', 'drain', self.comboBoxDrainSMU.currentText())
 
-        for i in range(0, self.ntabs):
+        for tab in self.smu_tabs:
 
-            if self.comboBoxes[i].currentIndex() == 0:
-                CONF.set(self.smu_list[i], 'sense', 'SENSE_LOCAL')
-            elif self.comboBoxes[i].currentIndex() == 1:
-                CONF.set(self.smu_list[i], 'sense', 'SENSE_REMOTE')
+            if tab.comboBox.currentIndex() == 0:
+                CONF.set(tab.smu_name, 'sense', 'SENSE_LOCAL')
+            elif tab.comboBox.currentIndex() == 1:
+                CONF.set(tab.smu_name, 'sense', 'SENSE_REMOTE')
 
-            CONF.set(self.smu_list[i], 'limiti', self.scienDSpinBoxsLimI[i].value())
-            CONF.set(self.smu_list[i], 'limitv', self.scienDSpinBoxsLimV[i].value())
+            CONF.set(tab.smu_name, 'limiti', tab.scienceSpinBoxLimI.value())
+            CONF.set(tab.smu_name, 'limitv', tab.scienceSpinBoxLimV.value())
 
     @QtCore.Slot()
     def _on_load_default(self):
@@ -497,7 +491,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         pulsed = CONF.get('Sweep', 'pulsed')
         self.comboBoxSweepType.setCurrentIndex(int(pulsed))
 
-        # We have to comboBoxes. If there are less SMU's, extend list.
+        # We have two comboBoxes. If there are less SMU's, extend list.
         while len(cmb_list) < 2:
             cmb_list.append('--')
 
@@ -519,15 +513,15 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             msg = 'Could not find last used SMUs in Keithley driver.'
             QtWidgets.QMessageBox.information(self, str('error'), msg)
 
-        for i in range(0, self.ntabs):
-            sense = CONF.get(self.smu_list[i], 'sense')
+        for tab in self.smu_tabs:
+            sense = CONF.get(tab.smu_name, 'sense')
             if sense == 'SENSE_LOCAL':
-                self.comboBoxes[i].setCurrentIndex(0)
+                tab.comboBox.setCurrentIndex(0)
             elif sense == 'SENSE_REMOTE':
-                self.comboBoxes[i].setCurrentIndex(1)
+                tab.comboBox.setCurrentIndex(1)
 
-            self.scienDSpinBoxsLimI[i].setValue(CONF.get(self.smu_list[i], 'limiti'))
-            self.scienDSpinBoxsLimV[i].setValue(CONF.get(self.smu_list[i], 'limitv'))
+            tab.scienceSpinBoxLimI.setValue(CONF.get(tab.smu_name, 'limiti'))
+            tab.scienceSpinBoxLimV.setValue(CONF.get(tab.smu_name, 'limitv'))
 
     @QtCore.Slot()
     def exit_(self):
@@ -617,7 +611,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             self.ax.set_title('Output data')
             lines = self.ax.semilogy(xdata, np.abs(ydata))
 
-        elif self.sweep_data.sweep_type == 'iv':
+        else:
             self.ax.set_title('IV sweep data')
             lines = self.ax.plot(xdata, ydata)
 
@@ -643,6 +637,7 @@ class MeasureThread(QtCore.QThread):
 
     def run(self):
         self.startedSig.emit()
+        sweep_data = None
 
         if self.params['sweep_type'] == 'transfer':
             sweep_data = self.keithley.transferMeasurement(
@@ -701,4 +696,5 @@ def run():
 
 
 if __name__ == '__main__':
+
     run()

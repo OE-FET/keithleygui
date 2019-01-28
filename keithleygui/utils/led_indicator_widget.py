@@ -16,6 +16,7 @@ class LedIndicator(QtWidgets.QAbstractButton):
 
         self.setMinimumSize(12, 12)
         self.setCheckable(True)
+        self.setDisabled(True) # Make the led non clickable
         self._checked = False
 
         # Green

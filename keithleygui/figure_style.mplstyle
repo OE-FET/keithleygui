@@ -16,6 +16,3 @@ axes.linewidth : 0.5
 
 axes.titlesize : 10
 axes.labelsize : 9
-
-font.family: sans-serif
-font.sans-serif: Helvetica
