@@ -609,7 +609,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         elif self.sweep_data.sweep_type == 'output':
             self.ax.set_title('Output data')
-            lines = self.ax.semilogy(xdata, np.abs(ydata))
+            lines = self.ax.plot(xdata, np.abs(ydata))
 
         else:
             self.ax.set_title('IV sweep data')
