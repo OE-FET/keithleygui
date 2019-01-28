@@ -231,11 +231,11 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             elif tab.comboBox.currentIndex() == 1:
                 smu.sense = smu.SENSE_REMOTE
 
-            lim_i = tab.comboBox.scienceSpinBoxLimI.value()
+            lim_i = tab.scienceSpinBoxLimI.value()
             smu.source.limiti = lim_i
             smu.trigger.source.limiti = lim_i
 
-            lim_v = tab.comboBox.scienceSpinBoxLimV.value()
+            lim_v = tab.scienceSpinBoxLimV.value()
             smu.source.limitv = lim_v
             smu.trigger.source.limitv = lim_v
 
