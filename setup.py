@@ -2,13 +2,14 @@ from setuptools import setup, find_packages
 
 setup(
     name='keithleygui',
-    version='0.1.0',
+    version='1.0.1',
     description="",
     author='Sam Schott',
     author_email='ss2151@cam.ac.uk',
     url='https://github.com/oe-fet/keithleygui.git',
     license='MIT',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     package_data={
         'keithleygui': ['*.ui', '*.mplstyle'],
