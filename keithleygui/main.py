@@ -171,8 +171,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         # This needs to be done programmatically: it is impossible to specify
         # differing label colors and tick colors in a '.mplstyle' file
-        self.ax.tick_params(axis='both', which='major', direction='out', labelcolor='black',
-                            color=[0.5, 0.5, 0.5, 1], labelsize=9)
+        self.ax.tick_params(axis='both', which='major', direction='out',
+                            labelcolor='black', color=[0.5, 0.5, 0.5, 1], labelsize=9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setStyleSheet("background-color:transparent;")
@@ -379,7 +379,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         prompt = 'Save as .txt file.'
         filename = 'untitled.txt'
         formats = 'Text file (*.txt)'
-        filepath, _ = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename, formats)
+        filepath, _ = QtWidgets.QFileDialog.getSaveFileName(self, prompt, filename,
+                                                            formats)
         if len(filepath) < 4:
             return
         self.sweep_data.save(filepath)
@@ -641,30 +642,34 @@ class MeasureThread(QtCore.QThread):
 
         if self.params['sweep_type'] == 'transfer':
             sweep_data = self.keithley.transferMeasurement(
-                    self.params['smu_gate'], self.params['smu_drain'], self.params['VgStart'],
-                    self.params['VgStop'], self.params['VgStep'], self.params['VdList'],
-                    self.params['tInt'], self.params['delay'], self.params['pulsed']
+                    self.params['smu_gate'], self.params['smu_drain'],
+                    self.params['VgStart'], self.params['VgStop'], self.params['VgStep'],
+                    self.params['VdList'], self.params['tInt'], self.params['delay'],
+                    self.params['pulsed']
                     )
         elif self.params['sweep_type'] == 'output':
             sweep_data = self.keithley.outputMeasurement(
-                    self.params['smu_gate'], self.params['smu_drain'], self.params['VdStart'],
-                    self.params['VdStop'], self.params['VdStep'], self.params['VgList'],
-                    self.params['tInt'], self.params['delay'], self.params['pulsed']
+                    self.params['smu_gate'], self.params['smu_drain'],
+                    self.params['VdStart'], self.params['VdStop'], self.params['VdStep'],
+                    self.params['VgList'], self.params['tInt'], self.params['delay'],
+                    self.params['pulsed']
                     )
 
         elif self.params['sweep_type'] == 'iv':
-            step = np.sign(self.params['VStop'] - self.params['VStart']) * abs(self.params['VStep'])
-            sweeplist = np.arange(self.params['VStart'], self.params['VStop'] + step, step)
+            direction = np.sign(self.params['VStop'] - self.params['VStart'])
+            stp = direction * abs(self.params['VStep'])
+            sweeplist = np.arange(self.params['VStart'], self.params['VStop'] + stp, stp)
             v_sweep, i_sweep = self.keithley.voltageSweepSingleSMU(
-                    self.params['smu_sweep'], sweeplist, self.params['tInt'], self.params['delay'],
-                    self.params['pulsed']
+                    self.params['smu_sweep'], sweeplist, self.params['tInt'],
+                    self.params['delay'], self.params['pulsed']
                     )
 
             self.keithley.reset()
 
             sweep_data = IVSweepData(v_sweep, i_sweep)
             sweep_data.params = {'sweep_type': 'iv', 't_int': self.params['tInt'],
-                                 'delay': self.params['delay'], 'pulsed': self.params['pulsed']}
+                                 'delay': self.params['delay'],
+                                 'pulsed': self.params['pulsed']}
 
         self.finishedSig.emit(sweep_data)
 

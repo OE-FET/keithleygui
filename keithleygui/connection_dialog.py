@@ -3,7 +3,7 @@
 """
 Created on Wed Oct 31 16:23:13 2018
 
-@author: samschott
+@author: SamSchott
 """
 
 from __future__ import division, print_function, absolute_import
@@ -115,13 +115,13 @@ class ConnectionDialog(QtWidgets.QDialog):
         ni_visa_link = 'https://www.ni.com/visa/'
 
         msg = """
-        <p><br/>If "%s" is selectd, NI-VISA will be automatically detected and used. If NI-VISA is
-        not installed, pyvisa-py will be used as a fallback. Alternatively, you may manually
-        select the NI-VISA library path or select the pyvisa-py backend by entering "@py" in the
-        path field.</p>
+        <p><br/>If "%s" is selected, NI-VISA will be automatically detected and used. If
+        NI-VISA is not installed, pyvisa-py will be used as a fallback. Alternatively, you
+        may manually select the NI-VISA library path or select the pyvisa-py backend by
+        entering "@py" in the path field.</p>
 
-        <p>All detected visa instruments will be listed, but automatic detection may not work with
-        instruments connected via Ethernet or on remote computers.</p>
+        <p>All detected visa instruments will be listed, but automatic detection may not
+        work with instruments connected via Ethernet or on remote computers.</p>
 
         <p>You can get NI-VISA here: <a href="%s"> %s</a>.</p>
 

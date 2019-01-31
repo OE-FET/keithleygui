@@ -27,6 +27,7 @@ setup(
         'keithley2600',
         'matplotlib',
         'numpy',
+        'pyvisa',
         'repr',
     ],
     zip_safe=False,
