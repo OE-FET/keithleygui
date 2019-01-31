@@ -25,7 +25,7 @@ setup(
     install_requires=[
         'setuptools',
         'QtPy',
-        'keithley2600',
+        'keithley2600>=1.0',
         'matplotlib',
         'numpy',
         'pyvisa',
