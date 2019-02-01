@@ -21,7 +21,5 @@ $ pip install git+https://github.com/OE-FET/keithleygui
 ```
 
 ## Acknowledgements
-- Config modules are based on the implementation from
-  [Spyder](https://github.com/spyder-ide).
-- The SpinBox in scientific way are based on the implementation from
-  [Ulm-IQO](https://github.com/Ulm-IQO).
+- Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
+- Scientific spin boxes are taken from [qudi](https://github.com/Ulm-IQO/qudi).
