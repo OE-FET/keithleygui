@@ -1,3 +1,5 @@
+[![PyPi Release](https://img.shields.io/pypi/v/keithleygui.svg?style=flat)](https://img.shields.io/pypi/v/keithleygui.svg?style=flat)
+
 # keithleygui
 A high-level user interface for Keithley 2600 series instruments which allows
 the user to configure, record and save voltage sweeps such as transfer and
