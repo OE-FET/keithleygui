@@ -23,13 +23,13 @@ setup(
         ]
     },
     install_requires=[
-        'setuptools',
-        'QtPy',
         'keithley2600>=1.0',
         'matplotlib',
         'numpy',
         'pyvisa',
+        'qtpy',
         'repr',
+        'setuptools',
     ],
     zip_safe=False,
     keywords='keithleygui',
