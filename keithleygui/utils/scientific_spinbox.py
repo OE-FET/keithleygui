@@ -1,5 +1,5 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
 This file contains a wrapper to display the SpinBox in scientific way
 
@@ -18,6 +18,7 @@ along with Qudi. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from __future__ import division, absolute_import, unicode_literals
+# noinspection PyCompatibility
 from builtins import super
 from qtpy import QtCore, QtGui, QtWidgets
 import numpy as np
@@ -53,9 +54,9 @@ class FloatValidator(QtGui.QValidator):
         3) Intermediate: The user input is not a valid string yet but on the right track. Use this
                          return value to allow the user to type fill-characters needed in order to
                          complete an expression (i.e. the decimal point of a float value).
-        @param string: The current input string (from a QLineEdit for example)
-        @param position: The current position of the text cursor
-        @return: enum QValidator::State: the returned validator state,
+        :param string: The current input string (from a QLineEdit for example)
+        :param position: The current position of the text cursor
+        :return: enum QValidator::State: the returned validator state,
                  str: the input string, int: the cursor position
         """
         # Return intermediate status when empty string is passed or when incomplete "[+-]inf"
@@ -89,8 +90,8 @@ class FloatValidator(QtGui.QValidator):
         The match groups will be put into a dictionary with string descriptors as keys describing
         the role of the specific group (i.e. mantissa, exponent, si-prefix etc.)
 
-        @param string: str, input string to be matched
-        @return: dictionary containing groups as items and descriptors as keys (see: self.group_map)
+        :param string: str, input string to be matched
+        :return: dictionary containing groups as items and descriptors as keys (see: self.group_map)
         """
         match = self.float_re.search(string)
         if not match:
@@ -112,7 +113,7 @@ class FloatValidator(QtGui.QValidator):
 class IntegerValidator(QtGui.QValidator):
     """
     This is a validator for int values represented as strings in scientific notation.
-    Using engeneering notation only positive exponents are allowed
+    Using engineering notation only positive exponents are allowed
     (i.e. "1e9", "2E+8", "14e+3" etc.)
     Also supports non-fractional SI unit prefix like 'M', 'k' etc.
     """
@@ -134,9 +135,9 @@ class IntegerValidator(QtGui.QValidator):
         3) Intermediate: The user input is not a valid string yet but on the right track. Use this
                          return value to allow the user to type fill-characters needed in order to
                          complete an expression (i.e. the decimal point of a float value).
-        @param string: The current input string (from a QLineEdit for example)
-        @param position: The current position of the text cursor
-        @return: enum QValidator::State: the returned validator state,
+        :param string: The current input string (from a QLineEdit for example)
+        :param position: The current position of the text cursor
+        :return: enum QValidator::State: the returned validator state,
                  str: the input string, int: the cursor position
         """
         # Return intermediate status when empty string is passed or cursor is at index 0
@@ -163,8 +164,8 @@ class IntegerValidator(QtGui.QValidator):
         The match groups will be put into a dictionary with string descriptors as keys describing
         the role of the specific group (i.e. mantissa, exponent, si-prefix etc.)
 
-        @param string: str, input string to be matched
-        @return: dictionary containing groups as items and descriptors as keys (see: self.group_map)
+        :param string: str, input string to be matched
+        :return: dictionary containing groups as items and descriptors as keys (see: self.group_map)
         """
         match = self.int_re.search(string)
         if not match:
@@ -244,7 +245,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         This property is a flag indicating if the dynamic (logarithmic) stepping should be used or
         not (fixed steps).
 
-        @return: bool, use dynamic stepping (True) or constant steps (False)
+        :return: bool, use dynamic stepping (True) or constant steps (False)
         """
         return bool(self._dynamic_stepping)
 
@@ -254,7 +255,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         This property is a flag indicating if the dynamic (logarithmic) stepping should be used or
         not (fixed steps).
 
-        @param use_dynamic_stepping: bool, use dynamic stepping (True) or constant steps (False)
+        :param use_dynamic_stepping: bool, use dynamic stepping (True) or constant steps (False)
         """
         use_dynamic_stepping = bool(use_dynamic_stepping)
         self._dynamic_stepping = use_dynamic_stepping
@@ -265,7 +266,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         This property is a flag indicating if the dynamic (invoked from user input) decimal
         precision should be used or not (fixed number of digits).
 
-        @return: bool, use dynamic precision (True) or fixed precision (False)
+        :return: bool, use dynamic precision (True) or fixed precision (False)
         """
         return bool(self._dynamic_precision)
 
@@ -275,7 +276,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         This property is a flag indicating if the dynamic (invoked from user input) decimal
         precision should be used or not (fixed number of digits).
 
-        @param use_dynamic_precision: bool, use dynamic precision (True) or fixed precision (False)
+        :param use_dynamic_precision: bool, use dynamic precision (True) or fixed precision (False)
         """
         use_dynamic_precision = bool(use_dynamic_precision)
         self._dynamic_precision = use_dynamic_precision
@@ -287,7 +288,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         It will return False if there has been an attempt to set NaN as current value.
         Will return True after a valid value has been set.
 
-        @return: bool, current value invalid (False) or current value valid (True)
+        :return: bool, current value invalid (False) or current value valid (True)
         """
         return bool(self._is_valid)
 
@@ -326,7 +327,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Getter method to obtain the current value as float.
 
-        @return: float, the current value of the SpinBox
+        :return: float, the current value of the SpinBox
         """
         return float(self.__value)
 
@@ -378,8 +379,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
     def setProperty(self, prop, val):
         """
         For compatibility with QtDesigner. Somehow the value gets initialized through this method.
-        @param prop:
-        @param val:
+        :param prop:
+        :param val:
         """
         if prop == 'value':
             self.setValue(val)
@@ -392,21 +393,19 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         bounds.
         If outside of bounds the returned value will be clipped to the nearest boundary.
 
-        @param value: float|Decimal, number to be checked
-        @return: (Decimal, bool), the corrected value and a flag indicating if the value has been
+        :param value: float|Decimal, number to be checked
+        :return: (Decimal, bool), the corrected value and a flag indicating if the value has been
                                   changed (False) or not (True)
         """
 
         if value < self.__minimum:
-            new_value = self.__minimum
+            value = D(self.__minimum)
             in_range = False
         elif value > self.__maximum:
-            new_value = self.__maximum
+            value = D(self.__maximum)
             in_range = False
         else:
             in_range = True
-        if not in_range:
-            value = D(new_value)
         return value, in_range
 
     def minimum(self):
@@ -417,7 +416,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Setter method to set the minimum value allowed in the SpinBox.
         Input will be converted to float before being stored.
 
-        @param minimum: float, the minimum value to be set
+        :param minimum: float, the minimum value to be set
         """
         # Ignore NaN values
         if self._check_nan(float(minimum)):
@@ -435,7 +434,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Setter method to set the maximum value allowed in the SpinBox.
         Input will be converted to float before being stored.
 
-        @param maximum: float, the maximum value to be set
+        :param maximum: float, the maximum value to be set
         """
         # Ignore NaN values
         if self._check_nan(float(maximum)):
@@ -450,8 +449,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Convenience method for compliance with Qt SpinBoxes.
         Essentially a wrapper to call both self.setMinimum and self.setMaximum.
 
-        @param minimum: float, the minimum value to be set
-        @param maximum: float, the maximum value to be set
+        :param minimum: float, the minimum value to be set
+        :param maximum: float, the maximum value to be set
         """
         self.setMinimum(minimum)
         self.setMaximum(maximum)
@@ -469,8 +468,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         If dynamic_precision=False the specified number of decimals will be fixed and will not be
         changed except by calling this method.
 
-        @param decimals: int, the number of decimals to be displayed
-        @param dynamic_precision: bool, flag indicating the use of dynamic_precision
+        :param decimals: int, the number of decimals to be displayed
+        :param dynamic_precision: bool, flag indicating the use of dynamic_precision
         """
         decimals = int(decimals)
         # Restrict the number of fractional digits to a maximum of self.__max_decimals = 20.
@@ -490,7 +489,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Set a string to be shown as non-editable prefix in the spinbox.
 
-        @param prefix: str, the prefix string to be set
+        :param prefix: str, the prefix string to be set
         """
         self.__prefix = str(prefix)
         self.update_display()
@@ -503,7 +502,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Set a string to be shown as non-editable suffix in the spinbox.
         This suffix will come right after the si-prefix.
 
-        @param suffix: str, the suffix string to be set
+        :param suffix: str, the suffix string to be set
         """
         self.__suffix = str(suffix)
         self.update_display()
@@ -521,13 +520,13 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         most significant digit by one etc.
 
         When dynamic_stepping=False the step parameter specifies an absolute step size. Meaning each
-        time a step is performed this value is added/substracted from the current value.
+        time a step is performed this value is added/subtracted from the current value.
 
-        For maximum roboustness and consistency it is strongly recommended to pass step as Decimal
+        For maximum robustness and consistency it is strongly recommended to pass step as Decimal
         or string in order to be converted lossless to Decimal.
 
-        @param step: Decimal|str, the (relative) step size to set
-        @param dynamic_stepping: bool, flag indicating the use of dynamic stepping (True) or
+        :param step: Decimal|str, the (relative) step size to set
+        :param dynamic_stepping: bool, flag indicating the use of dynamic stepping (True) or
                                        constant stepping (False)
         """
         try:
@@ -559,10 +558,10 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         smaller than minimalStep.
         Set this value to 0 for no minimal step size.
 
-        For maximum roboustness and consistency it is strongly recommended to pass step as Decimal
+        For maximum robustness and consistency it is strongly recommended to pass step as Decimal
         or string in order to be converted lossless to Decimal.
 
-        @param step: Decimal|str, the minimal step size to be set
+        :param step: Decimal|str, the minimal step size to be set
         """
         try:
             step = D(step)
@@ -585,7 +584,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Returns the currently shown text from the QLineEdit without prefix and suffix and stripped
         from leading or trailing whitespaces.
 
-        @return: str, currently shown text stripped from suffix and prefix
+        :return: str, currently shown text stripped from suffix and prefix
         """
         text = self.text().strip()
         if self.__prefix and text.startswith(self.__prefix):
@@ -611,7 +610,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         This method catches all keyboard press events triggered by the user. Can be used to alter
         the behaviour of certain key events from the default implementation of QAbstractSpinBox.
 
-        @param event: QKeyEvent, a Qt QKeyEvent instance holding the event information
+        :param event: QKeyEvent, a Qt QKeyEvent instance holding the event information
         """
         # Restore cached value upon pressing escape and lose focus.
         if event.key() == QtCore.Qt.Key_Escape:
@@ -631,7 +630,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
 
         # The rest is to avoid editing suffix and prefix
         if len(event.text()) > 0:
-            # Allow editing of the number or SI-prefix even if part of the prefix/suffix is selected.
+            # Allow editing of the number or SI-prefix even if part of the prefix/suffix is selected
             if self.lineEdit().selectedText():
                 sel_start = self.lineEdit().selectionStart()
                 sel_end = sel_start + len(self.lineEdit().selectedText())
@@ -698,9 +697,9 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Access method to the validator. See FloatValidator class for more information.
 
-        @param text: str, string to be validated.
-        @param position: int, current text cursor position
-        @return: (enum QValidator::State) the returned validator state,
+        :param text: str, string to be validated.
+        :param position: int, current text cursor position
+        :return: (enum QValidator::State) the returned validator state,
                  (str) the input string, (int) the cursor position
         """
         begin = len(self.__prefix)
@@ -730,8 +729,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Takes an invalid string and tries to fix it in order to pass validation.
         The returned string is not guaranteed to pass validation.
 
-        @param text: str, a string that has not passed validation in need to be fixed.
-        @return: str, the resulting string from the fix attempt
+        :param text: str, a string that has not passed validation in need to be fixed.
+        :return: str, the resulting string from the fix attempt
         """
         return self.validator.fixup(text)
 
@@ -742,9 +741,9 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         The input string is already stripped of prefix and suffix.
         Just the si-prefix may be present.
 
-        @param text: str, the display string to be converted into a numeric value.
+        :param text: str, the display string to be converted into a numeric value.
                           This string must be conform with the validator.
-        @return: Decimal, the numeric value converted from the input string.
+        :return: Decimal, the numeric value converted from the input string.
         """
         # Check for infinite value
         if 'inf' in text.lower():
@@ -798,8 +797,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         '{:.20f}'.format(value) shows different digits than
         '{:.20f} {}'.format(scaled_value, si_prefix)
 
-        @param value: float|decimal.Decimal, the numeric value to be formatted into a string
-        @return: str, the formatted string representing the input value
+        :param value: float|decimal.Decimal, the numeric value to be formatted into a string
+        :return: str, the formatted string representing the input value
         """
         # Catch infinity value
         if np.isinf(float(value)):
@@ -842,7 +841,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
                     else:
                         fractional_str = '1'
             elif self.__decimals > len(fractional_str):
-                digits_to_add = self.__decimals - len(fractional_str) # number of digits to add
+                digits_to_add = self.__decimals - len(fractional_str)  # number of digits to add
                 fractional_tmp_str = ('{0:.' + str(digits_to_add) + 'f}').format(fractional)
                 if fractional_tmp_str.startswith('1'):
                     if fractional_str:
@@ -908,7 +907,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         It is absolutely necessary to avoid accumulating rounding errors and/or discrepancy between
         self.value and the displayed text.
 
-        @param steps: int, Number of steps to increment (NOT the absolute step size)
+        :param steps: int, Number of steps to increment (NOT the absolute step size)
         """
         # Ignore stepping for infinity values
         if self.__value.is_infinite():
@@ -923,8 +922,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
                     step = self.__minimalStep
                 else:
                     vs = [D(-1), D(1)][value >= 0]
-                    fudge = D('1.01') ** (s * vs)  # fudge factor. At some places, the step size
-                                                   # depends on the step sign.
+                    # fudge factor: at some places, the step size depends on the step sign
+                    fudge = D('1.01') ** (s * vs)
                     exp = abs(value * fudge).log10().quantize(1, rounding=ROUND_FLOOR)
                     step = self.__singleStep * D(10) ** exp
                     if self.__minimalStep > 0:
@@ -952,8 +951,8 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         Helper method to check if the passed float value is NaN.
         Makes use of the fact that NaN values will always compare to false, even with itself.
 
-        @param value: Decimal|float, value to be checked for NaN
-        @return: (bool) is NaN (True), is no NaN (False)
+        :param value: Decimal|float, value to be checked for NaN
+        :return: (bool) is NaN (True), is no NaN (False)
         """
         return not value == value
 
@@ -1003,7 +1002,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         This property is a flag indicating if the dynamic (logarithmic) stepping should be used or
         not (fixed steps).
 
-        @return: bool, use dynamic stepping (True) or constant steps (False)
+        :return: bool, use dynamic stepping (True) or constant steps (False)
         """
         return bool(self._dynamic_stepping)
 
@@ -1013,7 +1012,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         This property is a flag indicating if the dynamic (logarithmic) stepping should be used or
         not (fixed steps).
 
-        @param use_dynamic_stepping: bool, use dynamic stepping (True) or constant steps (False)
+        :param use_dynamic_stepping: bool, use dynamic stepping (True) or constant steps (False)
         """
         use_dynamic_stepping = bool(use_dynamic_stepping)
         self._dynamic_stepping = use_dynamic_stepping
@@ -1045,7 +1044,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Getter method to obtain the current value as int.
 
-        @return: int, the current value of the SpinBox
+        :return: int, the current value of the SpinBox
         """
         return int(self.__value)
 
@@ -1070,8 +1069,8 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
     def setProperty(self, prop, val):
         """
         For compatibility with QtDesigner. Somehow the value gets initialized through this method.
-        @param prop:
-        @param val:
+        :param prop:
+        :param val:
         """
         if prop == 'value':
             self.setValue(val)
@@ -1084,20 +1083,18 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         bounds.
         If outside of bounds the returned value will be clipped to the nearest boundary.
 
-        @param value: int, number to be checked
-        @return: (int, bool), the corrected value and a flag indicating if the value has been
+        :param value: int, number to be checked
+        :return: (int, bool), the corrected value and a flag indicating if the value has been
                               changed (False) or not (True)
         """
         if value < self.__minimum:
-            new_value = self.__minimum
+            value = int(self.__minimum)
             in_range = False
         elif value > self.__maximum:
-            new_value = self.__maximum
+            value = int(self.__maximum)
             in_range = False
         else:
             in_range = True
-        if not in_range:
-            value = int(new_value)
         return value, in_range
 
     def minimum(self):
@@ -1108,7 +1105,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Setter method to set the minimum value allowed in the SpinBox.
         Input will be converted to int before being stored.
 
-        @param minimum: int, the minimum value to be set
+        :param minimum: int, the minimum value to be set
         """
         self.__minimum = int(minimum)
         if self.__minimum > self.value():
@@ -1122,7 +1119,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Setter method to set the maximum value allowed in the SpinBox.
         Input will be converted to int before being stored.
 
-        @param maximum: int, the maximum value to be set
+        :param maximum: int, the maximum value to be set
         """
         self.__maximum = int(maximum)
         if self.__maximum < self.value():
@@ -1133,8 +1130,8 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Convenience method for compliance with Qt SpinBoxes.
         Essentially a wrapper to call both self.setMinimum and self.setMaximum.
 
-        @param minimum: int, the minimum value to be set
-        @param maximum: int, the maximum value to be set
+        :param minimum: int, the minimum value to be set
+        :param maximum: int, the maximum value to be set
         """
         self.setMinimum(minimum)
         self.setMaximum(maximum)
@@ -1146,7 +1143,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Set a string to be shown as non-editable prefix in the spinbox.
 
-        @param prefix: str, the prefix string to be set
+        :param prefix: str, the prefix string to be set
         """
         self.__prefix = str(prefix)
         self.update_display()
@@ -1159,7 +1156,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Set a string to be shown as non-editable suffix in the spinbox.
         This suffix will come right after the si-prefix.
 
-        @param suffix: str, the suffix string to be set
+        :param suffix: str, the suffix string to be set
         """
         self.__suffix = str(suffix)
         self.update_display()
@@ -1176,10 +1173,10 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Will always increment the second most significant digit by one.
 
         When dynamic_stepping=False the step parameter specifies an absolute step size. Meaning each
-        time a step is performed this value is added/substracted from the current value.
+        time a step is performed this value is added/subtracted from the current value.
 
-        @param step: int, the absolute step size to set
-        @param dynamic_stepping: bool, flag indicating the use of dynamic stepping (True) or
+        :param step: int, the absolute step size to set
+        :param dynamic_stepping: bool, flag indicating the use of dynamic stepping (True) or
                                        constant stepping (False)
         """
         if step < 1:
@@ -1199,7 +1196,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         smaller than minimalStep.
         Minimal step size can't be smaller than 1 for integer.
 
-        @param step: int, the minimal step size to be set
+        :param step: int, the minimal step size to be set
         """
         if step < 1:
             step = 1
@@ -1211,7 +1208,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Returns the currently shown text from the QLineEdit without prefix and suffix and stripped
         from leading or trailing whitespaces.
 
-        @return: str, currently shown text stripped from suffix and prefix
+        :return: str, currently shown text stripped from suffix and prefix
         """
         text = self.text().strip()
         if self.__prefix and text.startswith(self.__prefix):
@@ -1237,7 +1234,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         This method catches all keyboard press events triggered by the user. Can be used to alter
         the behaviour of certain key events from the default implementation of QAbstractSpinBox.
 
-        @param event: QKeyEvent, a Qt QKeyEvent instance holding the event information
+        :param event: QKeyEvent, a Qt QKeyEvent instance holding the event information
         """
         # Restore cached value upon pressing escape and lose focus.
         if event.key() == QtCore.Qt.Key_Escape:
@@ -1246,7 +1243,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
                 self.valueChanged.emit(self.value())
             self.clearFocus()  # This will also trigger editingFinished
 
-        # Update display upon pressing enter/return before processing the event in the default way.
+        # Update display upon pressing enter/return before processing the event in the default way
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
             self.update_display()
 
@@ -1256,7 +1253,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
 
         # The rest is to avoid editing suffix and prefix
         if len(event.text()) > 0:
-            # Allow editing of the number or SI-prefix even if part of the prefix/suffix is selected.
+            # Allow editing of the number or SI-prefix even if part of the prefix/suffix is selected
             if self.lineEdit().selectedText():
                 sel_start = self.lineEdit().selectionStart()
                 sel_end = sel_start + len(self.lineEdit().selectedText())
@@ -1307,9 +1304,9 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Access method to the validator. See IntegerValidator class for more information.
 
-        @param text: str, string to be validated.
-        @param position: int, current text cursor position
-        @return: (enum QValidator::State) the returned validator state,
+        :param text: str, string to be validated.
+        :param position: int, current text cursor position
+        :return: (enum QValidator::State) the returned validator state,
                  (str) the input string, (int) the cursor position
         """
         begin = len(self.__prefix)
@@ -1339,8 +1336,8 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         Takes an invalid string and tries to fix it in order to pass validation.
         The returned string is not guaranteed to pass validation.
 
-        @param text: str, a string that has not passed validation in need to be fixed.
-        @return: str, the resulting string from the fix attempt
+        :param text: str, a string that has not passed validation in need to be fixed.
+        :return: str, the resulting string from the fix attempt
         """
         return self.validator.fixup(text)
 
@@ -1351,9 +1348,9 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         The input string is already stripped of prefix and suffix.
         Just the si-prefix may be present.
 
-        @param text: str, the display string to be converted into a numeric value.
+        :param text: str, the display string to be converted into a numeric value.
                           This string must be conform with the validator.
-        @return: int, the numeric value converted from the input string.
+        :return: int, the numeric value converted from the input string.
         """
         group_dict = self.validator.get_group_dict(text)
         if not group_dict:
@@ -1381,8 +1378,8 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         in the SpinBox.
         Suffix and Prefix must not be handled here, just the si-Prefix.
 
-        @param value: int, the numeric value to be formatted into a string
-        @return: str, the formatted string representing the input value
+        :param value: int, the numeric value to be formatted into a string
+        :return: str, the formatted string representing the input value
         """
         # Convert the integer value to a string
         sign = '-' if value < 0 else ''
@@ -1427,7 +1424,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         It is absolutely necessary to avoid accumulating rounding errors and/or discrepancy between
         self.value and the displayed text.
 
-        @param steps: int, Number of steps to increment (NOT the absolute step size)
+        :param steps: int, Number of steps to increment (NOT the absolute step size)
         """
         steps = int(steps)
         value = self.__value  # working copy of current value

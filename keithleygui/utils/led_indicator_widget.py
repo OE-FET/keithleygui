@@ -30,7 +30,7 @@ class LedIndicator(QtWidgets.QAbstractButton):
         self.update()
 
     def paintEvent(self, QPaintEvent):
-        realSize = min(self.width(), self.height())
+        real_size = min(self.width(), self.height())
 
         painter = QtGui.QPainter(self)
         pen = QtGui.QPen(QtCore.Qt.black)
@@ -38,7 +38,7 @@ class LedIndicator(QtWidgets.QAbstractButton):
 
         painter.setRenderHint(QtGui.QPainter.Antialiasing)
         painter.translate(self.width()/2, self.height()/2)
-        painter.scale(realSize/self.scaledSize, realSize/self.scaledSize)
+        painter.scale(real_size/self.scaledSize, real_size/self.scaledSize)
 
         gradient = QtGui.QRadialGradient(QtCore.QPointF(-500, -500), 1500,
                                          QtCore.QPointF(-500, -500))
