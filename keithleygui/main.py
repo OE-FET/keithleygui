@@ -49,9 +49,9 @@ class SMUSettingsTab(QtWidgets.QWidget):
         self.comboBox.setMinimumWidth(150)
         self.comboBox.setMaximumWidth(150)
         self.comboBox.addItems(['local (2-wire)', 'remote (4-wire)'])
-        if CONF.get(self.smu_name, 'sense') is 'SENSE_LOCAL':
+        if CONF.get(self.smu_name, 'sense') == 'SENSE_LOCAL':
             self.comboBox.setCurrentIndex(0)
-        elif CONF.get(self.smu_name, 'sense') is 'SENSE_REMOTE':
+        elif CONF.get(self.smu_name, 'sense') == 'SENSE_REMOTE':
             self.comboBox.setCurrentIndex(1)
         self.gridLayouts.addWidget(self.comboBox, 0, 1, 1, 2)
 
@@ -161,8 +161,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         # set up figure itself
         with mpl.style.context(['default', MPL_STYLE_PATH]):
-            self.fig = Figure(facecolor="None")
-            self.fig.set_tight_layout('tight')
+            self.fig = Figure(facecolor='None', constrained_layout=True)
+            self.fig.set_constrained_layout_pads(w_space=0, h_space=0)
             self.ax = self.fig.add_subplot(111)
 
         self.ax.set_title('Sweep data', fontsize=10)
@@ -172,7 +172,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # This needs to be done programmatically: it is impossible to specify
         # differing label colors and tick colors in a '.mplstyle' file
         self.ax.tick_params(axis='both', which='major', direction='out',
-                            labelcolor='black', color=[0.5, 0.5, 0.5, 1], labelsize=9)
+                            labelcolor='black', color=[0.5, 0.5, 0.5, 1],
+                            labelsize=9)
 
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setStyleSheet("background-color:transparent;")
