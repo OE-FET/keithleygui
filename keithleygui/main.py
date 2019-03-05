@@ -11,20 +11,17 @@ import os.path as osp
 import pkg_resources as pkgr
 import visa
 from qtpy import QtCore, QtWidgets, uic
-from matplotlib.figure import Figure
 from keithley2600 import TransistorSweepData, IVSweepData
-import matplotlib as mpl
 import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # local imports
 from keithleygui.utils.led_indicator_widget import LedIndicator
 from keithleygui.utils.scientific_spinbox import ScienDSpinBox
+from keithleygui.utils.pyqtplot_canvas import SweepDataPlot
 from keithleygui.connection_dialog import ConnectionDialog
 from keithleygui.config.main import CONF
 
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
-MPL_STYLE_PATH = pkgr.resource_filename('keithleygui', 'figure_style.mplstyle')
 
 
 class SMUSettingsTab(QtWidgets.QWidget):
@@ -98,7 +95,10 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.smu_list = list(self.keithley.SMU_LIST)
 
         self._set_up_tabs()  # create Keithley settings tabs
-        self._set_up_fig()  # create figure area
+
+        # create plot widget
+        self.canvas = SweepDataPlot()
+        self.gridLayout2.addWidget(self.canvas)
 
         # restore last position and size
         self.restore_geometry()
@@ -156,33 +156,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         CONF.set('Window', 'width', geo.width())
         CONF.set('Window', 'x', geo.x())
         CONF.set('Window', 'y', geo.y())
-
-    def _set_up_fig(self):
-
-        # set up figure itself
-        with mpl.style.context(['default', MPL_STYLE_PATH]):
-            self.fig = Figure(facecolor='None', constrained_layout=True)
-            self.fig.set_constrained_layout_pads(w_space=0, h_space=0)
-            self.ax = self.fig.add_subplot(111)
-
-        self.ax.set_title('Sweep data', fontsize=10)
-        self.ax.set_xlabel('Voltage [V]', fontsize=9)
-        self.ax.set_ylabel('Current [A]', fontsize=9)
-
-        # This needs to be done programmatically: it is impossible to specify
-        # differing label colors and tick colors in a '.mplstyle' file
-        self.ax.tick_params(axis='both', which='major', direction='out',
-                            labelcolor='black', color=[0.5, 0.5, 0.5, 1],
-                            labelsize=9)
-
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setStyleSheet("background-color:transparent;")
-
-        height = self.frameGeometry().height()
-        self.canvas.setMinimumWidth(height)
-        self.canvas.draw()
-
-        self.gridLayout2.addWidget(self.canvas)
 
     def _set_up_tabs(self):
         """Create a settings tab for every SMU."""
@@ -325,7 +298,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionSaveSweepData.setEnabled(True)
 
         self.sweep_data = sd
-        self.plot_new_data()
+        self.canvas.plot(self.sweep_data)
         if not self.keithley.abort_event.is_set():
             self._on_save_clicked()
 
@@ -397,8 +370,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.sweep_data = TransistorSweepData()
         self.sweep_data.load(filepath)
 
-        with mpl.style.context(['default', MPL_STYLE_PATH]):
-            self.plot_new_data()
+        self.canvas.plot(self.sweep_data)
         self.actionSaveSweepData.setEnabled(True)
 
     @QtCore.Slot()
@@ -591,37 +563,6 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.actionDisconnect.setEnabled(False)
         self.statusBar.showMessage('    No Keithley connected.')
         self.led.setChecked(False)
-
-# =============================================================================
-# Plotting commands
-# =============================================================================
-
-    def plot_new_data(self):
-        """
-        Plots the sweep data curves.
-        """
-        self.ax.clear()  # clear current plot
-
-        xdata = self.sweep_data.get_column(0)
-        ydata = self.sweep_data.data[:, 1:]
-
-        if self.sweep_data.sweep_type == 'transfer':
-            self.ax.set_title('Transfer data')
-            lines = self.ax.semilogy(xdata, np.abs(ydata))
-
-        elif self.sweep_data.sweep_type == 'output':
-            self.ax.set_title('Output data')
-            lines = self.ax.plot(xdata, np.abs(ydata))
-
-        else:
-            self.ax.set_title('IV sweep data')
-            lines = self.ax.plot(xdata, ydata)
-
-        self.ax.legend(lines, self.sweep_data.column_names[1:])
-        self.ax.set_xlabel(str(self.sweep_data.titles[0]))
-        self.ax.set_ylabel('Current [A]')
-        self.ax.autoscale(axis='x', tight=True)
-        self.canvas.draw()
 
 
 class MeasureThread(QtCore.QThread):
