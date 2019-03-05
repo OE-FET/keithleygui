@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
 import itertools
 import pyqtgraph as pg
 from pyqtgraph import (AxisItem, PlotItem, GraphicsView, LegendItem,
@@ -11,7 +10,7 @@ from pyqtgraph import functions as fn
 import numpy as np
 from qtpy import QtWidgets, QtCore
 
-PY2 = sys.version[0] == '2'
+pg.setConfigOptions(antialias=True)
 
 
 class MyAxisItem(AxisItem):
@@ -380,7 +379,7 @@ class SweepDataPlot(GraphicsView):
         # plot data
         self.lines = []
         for y, c in zip(ydata, itertools.cycle(self.COLORS)):
-            p = self.p.plot(xdata, y, antialias=True, pen=fn.mkPen(color=c, width=self.LW))
+            p = self.p.plot(xdata, y, pen=fn.mkPen(color=c, width=self.LW))
             self.lines.append(p)
 
         # add legend
