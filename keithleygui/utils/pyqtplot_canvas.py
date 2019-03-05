@@ -9,9 +9,7 @@ from pyqtgraph.graphicsItems.ScatterPlotItem import drawSymbol
 from pyqtgraph import getConfigOption
 from pyqtgraph import functions as fn
 import numpy as np
-from qtpy import QtGui, QtWidgets, QtCore
-
-from keithley2600 import ResultTable
+from qtpy import QtWidgets, QtCore
 
 PY2 = sys.version[0] == '2'
 
@@ -117,8 +115,23 @@ class MyAxisItem(AxisItem):
 
         p.setPen(pen)
 
+    def _updateMaxTextSize(self, x):
+        # Informs that the maximum tick size orthogonal to the axis has
+        # changed; we use this to decide whether the item needs to be resized
+        # to accomodate.
+        if self.orientation in ['left', 'right']:
+            if x > self.textWidth or x < self.textWidth-10:
+                self.textWidth = x
+                if self.style['autoExpandTextSpace'] is True:
+                    self._updateWidth()
+        else:
+            if x > self.textHeight or x < self.textHeight-10:
+                self.textHeight = x
+                if self.style['autoExpandTextSpace'] is True:
+                    self._updateHeight()
 
-class MyItemSample(GraphicsWidget):
+
+class MySampleItem(GraphicsWidget):
     """ Class responsible for drawing a single item in a LegendItem (sans label).
 
     This may be subclassed to draw custom graphics in a Legend.
@@ -137,17 +150,9 @@ class MyItemSample(GraphicsWidget):
         if opts['antialias']:
             p.setRenderHint(p.Antialiasing)
 
-        if opts.get('fillLevel', None) is not None and opts.get('fillBrush', None) is not None:
-            p.setBrush(fn.mkBrush(opts['fillBrush']))
-            p.setPen(fn.mkPen(None))
-            p.drawPolygon(QtGui.QPolygonF([QtCore.QPointF(-5, 11),
-                                           QtCore.QPointF(5, 11),
-                                           QtCore.QPointF(5, 0),
-                                           QtCore.QPointF(-5, 0)]))
-
         if not isinstance(self.item, ScatterPlotItem):
             p.setPen(fn.mkPen(opts['pen']))
-            p.drawLine(-5, 11, 5, 11)
+            p.drawLine(-7, 11, 7, 11)
 
         symbol = opts.get('symbol', None)
         if symbol is not None:
@@ -169,19 +174,16 @@ class MyLegendItem(LegendItem):
 
         self.layout.setSpacing(0)
         self.layout.setColumnSpacing(0, 10)
-        self.layout.setColumnSpacing(1, 10)
+        self.layout.setContentsMargins(20, 0, 0, 0)
 
         self.opts = {
-            'pen': fn.mkPen(None),
-            'brush': fn.mkBrush(color=(255, 255, 255, 150)),
-            'box': False
+            'pen': fn.mkPen(pen),
+            'brush': brush,
+            'labelTextColor': None,
+            'box': False,
         }
 
-        for name, value in kwargs.items():
-            if name in self.opts.keys():
-                self.opts[name] = value
-            else:
-                raise ValueError('Keyword not in %s.' % self.opts.keys())
+        self.opts.update(kwargs)
 
     def setOffset(self, offset):
         self.offset = offset
@@ -205,16 +207,18 @@ class MyLegendItem(LegendItem):
         title           The title to display for this item. Simple HTML allowed.
         ==============  ========================================================
         """
-        label = LabelItem(name, color='k', justify='left')
-        if isinstance(item, MyItemSample):
+        label = LabelItem(name, color=self.opts['labelTextColor'], justify='left')
+        if isinstance(item, MySampleItem):
             sample = item
         else:
-            sample = MyItemSample(item)
+            sample = MySampleItem(item)
         row = self.layout.rowCount()
         self.items.append((sample, label))
         self.layout.addItem(sample, row, 0)
         self.layout.addItem(label, row, 1)
-        self.layout.setRowMaximumHeight(row, 20)
+        height = max(sample.minimumHeight(), label.minimumHeight())
+        self.layout.setRowMaximumHeight(row, height)
+        self.layout.setColumnSpacing(0, 10)
         self.updateSize()
 
     def setPen(self, *args, **kargs):
@@ -232,9 +236,22 @@ class MyLegendItem(LegendItem):
             return
         self.opts['brush'] = brush
 
+    def setLabelTextColor(self, *args, **kargs):
+        """
+        Sets the color of the label text.
+        *pen* can be a QPen or any argument accepted by
+        :func:`pyqtgraph.mkColor() <pyqtgraph.mkPen>`
+        """
+        self.opts['labelTextColor'] = fn.mkColor(*args, **kargs)
+        for sample, label in self.items:
+            label.setAttr('color', self.opts['labelTextColor'])
+
     def clear(self):
         for sample, label in self.items:
-            self.removeItem(label.text)
+            self.layout.removeItem(sample)
+            self.layout.removeItem(label)
+        while len(self.items) > 0:
+            self.items.pop()
 
     def paint(self, p, *args):
         p.setPen(self.opts['pen'])
@@ -284,7 +301,7 @@ class SweepDataPlot(GraphicsView):
             ax.setVisible(True)  # make all axes visible
             ax.setPen(width=2, color=0.5)  # grey spines and ticks
             ax.setTextPen('k')  # black text
-            ax.setStyle(autoExpandTextSpace=False, tickTextOffset=4)
+            ax.setStyle(autoExpandTextSpace=True, tickTextOffset=4)
 
         self.p.getAxis('top').setTicks([])
         self.p.getAxis('top').setHeight(0)
@@ -308,13 +325,17 @@ class SweepDataPlot(GraphicsView):
         # self.p.vb.suggestPadding = lambda x: 0.05
 
         # add legend
-        self.legend = MyLegendItem(offset=(20, -20))
+        self.legend = MyLegendItem(brush=fn.mkBrush(255, 255, 255, 150),
+                                   labelTextColor='k',
+                                   offset=(20, -20))
         self.legend.setParentItem(self.p.vb)
 
-    def plot(self, sweep_data):
-
+    def clear(self):
         self.p.clear()  # clear current plot
         self.legend.clear()  # clear current legend
+
+    def plot(self, sweep_data):
+        self.clear()
 
         xdata = sweep_data.get_column(0)
         xdata_title = sweep_data.titles[0]
@@ -352,7 +373,7 @@ class SweepDataPlot(GraphicsView):
             self.legend.addItem(l, str(t))
 
 
-if __name__ == '__main__!':
+if __name__ == '__main__':
 
     import sys
 
