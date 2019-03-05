@@ -316,6 +316,7 @@ class SweepDataPlot(GraphicsView):
 
         # set auto range and mouse panning / zooming
         self.p.enableAutoRange(x=True, y=True)
+        self.p.setLimits(xMin=-1e20, xMax=1e20, yMin=-1e20, yMax=1e20)
 
         # set default ranges to start
         self.p.setXRange(-10, 10)
@@ -356,6 +357,7 @@ class SweepDataPlot(GraphicsView):
             self.p.setTitle('Output curve')
             self.p.setLogMode(x=False, y=False)
             self.legend.setOffset((-20, 20))  # legend in top-right corner
+            ydata = [np.abs(y) for y in ydata]
 
         else:
             self.p.setTitle('Sweep curve')
