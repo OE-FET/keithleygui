@@ -318,6 +318,19 @@ class SweepDataPlot(GraphicsView):
         self.p.enableAutoRange(x=True, y=True)
         self.p.setLimits(xMin=-1e20, xMax=1e20, yMin=-1e20, yMax=1e20)
 
+        def suggestPadding(axis):
+            length = self.p.vb.width() if axis == 0 else self.p.vb.height()
+            if length > 0:
+                if axis == 0:
+                    padding = 0
+                else:
+                    padding = np.clip(1./(length**0.5), 0.02, 0.1)
+            else:
+                padding = 0.02
+            return padding
+
+        self.p.vb.suggestPadding = suggestPadding
+
         # set default ranges to start
         self.p.setXRange(-10, 10)
         self.p.setYRange(-10, 10)
@@ -373,6 +386,8 @@ class SweepDataPlot(GraphicsView):
         # add legend
         for l, t in zip(self.lines, sweep_data.column_names[1:]):
             self.legend.addItem(l, str(t))
+
+        self.p.autoRange()
 
 
 if __name__ == '__main__':
