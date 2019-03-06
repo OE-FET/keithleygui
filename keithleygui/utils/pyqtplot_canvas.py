@@ -292,7 +292,7 @@ class SweepDataPlot(GraphicsView):
             axisItems[pos] = MyAxisItem(orientation=pos, maxTickLength=7)
 
         self.p = PlotItem(axisItems=axisItems)
-        self.p.setTitle('Sweep data', color='k', size='15pt')
+        self.setTitle('Sweep data', fontSize=14, color='k')
         self.layout.addItem(self.p)
 
         self.p.vb.setBackgroundColor('w')
@@ -361,19 +361,19 @@ class SweepDataPlot(GraphicsView):
         self.y_axis.setLabel('Current', unit='A')
 
         if sweep_data.sweep_type == 'transfer':
-            self.p.setTitle('Transfer curve')
+            self.setTitle('Transfer curve')
             self.p.setLogMode(x=False, y=True)
             self.legend.setOffset((20, -20))  # legend in bottom-left corner
             ydata = [np.abs(y) for y in ydata]
 
         elif sweep_data.sweep_type == 'output':
-            self.p.setTitle('Output curve')
+            self.setTitle('Output curve')
             self.p.setLogMode(x=False, y=False)
             self.legend.setOffset((-20, 20))  # legend in top-right corner
             ydata = [np.abs(y) for y in ydata]
 
         else:
-            self.p.setTitle('Sweep curve')
+            self.setTitle('Sweep curve')
             self.p.setLogMode(x=False, y=False)
             ydata = [np.abs(y) for y in ydata]
 
@@ -388,6 +388,28 @@ class SweepDataPlot(GraphicsView):
             self.legend.addItem(l, str(t))
 
         self.p.autoRange()
+
+    def setTitle(self, text, fontSize=None, color=None, font=None):
+        # work around pyqtplot which forces the title to be HTML
+        if text is None:
+            self.p.setTitle(None)  # clears title and hides title column
+        else:
+            self.p.setTitle('')  # makes title comlumn visible, sets placeholder text
+            self.p.titleLabel.item.setPlainText(text)  # replace HTML with plain text
+
+        if color is not None:
+            color = fn.mkColor(color)
+            self.p.titleLabel.item.setDefaultTextColor(color)
+
+        if font is not None and fontSize is not None:
+            print('Warning: Specified font will override fontSize.')
+
+        if fontSize is not None:
+            font = self.p.titleLabel.item.font()
+            font.setPointSize(fontSize)
+            self.p.titleLabel.item.setFont(font)
+        if font is not None:
+            self.p.titleLabel.item.setFont(font)
 
 
 if __name__ == '__main__':
