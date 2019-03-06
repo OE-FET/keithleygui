@@ -864,7 +864,7 @@ QStatusBar::item {border: 0px solid black };</string>
    </property>
    <widget class="QMenu" name="menu_Keithley_2600">
     <property name="title">
-     <string>&amp;Keithley 2600</string>
+     <string>Keithley 2600</string>
     </property>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
@@ -878,7 +878,7 @@ QStatusBar::item {border: 0px solid black };</string>
    </widget>
    <widget class="QMenu" name="menu_File">
     <property name="title">
-     <string>&amp;File</string>
+     <string>File</string>
     </property>
     <addaction name="actionSaveSweepData"/>
     <addaction name="actionLoad_data_from_file"/>

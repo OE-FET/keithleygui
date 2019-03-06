@@ -292,7 +292,7 @@ class SweepDataPlot(GraphicsView):
             axisItems[pos] = MyAxisItem(orientation=pos, maxTickLength=7)
 
         self.p = PlotItem(axisItems=axisItems)
-        self.setTitle('Sweep data', fontScaling=1.2, color='k')
+        self.setTitle('Sweep data', fontScaling=1.3, color='k')
         self.layout.addItem(self.p)
 
         self.p.vb.setBackgroundColor('w')
