@@ -12,7 +12,7 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(),
     package_data={
-        'keithleygui': ['*.ui', '*.mplstyle'],
+        'keithleygui': ['*.ui'],
     },
     entry_points={
         'console_scripts': [
@@ -24,9 +24,9 @@ setup(
     },
     install_requires=[
         'keithley2600>=1.0',
-        'matplotlib',
         'numpy',
         'pyvisa',
+        'pyqtgraph',
         'qtpy',
         'repr',
         'setuptools',
