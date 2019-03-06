@@ -292,7 +292,7 @@ class SweepDataPlot(GraphicsView):
             axisItems[pos] = MyAxisItem(orientation=pos, maxTickLength=7)
 
         self.p = PlotItem(axisItems=axisItems)
-        self.setTitle('Sweep data', fontSize=14, color='k')
+        self.setTitle('Sweep data', fontScaling=1.2, color='k')
         self.layout.addItem(self.p)
 
         self.p.vb.setBackgroundColor('w')
@@ -389,7 +389,7 @@ class SweepDataPlot(GraphicsView):
 
         self.p.autoRange()
 
-    def setTitle(self, text, fontSize=None, color=None, font=None):
+    def setTitle(self, text, fontScaling=None, color=None, font=None):
         # work around pyqtplot which forces the title to be HTML
         if text is None:
             self.p.setTitle(None)  # clears title and hides title column
@@ -401,14 +401,14 @@ class SweepDataPlot(GraphicsView):
             color = fn.mkColor(color)
             self.p.titleLabel.item.setDefaultTextColor(color)
 
-        if font is not None and fontSize is not None:
-            print('Warning: Specified font will override fontSize.')
-
-        if fontSize is not None:
-            font = self.p.titleLabel.item.font()
-            font.setPointSize(fontSize)
-            self.p.titleLabel.item.setFont(font)
         if font is not None:
+            self.p.titleLabel.item.setFont(font)
+
+        if fontScaling is not None:
+            font = self.p.titleLabel.item.font()
+            defaultFontSize = QtWidgets.QLabel('test').font().pointSize()
+            fontSize = round(defaultFontSize*fontScaling, 1)
+            font.setPointSize(fontSize)
             self.p.titleLabel.item.setFont(font)
 
 
