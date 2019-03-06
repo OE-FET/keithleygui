@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import itertools
 import pyqtgraph as pg
 from pyqtgraph import (AxisItem, PlotItem, GraphicsView, LegendItem,
@@ -269,7 +270,10 @@ class SweepDataPlot(GraphicsView):
 
     COLORS = [BLUE, RED, GREEN, PURPLE, ASH, GRAY]
 
-    LW = 3.5
+    if sys.platform == 'darwin':
+        LW = 3
+    else:
+        LW = 1.5
 
     def __init__(self):
         GraphicsView.__init__(self)
@@ -298,7 +302,7 @@ class SweepDataPlot(GraphicsView):
             ax = self.p.getAxis(pos)
             ax.setZValue(0)  # draw on top of patch
             ax.setVisible(True)  # make all axes visible
-            ax.setPen(width=2, color=0.5)  # grey spines and ticks
+            ax.setPen(width=self.LW*2/3, color=0.5)  # grey spines and ticks
             ax.setTextPen('k')  # black text
             ax.setStyle(autoExpandTextSpace=True, tickTextOffset=4)
 
@@ -333,9 +337,6 @@ class SweepDataPlot(GraphicsView):
         # set default ranges to start
         self.p.setXRange(-10, 10)
         self.p.setYRange(-10, 10)
-
-        # override default padding with constant 0.2% padding
-        # self.p.vb.suggestPadding = lambda x: 0.05
 
         # add legend
         self.legend = MyLegendItem(brush=fn.mkBrush(255, 255, 255, 150),
