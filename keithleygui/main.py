@@ -85,6 +85,9 @@ class SMUSettingsTab(QtWidgets.QWidget):
 
 class KeithleyGuiApp(QtWidgets.QMainWindow):
     """ Provides a GUI for transfer and output sweeps on the Keithley 2600."""
+
+    QUIT_ON_CLOSE = True
+
     def __init__(self, keithley):
         super(self.__class__, self).__init__()
         # load user interface layout from .ui file
@@ -136,7 +139,10 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
                 raise ValueError('Invalid drain voltage.')
 
     def closeEvent(self, event):
-        self.exit_()
+        if self.QUIT_ON_CLOSE:
+            self.exit_()
+        else:
+            self.hide()
 
 # =============================================================================
 # GUI setup
