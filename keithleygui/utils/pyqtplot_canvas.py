@@ -11,7 +11,7 @@ from pyqtgraph import functions as fn
 import numpy as np
 from qtpy import QtWidgets, QtCore
 
-pg.setConfigOptions(antialias=True)
+pg.setConfigOptions(antialias=True, exitCleanup=False)
 
 
 class MyAxisItem(AxisItem):
