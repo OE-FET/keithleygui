@@ -118,7 +118,7 @@ class MyAxisItem(AxisItem):
     def _updateMaxTextSize(self, x):
         # Informs that the maximum tick size orthogonal to the axis has
         # changed; we use this to decide whether the item needs to be resized
-        # to accomodate.
+        # to accommodate.
         if self.orientation in ['left', 'right']:
             if x > self.textWidth or x < self.textWidth-10:
                 self.textWidth = x
