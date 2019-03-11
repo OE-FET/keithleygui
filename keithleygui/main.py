@@ -641,7 +641,6 @@ def run():
     keithley = Keithley2600(keithley_address, visa_library)
 
     app = QtWidgets.QApplication(sys.argv)
-    app.aboutToQuit.connect(app.deleteLater)
 
     keithley_gui = KeithleyGuiApp(keithley)
     keithley_gui.show()
