@@ -289,7 +289,7 @@ class SweepDataPlot(GraphicsView):
         axisItems = dict()
 
         for pos in ['bottom', 'left', 'top', 'right']:
-            axisItems[pos] = MyAxisItem(orientation=pos, maxTickLength=7)
+            axisItems[pos] = MyAxisItem(orientation=pos, maxTickLength=-7)
 
         self.p = PlotItem(axisItems=axisItems)
         self.setTitle('Sweep data', fontScaling=1.3, color='k')
