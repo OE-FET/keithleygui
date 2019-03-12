@@ -722,6 +722,14 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         if position > end:
             position = end
 
+        value = self.valueFromText(text)
+        _, in_range = self.check_range(value)
+
+        if not in_range or state != self.validator.Acceptable:
+            self.setStyleSheet("background: rgb(255, 0, 0, 50)")
+        else:
+            self.setStyleSheet("")
+
         return state, text, position
 
     def fixup(self, text):
