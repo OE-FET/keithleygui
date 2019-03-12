@@ -1,0 +1,8 @@
+PyQt5
+keithley2600>=1.0
+numpy
+pyvisa
+pyqtgraph
+qtpy
+repr
+setuptools
