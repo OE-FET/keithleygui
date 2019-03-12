@@ -27,7 +27,35 @@ from decimal import Decimal as D  # Use decimal to avoid accumulating floating-p
 from decimal import ROUND_FLOOR
 import math
 
+
 __all__ = ['ScienDSpinBox', 'ScienSpinBox']
+
+
+class ErrorBox(QtWidgets.QWidget):
+    """Red outline to draw around lineedit when value is invalid.
+    (for some reason, setting border from stylesheet does not work)
+    """
+    def __init__(self, parent):
+        QtWidgets.QWidget.__init__(self, parent)
+        parent.installEventFilter(self)
+        self.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        self._resize()
+        self.setVisible(False)
+
+    def eventFilter(self, obj, ev):
+        if ev.type() == QtCore.QEvent.Resize:
+            self._resize()
+        return False
+
+    def _resize(self):
+        self.setGeometry(0, 0, self.parent().width(), self.parent().height())
+
+    def paintEvent(self, ev):
+        p = QtGui.QPainter(self)
+        pen = QtGui.QPen(QtGui.QColor(255, 0, 0), 2)
+        p.setPen(pen)
+        p.drawRect(self.rect())
+        p.end()
 
 
 class FloatValidator(QtGui.QValidator):
@@ -222,7 +250,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
     }
 
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(ScienDSpinBox, self).__init__(*args, **kwargs)
         self.__value = D(0)
         self.__minimum = -np.inf
         self.__maximum = np.inf
@@ -236,6 +264,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         self._dynamic_precision = True
         self._is_valid = True  # A flag property to check if the current value is valid.
         self.validator = FloatValidator()
+        self.errorBox = ErrorBox(self.lineEdit())
         self.lineEdit().textEdited.connect(self.update_value)
         self.update_display()
 
@@ -625,7 +654,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
             self.update_display()
 
         if (QtCore.Qt.ControlModifier | QtCore.Qt.MetaModifier) & event.modifiers():
-            super(self.__class__, self).keyPressEvent(event)
+            super(ScienDSpinBox, self).keyPressEvent(event)
             return
 
         # The rest is to avoid editing suffix and prefix
@@ -663,15 +692,15 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
             self.lineEdit().setCursorPosition(len(self.text()) - len(self.__suffix))
             return
 
-        super(self.__class__, self).keyPressEvent(event)
+        super(ScienDSpinBox, self).keyPressEvent(event)
 
     def focusInEvent(self, event):
-        super(self.__class__, self).focusInEvent(event)
+        super(ScienDSpinBox, self).focusInEvent(event)
         self.selectAll()
         return
 
     def focusOutEvent(self, event):
-        super(self.__class__, self).focusOutEvent(event)
+        super(ScienDSpinBox, self).focusOutEvent(event)
         self.update_display()
         return
 
@@ -679,19 +708,10 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         """
         Add drawing of a red frame around the spinbox if the is_valid flag is False
         """
-        super(self.__class__, self).paintEvent(ev)
+        super(ScienDSpinBox, self).paintEvent(ev)
 
         # draw red frame if is_valid = False
-        if not self.is_valid:
-            pen = QtGui.QPen()
-            pen.setColor(QtGui.QColor(200, 50, 50))
-            pen.setWidth(2)
-
-            p = QtGui.QPainter(self)
-            p.setRenderHint(p.Antialiasing)
-            p.setPen(pen)
-            p.drawRoundedRect(self.rect().adjusted(2, 2, -2, -2), 4, 4)
-            p.end()
+        # self.errorBox.setVisible(not self.is_valid)
 
     def validate(self, text, position):
         """
@@ -724,11 +744,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
 
         value = self.valueFromText(text)
         _, in_range = self.check_range(value)
-
-        if not in_range or state != self.validator.Acceptable:
-            self.setStyleSheet("background: rgb(255, 0, 0, 50)")
-        else:
-            self.setStyleSheet("")
+        self.errorBox.setVisible(not in_range)
 
         return state, text, position
 
@@ -820,7 +836,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         integer = int(integer)
         si_prefix = ''
         prefix_index = 0
-        if integer != 0:
+        if integer != 0 or fractional >= 0.1:
             integer_str = str(integer)
             fractional_str = ''
             while len(integer_str) > 3:
@@ -990,7 +1006,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
     }
 
     def __init__(self, *args, **kwargs):
-        super(self.__class__, self).__init__(*args, **kwargs)
+        super(ScienSpinBox, self).__init__(*args, **kwargs)
         self.__value = 0
         self.__minimum = -2 ** 63  # Use a 64bit integer size by default.
         self.__maximum = 2 ** 63 - 1  # Use a 64bit integer size by default.
@@ -1001,6 +1017,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         self.__cached_value = None  # a temporary variable for restore functionality
         self._dynamic_stepping = True
         self.validator = IntegerValidator()
+        self.errorBox = ErrorBox(self.lineEdit())
         self.lineEdit().textEdited.connect(self.update_value)
         self.update_display()
 
@@ -1256,7 +1273,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
             self.update_display()
 
         if (QtCore.Qt.ControlModifier | QtCore.Qt.MetaModifier) & event.modifiers():
-            super(self.__class__, self).keyPressEvent(event)
+            super(ScienSpinBox, self).keyPressEvent(event)
             return
 
         # The rest is to avoid editing suffix and prefix
@@ -1296,15 +1313,15 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
             self.lineEdit().setCursorPosition(len(self.text()) - len(self.__suffix))
             return
 
-        super(self.__class__, self).keyPressEvent(event)
+        super(ScienSpinBox, self).keyPressEvent(event)
 
     def focusInEvent(self, event):
-        super(self.__class__, self).focusInEvent(event)
+        super(ScienSpinBox, self).focusInEvent(event)
         self.selectAll()
         return
 
     def focusOutEvent(self, event):
-        super(self.__class__, self).focusOutEvent(event)
+        super(ScienSpinBox, self).focusOutEvent(event)
         self.update_display()
         return
 
@@ -1336,6 +1353,10 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         end = len(text) - len(self.__suffix)
         if position > end:
             position = end
+
+        value = self.valueFromText(text)
+        _, in_range = self.check_range(value)
+        self.error.setVisible(not in_range)
 
         return state, text, position
 
@@ -1470,3 +1491,27 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         else:
             selection_length = len(text)
         self.lineEdit().setSelection(begin, selection_length)
+
+
+class ReadingDSpinBox(ScienDSpinBox):
+    """
+    Subclass of ScienDSpinBox with an additional method to only update the
+    value if the spin box is not in focus, i.e., not beeing edited by the user.
+    """
+
+    def updateValue(self, value):
+
+        if not self.hasFocus():
+            self.setValue(value)
+
+
+class ReadingSpinBox(ScienSpinBox):
+    """
+    Subclass of ScienSpinBox with an additional method to only update the
+    value if the spin box is not in focus, i.e., not beeing edited by the user.
+    """
+
+    def updateValue(self, value):
+
+        if not self.hasFocus():
+            self.setValue(value)
