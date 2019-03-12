@@ -1,4 +1,5 @@
 [![PyPi Release](https://img.shields.io/pypi/v/keithleygui.svg?style=flat)](https://pypi.org/project/keithleygui/)
+[![Build Status](https://travis-ci.com/OE-FET/keithleygui.svg?branch=master)](https://travis-ci.com/OE-FET/keithleygui)
 
 # keithleygui
 A high-level user interface for Keithley 2600 series instruments which allows
