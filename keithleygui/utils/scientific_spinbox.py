@@ -224,6 +224,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
     """
 
     valueChanged = QtCore.Signal(object)
+    returnPressed = QtCore.Signal()
 
     # The maximum number of decimals to allow. Be careful when changing this number since
     # the decimal package has by default a limited accuracy.
@@ -266,6 +267,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         self.validator = FloatValidator()
         self.errorBox = ErrorBox(self.lineEdit())
         self.lineEdit().textEdited.connect(self.update_value)
+        self.lineEdit().returnPressed.connect(self.returnPressed.emit)
         self.update_display()
 
     @property
@@ -992,6 +994,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
     """
 
     valueChanged = QtCore.Signal(object)
+    returnPressed = QtCore.Signal()
     # Dictionary mapping the si-prefix to a scaling factor as integer (exact value)
     _unit_prefix_dict = {
         '': 1,
@@ -1019,6 +1022,7 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         self.validator = IntegerValidator()
         self.errorBox = ErrorBox(self.lineEdit())
         self.lineEdit().textEdited.connect(self.update_value)
+        self.lineEdit().returnPressed.connect(self.returnPressed.emit)
         self.update_display()
 
     @property
