@@ -6,7 +6,6 @@ from pyqtgraph import (AxisItem, PlotItem, GraphicsView, LegendItem,
                        GraphicsWidget, ScatterPlotItem, PlotDataItem,
                        LabelItem, Point)
 from pyqtgraph.graphicsItems.ScatterPlotItem import drawSymbol
-from pyqtgraph import getConfigOption
 from pyqtgraph import functions as fn
 import numpy as np
 from qtpy import QtWidgets, QtCore
@@ -14,122 +13,9 @@ from qtpy import QtWidgets, QtCore
 pg.setConfigOptions(antialias=True, exitCleanup=False)
 
 
-class MyAxisItem(AxisItem):
-
-    _textPen = None
-
-    def textPen(self):
-        if self._textPen is None:
-            return fn.mkPen(getConfigOption('foreground'))
-        return fn.mkPen(self._textPen)
-
-    def setTextPen(self, *args, **kwargs):
-        """
-        Set the pen used for drawing text.
-        If no arguments are given, the default foreground color will be used.
-        """
-        self.picture = None
-        if args or kwargs:
-            self._textPen = fn.mkPen(*args, **kwargs)
-        else:
-            self._textPen = fn.mkPen(getConfigOption('foreground'))
-        self.labelStyle['color'] = '#' + fn.colorStr(self._textPen.color())[:6]
-        self.setLabel()
-        self.update()
-
-    def tickSpacing(self, minVal, maxVal, size):
-
-        """Return values describing the desired spacing and offset of ticks.
-
-        This method is called whenever the axis needs to be redrawn and is a
-        good method to override in subclasses that require control over tick locations.
-
-        The return value must be a list of tuples, one for each set of ticks::
-
-            [
-                (major tick spacing, offset),
-                (minor tick spacing, offset),
-                (sub-minor tick spacing, offset),
-                ...
-            ]
-        """
-        # First check for override tick spacing
-        if self._tickSpacing is not None:
-            return self._tickSpacing
-
-        dif = abs(maxVal - minVal)
-        if dif == 0:
-            return []
-
-        # decide optimal minor tick spacing in pixels (this is just aesthetics)
-        optimalTickCount = max(2., np.log(size))
-
-        # optimal minor tick spacing
-        optimalSpacing = dif / optimalTickCount
-
-        # the largest power-of-10 spacing which is smaller than optimal
-        p10unit = 10 ** np.floor(np.log10(optimalSpacing))
-
-        # Determine major/minor tick spacings which flank the optimal spacing.
-        intervals = np.array([1., 2., 10., 20., 100.]) * p10unit
-        minorIndex = 0
-        while intervals[minorIndex+1] <= optimalSpacing:
-            minorIndex += 1
-
-        levels = [
-            (intervals[minorIndex+2], 0),
-            (intervals[minorIndex+1], 0),
-        ]
-
-        if self.style['maxTickLevel'] >= 2:
-            # decide whether to include the last level of ticks
-            minSpacing = min(size / 20., 30.)
-            maxTickCount = size / minSpacing
-            if dif / intervals[minorIndex] <= maxTickCount:
-                levels.append((intervals[minorIndex], 0))
-
-        return levels
-
-    def drawPicture(self, p, axisSpec, tickSpecs, textSpecs):
-
-        p.setRenderHint(p.Antialiasing, False)
-        p.setRenderHint(p.TextAntialiasing, True)
-
-        # draw long line along axis
-        pen, p1, p2 = axisSpec
-        p.setPen(pen)
-        p.drawLine(p1, p2)
-        p.translate(0.5, 0)  # resolves some damn pixel ambiguity
-
-        # draw ticks
-        for pen, p1, p2 in tickSpecs:
-            p.setPen(pen)
-            p.drawLine(p1, p2)
-
-        # Draw all text
-        if self.tickFont is not None:
-            p.setFont(self.tickFont)
-        p.setPen(self.textPen())
-        for rect, flags, text in textSpecs:
-            p.drawText(rect, flags, text)
-
-        p.setPen(pen)
-
-    def _updateMaxTextSize(self, x):
-        # Informs that the maximum tick size orthogonal to the axis has
-        # changed; we use this to decide whether the item needs to be resized
-        # to accommodate.
-        if self.orientation in ['left', 'right']:
-            if x > self.textWidth or x < self.textWidth-10:
-                self.textWidth = x
-                if self.style['autoExpandTextSpace'] is True:
-                    self._updateWidth()
-        else:
-            if x > self.textHeight or x < self.textHeight-10:
-                self.textHeight = x
-                if self.style['autoExpandTextSpace'] is True:
-                    self._updateHeight()
-
+# ==================================================================================================
+# Create our own, more beatiful, legend here.
+# ==================================================================================================
 
 class MySampleItem(GraphicsWidget):
     """ Class responsible for drawing a single item in a LegendItem (sans label).
@@ -259,6 +145,10 @@ class MyLegendItem(LegendItem):
         p.drawRect(self.boundingRect())
 
 
+# ==================================================================================================
+# The actual plot item
+# ==================================================================================================
+
 class SweepDataPlot(GraphicsView):
 
     GREEN = [0, 204, 153]
@@ -289,7 +179,7 @@ class SweepDataPlot(GraphicsView):
         axisItems = dict()
 
         for pos in ['bottom', 'left', 'top', 'right']:
-            axisItems[pos] = MyAxisItem(orientation=pos, maxTickLength=-7)
+            axisItems[pos] = AxisItem(orientation=pos, maxTickLength=-7)
 
         self.p = PlotItem(axisItems=axisItems)
         self.setTitle('Sweep data', fontScaling=1.3, color='k')
@@ -303,7 +193,10 @@ class SweepDataPlot(GraphicsView):
             ax.setZValue(0)  # draw on top of patch
             ax.setVisible(True)  # make all axes visible
             ax.setPen(width=self.LW*2/3, color=0.5)  # grey spines and ticks
-            ax.setTextPen('k')  # black text
+            try:
+                ax.setTextPen('k')  # black text
+            except AttributeError:
+                pass
             ax.setStyle(autoExpandTextSpace=True, tickTextOffset=4)
 
         self.p.getAxis('top').setTicks([])
