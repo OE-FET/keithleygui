@@ -278,7 +278,7 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         """
         width = QtWidgets.QDoubleSpinBox().sizeHint().width()
         if sys.platform == 'darwin':
-            height = self.lineEdit().sizeHint().height() + 2
+            height = QtWidgets.QLineEdit().sizeHint().height() + 2
         else:
             height = QtWidgets.QDoubleSpinBox().sizeHint().height()
         return QtCore.QSize(width, height)
