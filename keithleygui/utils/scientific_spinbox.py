@@ -18,6 +18,7 @@ along with Qudi. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from __future__ import division, absolute_import, unicode_literals
+import sys
 # noinspection PyCompatibility
 from builtins import super
 from qtpy import QtCore, QtGui, QtWidgets
@@ -269,6 +270,18 @@ class ScienDSpinBox(QtWidgets.QAbstractSpinBox):
         self.lineEdit().textEdited.connect(self.update_value)
         self.lineEdit().returnPressed.connect(self.returnPressed.emit)
         self.update_display()
+
+    def sizeHint(self):
+        """
+        Bug fix for Qt on macOS: ensure that the QLineEdit in a QDoubleSpinbox
+        has the same height as a stand-alone QLineEdit.
+        """
+        width = QtWidgets.QDoubleSpinBox().sizeHint().width()
+        if sys.platform == 'darwin':
+            height = self.lineEdit().sizeHint().height() + 2
+        else:
+            height = QtWidgets.QDoubleSpinBox().sizeHint().height()
+        return QtCore.QSize(width, height)
 
     @property
     def dynamic_stepping(self):
