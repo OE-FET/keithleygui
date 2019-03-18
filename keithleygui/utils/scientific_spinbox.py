@@ -66,7 +66,8 @@ class FloatValidator(QtGui.QValidator):
     Also supports SI unit prefix like 'M', 'n' etc.
     """
 
-    float_re = re.compile(r'(\s*([+-]?)(\d+\.\d+|\.\d+|\d+\.?)([eE][+-]?\d+)?\s?([YZEPTGMkmµunpfazy]?)\s*)')
+    float_re = re.compile(r'(\s*([+-]?)(\d+\.\d+|\.\d+|\d+\.?)([eE][+-]?\d+)?\s?([YZEPTGMkmµunpfazy]?)\s*)',
+                          flags=re.UNICODE)
     group_map = {'match': 0,
                  'sign': 1,
                  'mantissa': 2,
@@ -147,7 +148,7 @@ class IntegerValidator(QtGui.QValidator):
     Also supports non-fractional SI unit prefix like 'M', 'k' etc.
     """
 
-    int_re = re.compile(r'(([+-]?\d+)([eE]\+?\d+)?\s?([YZEPTGMk])?\s*)')
+    int_re = re.compile(r'(([+-]?\d+)([eE]\+?\d+)?\s?([YZEPTGMk])?\s*)', flags=re.UNICODE)
     group_map = {'match': 0,
                  'mantissa': 1,
                  'exponent': 2,
@@ -1037,6 +1038,18 @@ class ScienSpinBox(QtWidgets.QAbstractSpinBox):
         self.lineEdit().textEdited.connect(self.update_value)
         self.lineEdit().returnPressed.connect(self.returnPressed.emit)
         self.update_display()
+
+    def sizeHint(self):
+        """
+        Bug fix for Qt on macOS: ensure that the QLineEdit in a QDoubleSpinbox
+        has the same height as a stand-alone QLineEdit.
+        """
+        width = QtWidgets.QDoubleSpinBox().sizeHint().width()
+        if sys.platform == 'darwin':
+            height = QtWidgets.QLineEdit().sizeHint().height() + 2
+        else:
+            height = QtWidgets.QDoubleSpinBox().sizeHint().height()
+        return QtCore.QSize(width, height)
 
     @property
     def dynamic_stepping(self):
