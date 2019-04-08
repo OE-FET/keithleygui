@@ -283,7 +283,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         # check if integration time is valid, return otherwise
         freq = self.keithley.localnode.linefreq
 
-        if params['tInt'] > 25.0/freq or params['tInt'] < 0.001/freq:
+        if not 0.001/freq < params['tInt'] < 25.0/freq:
             msg = ('Integration time must be between 0.001 and 25 ' +
                    'power line cycles of 1/(%s Hz).' % freq)
             QtWidgets.QMessageBox.information(self, str('error'), msg)
