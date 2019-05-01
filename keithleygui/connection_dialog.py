@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 31 16:23:13 2018
-
-@author: SamSchott
-"""
+#
+# Copyright © keithleygui Project Contributors
+# Licensed under the terms of the MIT License
+# (see LICENSE.txt for details)
 
 from __future__ import division, print_function, absolute_import
 import os.path as osp

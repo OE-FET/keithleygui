@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright © keithleygui Project Contributors
+# Licensed under the terms of the MIT License
+# (see LICENSE.txt for details)
+
 import sys
 import itertools
 import pyqtgraph as pg
@@ -13,16 +18,14 @@ from qtpy import QtWidgets, QtCore
 pg.setConfigOptions(antialias=True, exitCleanup=False)
 
 
-# ==================================================================================================
-# Create our own, more beatiful, legend here.
-# ==================================================================================================
+# ========================================================================================
+# Create our own, more beautiful, legend here.
+# ========================================================================================
 
 class MySampleItem(GraphicsWidget):
     """ Class responsible for drawing a single item in a LegendItem (sans label).
-
-    This may be subclassed to draw custom graphics in a Legend.
     """
-    # Todo: make this more generic; let each item decide how it should be represented.
+    # TODO: make this more generic; let each item decide how it should be represented.
     def __init__(self, item):
         GraphicsWidget.__init__(self)
         self.item = item
@@ -145,9 +148,9 @@ class MyLegendItem(LegendItem):
         p.drawRect(self.boundingRect())
 
 
-# ==================================================================================================
+# ========================================================================================
 # The actual plot item
-# ==================================================================================================
+# ========================================================================================
 
 class SweepDataPlot(GraphicsView):
 
