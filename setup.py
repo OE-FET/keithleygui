@@ -26,7 +26,7 @@ setup(
         'keithley2600>=1.0',
         'numpy',
         'pyvisa',
-        'pyqtgraph_cx@git+https://github.com/OE-FET/pyqtgraph',
+        'pyqtgraph_cx',
         'qtpy',
         'repr',
         'setuptools',
