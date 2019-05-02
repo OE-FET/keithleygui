@@ -2,4 +2,7 @@
 _Changed:_
 
 - Unified and simplified code accross all settings panels. This results in some GUI changes as well: All settings panels now have a two-column layout.
+
+#### v1.0.2 (2019-03-12):
+_Changed:_
 - Switchted from Matplotlib to PyQtGraph as plotting library.
