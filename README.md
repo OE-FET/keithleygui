@@ -25,6 +25,7 @@ $ pip install keithleygui
 Or install the latest development version from GitHub:
 ```console
 $ pip install git+https://github.com/OE-FET/keithleygui
+```
 
 ## Acknowledgements
 - Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
