@@ -18,10 +18,13 @@ measurement.
 - Python 2.7 or 3.x
 
 ## Installation
-Download or clone the repository. Install the package by running 
+Install the stable version from PyPi by running
+```console
+$ pip install keithleygui
+```
+Or install the latest development version from GitHub:
 ```console
 $ pip install git+https://github.com/OE-FET/keithleygui
-```
 
 ## Acknowledgements
 - Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
