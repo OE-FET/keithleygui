@@ -10,7 +10,7 @@ import os.path as osp
 import pkg_resources as pkgr
 import visa
 from qtpy import QtCore, QtWidgets, uic
-from keithley2600 import TransistorSweepData, IVSweepData
+from keithley2600 import FETResultTable
 import numpy as np
 
 # local imports
@@ -290,7 +290,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if not osp.isfile(filepath):
             return
 
-        self.sweep_data = TransistorSweepData()
+        self.sweep_data = FETResultTable()
         self.sweep_data.load(filepath)
 
         self.canvas.plot(self.sweep_data)
@@ -429,10 +429,11 @@ class MeasureThread(QtCore.QThread):
 
             self.keithley.reset()
 
-            sweep_data = IVSweepData(v_sweep, i_sweep)
-            sweep_data.params = {'sweep_type': 'iv', 't_int': self.params['tInt'],
-                                 'delay': self.params['delay'],
-                                 'pulsed': self.params['pulsed']}
+            params = {'sweep_type': 'iv', 't_int': self.params['tInt'],
+                      'delay': self.params['delay'], 'pulsed': self.params['pulsed']}
+
+            sweep_data = FETResultTable(['Voltage', 'Current'], ['V', 'A'],
+                                        np.array([v,i]).transpose(), params)
 
         self.finished_sig.emit(sweep_data)
 

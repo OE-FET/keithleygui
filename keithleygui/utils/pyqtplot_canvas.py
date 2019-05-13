@@ -256,13 +256,13 @@ class SweepDataPlot(GraphicsView):
         self.x_axis.setLabel(xdata_title.name, unit=unit)
         self.y_axis.setLabel('Current', unit='A')
 
-        if sweep_data.sweep_type == 'transfer':
+        if sweep_data.params['sweep_type'] == 'transfer':
             self.setTitle('Transfer curve')
             self.p.setLogMode(x=False, y=True)
             self.legend.setOffset((20, -20))  # legend in bottom-left corner
             ydata = [np.abs(y) for y in ydata]
 
-        elif sweep_data.sweep_type == 'output':
+        elif sweep_data.params['sweep_type'] == 'output':
             self.setTitle('Output curve')
             self.p.setLogMode(x=False, y=False)
             self.legend.setOffset((-20, 20))  # legend in top-right corner
