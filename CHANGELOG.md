@@ -1,4 +1,4 @@
-#### v1.1.1-dev (2019-05-13):
+#### v1.1.1 (2019-05-16):
 _Changed:_
 
 - Adaptations to driver changes.
