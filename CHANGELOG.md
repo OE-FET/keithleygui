@@ -2,6 +2,7 @@
 _Changed:_
 
 - Adaptations to driver changes.
+- `KeithleyGuiApp` must now be explicitly imported from main.
 
 #### v1.1.0 (2019-05-01):
 _Changed:_
