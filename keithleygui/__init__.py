@@ -1,1 +1,1 @@
-import keithley.config
+import keithleygui.config
