@@ -18,7 +18,7 @@ measurement.
 - Python 2.7 or 3.x
 
 ## Installation
-Install the stable version from PyPi by running
+Install the stable version from PyPI by running
 ```console
 $ pip install keithleygui
 ```
