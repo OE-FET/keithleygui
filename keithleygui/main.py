@@ -422,18 +422,19 @@ class MeasureThread(QtCore.QThread):
             direction = np.sign(self.params['VStop'] - self.params['VStart'])
             stp = direction * abs(self.params['VStep'])
             sweeplist = np.arange(self.params['VStart'], self.params['VStop'] + stp, stp)
-            v_sweep, i_sweep = self.keithley.voltageSweepSingleSMU(
+            v, i = self.keithley.voltageSweepSingleSMU(
                     self.params['smu_sweep'], sweeplist, self.params['tInt'],
                     self.params['delay'], self.params['pulsed']
                     )
 
+            self.keithley.beeper.beep(0.3, 2400)
             self.keithley.reset()
 
             params = {'sweep_type': 'iv', 't_int': self.params['tInt'],
                       'delay': self.params['delay'], 'pulsed': self.params['pulsed']}
 
             sweep_data = FETResultTable(['Voltage', 'Current'], ['V', 'A'],
-                                        np.array([v,i]).transpose(), params)
+                                        np.array([v, i]).transpose(), params)
 
         self.finished_sig.emit(sweep_data)
 
