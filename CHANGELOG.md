@@ -1,7 +1,8 @@
-#### v1.1.2-dev (2019-05-20):
+#### v1.1.2 (2019-05-20):
 _Changed:_
 
 - Fixed a bug which caused `from keithleygui.config import CONF` to fail in Python 2.7.
+- Fixed a critical error which would prevent IV sweeps from returning a dataset.
 
 #### v1.1.1 (2019-05-16):
 _Changed:_

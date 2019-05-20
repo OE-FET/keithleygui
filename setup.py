@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='keithleygui',
-    version='1.1.2-dev',
+    version='1.1.2',
     description="",
     author='Sam Schott',
     author_email='ss2151@cam.ac.uk',
@@ -23,7 +23,7 @@ setup(
         ]
     },
     install_requires=[
-        'keithley2600>=1.2.0',
+        'keithley2600>=1.2.1',
         'numpy',
         'pyvisa',
         'pyqtgraph_cx',
