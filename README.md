@@ -10,7 +10,7 @@ of readings from the Keithley, the data from an IV-curve is buffered locally on
 the instrument and only transferred to CustomXepr after completion of a
 measurement.
 
-![Screenshot of the user interface](https://github.com/OE-FET/keithleygui/blob/master/screenshots/KeithleyGUI.png?raw=true)
+![Screenshot of the user interface](screenshots/KeithleyGUI.png)
 
 ## System requirements
 *Required*:
