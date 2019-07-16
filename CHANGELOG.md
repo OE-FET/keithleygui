@@ -1,8 +1,9 @@
-#### v1.1.3-dev1 (2019-07-10):
+#### v1.1.3 (2019-07-17):
 
 _Changed:_
 
 - Moved utils to submodule `pyqt_labutils`.
+- Updated requirements.
 
 #### v1.1.2 (2019-05-20):
 
