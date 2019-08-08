@@ -1,20 +1,17 @@
 language: python
 python:
-  - "2.7"
-  - "3.6"
-  - "3.7-dev"
-# command to install dependencies
+- '2.7'
+- '3.6'
+- 3.7-dev
 install:
-  - pip install .
-# command to run tests
+- pip install .
 script:
-  - echo "skipping tests"
-
+- echo "skipping tests"
 deploy:
   provider: pypi
   user: SamSchott
   skip_existing: true
-  password:
-    secure: dNW/oquNYqsz0g/c6Qsrp3gi1hBrlzQrrE6jMTywUFvk0OADTbkfnSyDnzYlpPTJfUjeoPEx6pADLtNctg3zECuK2DnRVA3CLSlUwY0doIQJ/IGtdTmafVmuR9soiN/4jr55Ks7c9Skr8aSoOjzjA77QIGm00JoiA53MLAAgA3O8tpHIlARoPKw5APzC06LyxdKV6i4UdoHDzDqT2jYvOhV3aXEdaDnv1T7EO0I7qr9RE3ZQjcRsWXg0u1zrF+I/PgyVpS4ypPFkXUvzmtgu17u6mtAqQvpb7pKqxzZdrv7PaA6wZdaiV/LoWCjAiytPZBPeu5788stvQdHhkOon0x1/vAgnSJ6lGWLxZwgDUHuxBSCfCNwsQtEvCR8lxf6ollBM84MLqjSyCUXgnhSs8cCPlgwCv9Qm6F8Zg+0cAhVfII4DupTBkT0jXmLqt0DOJnKzprRhpV/ql3tPWlQMH60/b/zCxIqvQfFE/02UE38UQ1dHloEANf0qBTMt9nqbP2ZdStoQO4IvsXkCaBqcRU6Kqk+kORb4hSEQlwqIlCSychVnxrU9DwJEpsYAsGkCYZfj5dY5t+pJm1xob0UaAxT3wJH9KBSRSusjSV2vfQsL0U4xwTrirSlpDJnopNsQd+2LXwX8bLnAq59FKU3qH4bFTzZvblgmqzRab2rM224=
   on:
     tags: true
+  password:
+    secure: l81nrfRojOLBol+nb9tKuqv5NC+nFx9CX6mKhGqqv+iJsiEz/3OdnSX+iflaXheRdwOoAlghZiSf8K0CbcsmgXCdwPoSpfWv0cWIwW+xCGkKK1hsI1kzRkSkOg2L+Fb6so/sBBvRexv+gWOmJSAoktm7RRwIhN1WGi2zEvQoeHJtdyQm2YCRqHJ9rEO0NmCHTgo0ObgYnfUcX5R9P6BfgLYNzmu1bgR5sGT91AGUySTMVcAiJ2M46TiUgsPWHLSIPcjH775gpCcnnZcLvzctR+LuINasbjXVU7cwpzLmHedeRj+4b/84VefSGgmcKem00YBtO/bYvnB5VrzvaMIu7riVAScmiuPk5V1c7I/sdrHicLCuG2TPQAOuDKhu3PLHvbUPWDxAv+Fqb+X7b9bcbFdAtXncJBIYup2zHkZykpK37nBMplR8HMzDYKagQFiwNOxdwJIpydXOr1JHQg2+LX+3Ek3ZxuHY9MknJfgaHsa9VJX+RwHBeqUEjcYrN3geatjoFtGi2hGlg+YuJCPZYK2Tvl/zoh8s7yszn5WxFQ+ZvCciofYtYmsIQjvDaqeC89WktYRvsjYvFU8X8Wsr/8aZV3BaW/ZyD/bDLD37WlUp0oJLF9h1DFYkckErS1xVRUUzD7S+Ie4Nk2IPC2kOHVr+EH4jgmA66KWVTAXQJls=
