@@ -12,12 +12,6 @@ measurement.
 
 ![Screenshot of the user interface](screenshots/KeithleyGUI.png)
 
-## System requirements
-*Required*:
-
-- Linux or macOS
-- Python 2.7 or 3.x
-
 ## Installation
 Install the stable version from PyPI by running
 ```console
@@ -27,6 +21,11 @@ Or install the latest development version from GitHub:
 ```console
 $ pip install git+https://github.com/OE-FET/keithleygui
 ```
+
+## System requirements
+
+- Linux or macOS
+- Python 2.7 or 3.x
 
 ## Acknowledgements
 - Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).
