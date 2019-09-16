@@ -9,7 +9,7 @@ import itertools
 import pyqtgraph as pg
 from pyqtgraph import (AxisItem, PlotItem, GraphicsView, LegendItem,
                        GraphicsWidget, ScatterPlotItem, PlotDataItem,
-                       LabelItem, Point)
+                       Point)
 from pyqtgraph.graphicsItems.ScatterPlotItem import drawSymbol
 from pyqtgraph import functions as fn
 import numpy as np
@@ -106,7 +106,8 @@ class SweepDataPlot(GraphicsView):
 
         # add legend
         self.legend = LegendItem(brush=fn.mkBrush(255, 255, 255, 150),
-                                 labelTextColor='k', offset=(20, -20))
+                                 labelTextColor='k',
+                                 offset=(20, -20))
         self.legend.setParentItem(self.p.vb)
 
     def clear(self):
@@ -159,7 +160,7 @@ class SweepDataPlot(GraphicsView):
         if text is None:
             self.p.setTitle(None)  # clears title and hides title column
         else:
-            self.p.setTitle('')  # makes title column visible, sets placeholder text
+            self.p.setTitle('')  # makes title comlumn visible, sets placeholder text
             self.p.titleLabel.item.setPlainText(text)  # replace HTML with plain text
 
         if color is not None:
