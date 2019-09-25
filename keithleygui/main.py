@@ -248,10 +248,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.update_gui_connection()
 
         # connection update timer: check periodically if keithley is connected
-        # and busy, act accordingly
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.update_gui_connection)
-        self.timer.start(10000)
+        self.connection_status_update = QtCore.QTimer()
+        self.connection_status_update.timeout.connect(self.update_gui_connection)
+        self.connection_status_update.start(10000)  # 10 sec
 
     @staticmethod
     def _string_to_vd(string):
@@ -495,7 +494,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def exit_(self):
         self.keithley.disconnect()
-        self.timer.stop()
+        self.connection_status_update.stop()
         self.save_geometry()
         self.deleteLater()
 
