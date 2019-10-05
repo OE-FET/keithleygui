@@ -7,13 +7,11 @@
 import sys
 import itertools
 import pyqtgraph as pg
-from pyqtgraph import (AxisItem, PlotItem, GraphicsView, LegendItem,
-                       GraphicsWidget, ScatterPlotItem, PlotDataItem,
-                       Point)
-from pyqtgraph.graphicsItems.ScatterPlotItem import drawSymbol
+from pyqtgraph import AxisItem, PlotItem, GraphicsView, LegendItem
 from pyqtgraph import functions as fn
 import numpy as np
-from qtpy import QtWidgets, QtCore
+from qtpy import QtWidgets, QtCore, QtGui
+
 
 pg.setConfigOptions(antialias=True, exitCleanup=False)
 
@@ -110,6 +108,9 @@ class SweepDataPlot(GraphicsView):
                                  offset=(20, -20))
         self.legend.setParentItem(self.p.vb)
 
+        # update colors
+        self.update_darkmode()
+
     def clear(self):
         self.p.clear()  # clear current plot
         self.legend.clear()  # clear current legend
@@ -155,6 +156,8 @@ class SweepDataPlot(GraphicsView):
 
         self.p.autoRange()
 
+        self.update_darkmode()
+
     def setTitle(self, text, fontScaling=None, color=None, font=None):
         # work around pyqtplot which forces the title to be HTML
         if text is None:
@@ -176,6 +179,37 @@ class SweepDataPlot(GraphicsView):
             fontSize = round(defaultFontSize*fontScaling, 1)
             font.setPointSize(fontSize)
             self.p.titleLabel.item.setFont(font)
+
+    def changeEvent(self, QEvent):
+
+        if QEvent.type() == QtCore.QEvent.PaletteChange:
+            self.update_darkmode()
+
+    def update_darkmode(self):
+
+        # get colors
+        bg_color = self.palette().color(QtGui.QPalette.Base)
+        bg_color_rgb = [bg_color.red(), bg_color.green(), bg_color.blue()]
+        font_color = self.palette().color(QtGui.QPalette.Text)
+        font_color_rgb = [font_color.red(), font_color.green(), font_color.blue()]
+
+        # set bg colors
+        self.setBackground(None)  # reload background
+        self.p.vb.setBackgroundColor(bg_color_rgb)
+        self.legend.setBrush(bg_color_rgb)
+
+        # change label colors
+        for pos in ['bottom', 'left', 'top', 'right']:
+            ax = self.p.getAxis(pos)
+            try:
+                ax.setTextPen(font_color_rgb)
+            except AttributeError:
+                pass
+
+        self.x_axis.setTextPen(font_color_rgb)
+        self.y_axis.setTextPen(font_color_rgb)
+        self.legend.setLabelTextColor(font_color_rgb)
+        self.p.titleLabel.item.setDefaultTextColor(fn.mkColor(font_color_rgb))
 
 
 if __name__ == '__main__':
