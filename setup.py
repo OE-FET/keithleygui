@@ -26,7 +26,7 @@ setup(
         'keithley2600>=1.2.1',
         'numpy',
         'pyvisa',
-        'pyqtgraph_cx>=0.12',
+        'pyqtgraph_cx>=0.12.1',
         'qtpy',
         'repr',
         'setuptools',
