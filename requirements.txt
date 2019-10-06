@@ -2,7 +2,7 @@ PyQt5
 keithley2600>=1.2.0
 numpy
 pyvisa
-pyqtgraph_cx>=0.12
+cx_pyqtgraph>=0.12.1
 qtpy
 repr
 setuptools

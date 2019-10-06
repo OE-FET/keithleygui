@@ -6,9 +6,9 @@
 
 import sys
 import itertools
-import pyqtgraph as pg
-from pyqtgraph import AxisItem, PlotItem, GraphicsView, LegendItem
-from pyqtgraph import functions as fn
+import cx_pyqtgraph as pg
+from cx_pyqtgraph import AxisItem, PlotItem, GraphicsView, LegendItem
+from cx_pyqtgraph import functions as fn
 import numpy as np
 from qtpy import QtWidgets, QtCore, QtGui
 
