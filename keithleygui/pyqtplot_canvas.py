@@ -36,6 +36,8 @@ class SweepDataPlot(GraphicsView):
     else:
         LW = 1.5
 
+    _init_done = False
+
     def __init__(self):
         GraphicsView.__init__(self)
 
@@ -111,6 +113,8 @@ class SweepDataPlot(GraphicsView):
         # update colors
         self.update_darkmode()
 
+        self._init_done = True
+
     def clear(self):
         self.p.clear()  # clear current plot
         self.legend.clear()  # clear current legend
@@ -182,7 +186,7 @@ class SweepDataPlot(GraphicsView):
 
     def changeEvent(self, QEvent):
 
-        if QEvent.type() == QtCore.QEvent.PaletteChange:
+        if QEvent.type() == QtCore.QEvent.PaletteChange and self._init_done:
             self.update_darkmode()
 
     def update_darkmode(self):
