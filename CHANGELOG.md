@@ -1,40 +1,46 @@
-#### v1.1.4-dev (2019-10-06):
+#### v1.1.4 (2019-10-09)
 
-_Added:_
+This release focuses on cosmetic improvements.
+
+##### Changed:
+
+- Depend on our own fork of PyQtGraph `cx_pyqtgraph`.
+
+##### Added:
 
 - Support for dark interface themes, such as the dark mode in macOS Mojave. This will
   require a version of PyQt / Qt which supports system themes, such as v5.12 for macOS.
 
-#### v1.1.3 (2019-07-17):
+#### v1.1.3 (2019-07-17)
 
-_Changed:_
+##### Changed:
 
 - Moved utils to submodule `pyqt_labutils`.
 - Updated requirements.
 
-#### v1.1.2 (2019-05-20):
+#### v1.1.2 (2019-05-20)
 
-_Changed:_
+##### Changed:
 
 - Fixed a bug which caused `from keithleygui.config import CONF` to fail in Python 2.7.
 - Fixed a critical error which would prevent IV sweeps from returning a dataset.
 
-#### v1.1.1 (2019-05-16):
+#### v1.1.1 (2019-05-16)
 
-_Changed:_
+##### Changed:
 
 - Adaptations to driver changes.
 - `KeithleyGuiApp` must now be explicitly imported from main.
 
-#### v1.1.0 (2019-05-01):
+#### v1.1.0 (2019-05-01)
 
-_Changed:_
+##### Changed:
 
 - Unified and simplified code across all settings panels. This results in some GUI
   changes as well: All settings panels now have a two-column layout.
 
-#### v1.0.2 (2019-03-12):
+#### v1.0.2 (2019-03-12)
 
-_Changed:_
+##### Changed:
 
-- Switched from Matplotlib to PyQtGraph as plotting library.
+- Switched from matplotlib to PyQtGraph as plotting library.
