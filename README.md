@@ -2,6 +2,9 @@
 [![Downloads](https://pepy.tech/badge/keithleygui)](https://pepy.tech/project/keithleygui)
 [![Build Status](https://travis-ci.com/OE-FET/keithleygui.svg?branch=master)](https://travis-ci.com/OE-FET/keithleygui)
 
+**Warning:** Keithleygui v1.1.4 will be the last release that is developed and tested for
+Python 2.7. Future releases will only support Python 3.6 and higher.
+
 # keithleygui
 A high-level user interface for Keithley 2600 series instruments which allows
 the user to configure, record and save voltage sweeps such as transfer and
