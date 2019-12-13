@@ -9,7 +9,7 @@ from __future__ import division, print_function, absolute_import
 import os.path as osp
 import pkg_resources as pkgr
 import visa
-from qtpy import QtCore, QtWidgets, uic
+from PyQt5 import QtCore, QtWidgets, uic
 from keithley2600 import FETResultTable
 import numpy as np
 
@@ -96,7 +96,7 @@ class SweepSettingsWidget(SettingsWidget):
         CONF.set('Sweep', 'gate', self.smu_gate.currentText())
         CONF.set('Sweep', 'drain', self.smu_drain.currentText())
 
-    @QtCore.Slot(int)
+    @QtCore.pyqtSlot(int)
     def on_smu_gate_changed(self, int_smu):
         """Triggered when the user selects a different gate SMU. """
 
@@ -105,7 +105,7 @@ class SweepSettingsWidget(SettingsWidget):
         elif int_smu == 1 and len(self.smu_list) < 3:
             self.smu_drain.setCurrentIndex(0)
 
-    @QtCore.Slot(int)
+    @QtCore.pyqtSlot(int)
     def on_smu_drain_changed(self, int_smu):
         """Triggered when the user selects a different drain SMU. """
 
@@ -327,7 +327,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             smu.source.limitv = lim_v
             smu.trigger.source.limitv = lim_v
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_sweep_clicked(self):
         """ Start a transfer measurement with current settings."""
 
@@ -410,7 +410,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         if not self.keithley.abort_event.is_set():
             self.on_save_clicked()
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_abort_clicked(self):
         """
         Aborts current measurement.
@@ -421,7 +421,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 # Interface callbacks
 # =============================================================================
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_connect_clicked(self):
         self.keithley.connect()
         self.update_gui_connection()
@@ -431,13 +431,13 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
                    'turned on.')
             QtWidgets.QMessageBox.information(self, str('error'), msg)
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_disconnect_clicked(self):
         self.keithley.disconnect()
         self.update_gui_connection()
         self.statusBar.showMessage('    No Keithley connected.')
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_save_clicked(self):
         """Show GUI to save current sweep data as text file."""
         prompt = 'Save as .txt file.'
@@ -449,7 +449,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             return
         self.sweep_data.save(filepath)
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_load_clicked(self):
         """Show GUI to load sweep data from file."""
         prompt = 'Please select a data file.'
@@ -463,7 +463,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.canvas.plot(self.sweep_data)
         self.actionSaveSweepData.setEnabled(True)
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_save_default(self):
         """Saves current settings from GUI as defaults."""
 
@@ -477,7 +477,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         for tab in self.smu_tabs:
             tab.save_defaults()
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def on_load_default(self):
         """Load default settings to interface."""
 
@@ -491,7 +491,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         for tab in self.smu_tabs:
             tab.load_defaults()
 
-    @QtCore.Slot()
+    @QtCore.pyqtSlot()
     def exit_(self):
         self.keithley.disconnect()
         self.connection_status_update.stop()

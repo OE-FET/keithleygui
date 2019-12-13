@@ -10,7 +10,7 @@ import cx_pyqtgraph as pg
 from cx_pyqtgraph import AxisItem, PlotItem, GraphicsView, LegendItem
 from cx_pyqtgraph import functions as fn
 import numpy as np
-from qtpy import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 pg.setConfigOptions(antialias=True, exitCleanup=False)
