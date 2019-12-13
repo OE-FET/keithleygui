@@ -4,7 +4,8 @@ This version drops support for Python 2.7. Only Python 3.6 and higher are suppor
 
 #### Changed:
 
-- Resize connection dialog when hiding Visa backend textbox.
+- Depend on PyQt5 instead of qtpy.
+- Resize connection dialog when hiding PyVisa backend textbox.
 - Move connection dialog to submodule 'pyqt_labutils'.
 - Update submodule 'pyqt_labutils'.
 
