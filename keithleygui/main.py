@@ -17,7 +17,7 @@ import numpy as np
 from keithleygui.pyqt_labutils import LedIndicator
 from keithleygui.pyqt_labutils import SettingsWidget
 from keithleygui.pyqtplot_canvas import SweepDataPlot
-from keithleygui.connection_dialog import ConnectionDialog
+from keithleygui.pyqt_labutils.connection_dialog import ConnectionDialog
 from keithleygui.config.main import CONF
 
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
@@ -236,7 +236,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.led.setChecked(False)
 
         # create connection dialog
-        self.connectionDialog = ConnectionDialog(self, self.keithley)
+        self.connectionDialog = ConnectionDialog(self, self.keithley, CONF)
 
         # restore last position and size
         self.restore_geometry()
