@@ -12,7 +12,7 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(),
     package_data={
-        'keithleygui': ['*.ui'],
+        'keithleygui': ['*.ui', '*/*.ui'],
     },
     entry_points={
         'console_scripts': [
@@ -27,7 +27,7 @@ setup(
         'numpy',
         'pyvisa',
         'cx_pyqtgraph>=0.12.1',
-        'qtpy',
+        'PyQt5',
         'repr',
         'setuptools',
     ],
