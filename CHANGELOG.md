@@ -1,3 +1,10 @@
+### v1.1.5 (2019-12-13)
+
+#### Changed:
+
+- Resize connection dialog when hiding Visa backend textbox.
+- Move connection dialog to submodule 'pyqt_labutils'
+
 ### v1.1.4 (2019-10-09)
 
 This release focuses on cosmetic improvements.

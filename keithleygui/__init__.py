@@ -1,2 +1,2 @@
 import keithleygui.config
-__version__ = 'v.1.1.3'
+__version__ = 'v.1.1.5'
