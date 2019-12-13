@@ -1,9 +1,16 @@
 ### v1.1.5 (2019-12-13)
 
+This version drops support for Python 2.7. Only Python 3.6 and higher are supported.
+
 #### Changed:
 
 - Resize connection dialog when hiding Visa backend textbox.
-- Move connection dialog to submodule 'pyqt_labutils'
+- Move connection dialog to submodule 'pyqt_labutils'.
+- Update submodule 'pyqt_labutils'.
+
+#### Removed:
+
+- Support for Python 2.7.
 
 ### v1.1.4 (2019-10-09)
 
