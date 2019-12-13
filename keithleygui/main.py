@@ -14,10 +14,8 @@ from keithley2600 import FETResultTable
 import numpy as np
 
 # local imports
-from keithleygui.pyqt_labutils import LedIndicator
-from keithleygui.pyqt_labutils import SettingsWidget
+from keithleygui.pyqt_labutils import LedIndicator, SettingsWidget, ConnectionDialog
 from keithleygui.pyqtplot_canvas import SweepDataPlot
-from keithleygui.pyqt_labutils.connection_dialog import ConnectionDialog
 from keithleygui.config.main import CONF
 
 MAIN_UI_PATH = pkgr.resource_filename('keithleygui', 'main.ui')
