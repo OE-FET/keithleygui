@@ -9,7 +9,7 @@ import os.path as osp
 import pkg_resources as pkgr
 import visa
 from PyQt5 import QtCore, QtWidgets, uic
-from keithley2600 import FETResultTable
+from keithley2600 import Keithley2600, FETResultTable
 import numpy as np
 
 # local imports
@@ -198,12 +198,18 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     QUIT_ON_CLOSE = True
 
-    def __init__(self, keithley):
+    def __init__(self, keithley=None):
         super().__init__()
         # load user interface layout from .ui file
         uic.loadUi(MAIN_UI_PATH, self)
 
-        self.keithley = keithley
+        if keithley:
+            self.keithley = keithley
+        else:
+            address = CONF.get('Connection', 'VISA_ADDRESS')
+            lib = CONF.get('Connection', 'VISA_LIBRARY')
+            self.keithley = Keithley2600(address, lib)
+
         self.smu_list = list(self.keithley.SMU_LIST)
         self.sweep_data = None
 
@@ -610,23 +616,18 @@ def run():
 
     import sys
     import argparse
-    from keithley2600 import Keithley2600
+    from keithley2600 import log_to_screen
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', help='increase output verbosity',
                         action='store_true')
     args = parser.parse_args()
     if args.verbose:
-        import keithley2600
-        keithley2600.log_to_screen()
-
-    keithley_address = CONF.get('Connection', 'VISA_ADDRESS')
-    visa_library = CONF.get('Connection', 'VISA_LIBRARY')
-    keithley = Keithley2600(keithley_address, visa_library)
+        log_to_screen()
 
     app = QtWidgets.QApplication(sys.argv)
 
-    keithley_gui = KeithleyGuiApp(keithley)
+    keithley_gui = KeithleyGuiApp()
     keithley_gui.show()
     app.exec_()
 
