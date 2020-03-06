@@ -103,11 +103,4 @@ venv.bak/
 # mypy
 .mypy_cache/
 .DS_Store
-.idea/dictionaries/samschott.xml
-.idea/encodings.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/keithleygui.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
+.idea/
