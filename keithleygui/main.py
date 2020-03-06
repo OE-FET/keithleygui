@@ -58,6 +58,7 @@ class SMUSettingsWidget(SettingsWidget):
         CONF.set(self.smu_name, 'limitv', self.limit_v.value())
 
 
+# noinspection PyArgumentList
 class SweepSettingsWidget(SettingsWidget):
 
     def __init__(self, keithley):
@@ -192,6 +193,7 @@ class IVSweepSettingsWidget(SettingsWidget):
         CONF.set('Sweep', 'smu_sweep', self.smu_sweep.currentText())
 
 
+# noinspection PyArgumentList
 class KeithleyGuiApp(QtWidgets.QMainWindow):
     """ Provides a GUI for transfer and output sweeps on the Keithley 2600."""
 
@@ -551,6 +553,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.led.setChecked(False)
 
 
+# noinspection PyUnresolvedReferences
 class MeasureThread(QtCore.QThread):
 
     started_sig = QtCore.Signal()
@@ -611,8 +614,8 @@ def run():
     from keithley2600 import Keithley2600
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-v", "--verbose", help="increase output verbosity",
-                        action="store_true")
+    parser.add_argument('-v', '--verbose', help='increase output verbosity',
+                        action='store_true')
     args = parser.parse_args()
     if args.verbose:
         import keithley2600
