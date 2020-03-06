@@ -22,6 +22,7 @@ setup(
             'keithleygui_gui=keithleygui.main:run'
         ]
     },
+    python_requires='>=3.6',
     install_requires=[
         'keithley2600>=1.2.1',
         'numpy',
@@ -39,5 +40,6 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 )
