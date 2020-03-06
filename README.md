@@ -28,7 +28,7 @@ $ pip install git+https://github.com/OE-FET/keithleygui
 ## System requirements
 
 - Linux or macOS
-- Python 2.7 or 3.x
+- Python 3.6 or higher
 
 ## Acknowledgements
 - Config modules are based on the implementation from [Spyder](https://github.com/spyder-ide).

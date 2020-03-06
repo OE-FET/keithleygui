@@ -1,3 +1,15 @@
+### v1.1.6 (2020-03-06)
+
+This version drops support for Python 2.7. Only Python 3.6 and higher are supported.
+
+#### Changed:
+
+- Depend on pyqtgraph 0.11.0rc0 instead of cx_pyqtgraph. All of our pull requests have
+  been merged to upstream.
+- Use Matlab palette for line colors. This provides 7 different colors which will be
+  reused once exhausted.
+
+
 ### v1.1.5 (2019-12-13)
 
 This version drops support for Python 2.7. Only Python 3.6 and higher are supported.
