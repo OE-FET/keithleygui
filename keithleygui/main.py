@@ -5,7 +5,6 @@
 # (see LICENSE.txt for details)
 
 # system imports
-from __future__ import division, print_function, absolute_import
 import os.path as osp
 import pkg_resources as pkgr
 import visa
@@ -200,7 +199,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     QUIT_ON_CLOSE = True
 
     def __init__(self, keithley):
-        super(self.__class__, self).__init__()
+        super().__init__()
         # load user interface layout from .ui file
         uic.loadUi(MAIN_UI_PATH, self)
 
