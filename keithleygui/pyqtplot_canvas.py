@@ -6,30 +6,30 @@
 
 import sys
 import itertools
-import cx_pyqtgraph as pg
-from cx_pyqtgraph import AxisItem, PlotItem, GraphicsView, LegendItem
-from cx_pyqtgraph import functions as fn
+import pyqtgraph as pg
+from pyqtgraph import functions as fn
 import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 pg.setConfigOptions(antialias=True, exitCleanup=False)
 
+COLORS = [
+    [0.0, 114.0, 189.0],
+    [216.8, 82.9, 25.0],
+    [236.9, 177.0, 31.9],
+    [126.0, 46.9, 141.8],
+    [118.8, 171.9, 47.9],
+    [76.8, 190.0, 237.9],
+    [161.9, 19.9, 46.9],
+]
+
 
 # ========================================================================================
 # The actual plot item
 # ========================================================================================
 
-class SweepDataPlot(GraphicsView):
-
-    GREEN = [0, 204, 153]
-    BLUE = [100, 171, 246]
-    RED = [221, 61, 53]
-    PURPLE = [175, 122, 197]
-    ASH = [52, 73, 94]
-    GRAY = [178, 186, 187]
-
-    COLORS = [BLUE, RED, GREEN, PURPLE, ASH, GRAY]
+class SweepDataPlot(pg.GraphicsView):
 
     if sys.platform == 'darwin':
         LW = 3
@@ -38,8 +38,8 @@ class SweepDataPlot(GraphicsView):
 
     _init_done = False
 
-    def __init__(self):
-        GraphicsView.__init__(self)
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
 
         # create layout
         self.layout = pg.GraphicsLayout()
@@ -52,9 +52,9 @@ class SweepDataPlot(GraphicsView):
         axisItems = dict()
 
         for pos in ['bottom', 'left', 'top', 'right']:
-            axisItems[pos] = AxisItem(orientation=pos, maxTickLength=-7)
+            axisItems[pos] = pg.AxisItem(orientation=pos, maxTickLength=-7)
 
-        self.p = PlotItem(axisItems=axisItems)
+        self.p = pg.PlotItem(axisItems=axisItems)
         self.setTitle('Sweep data', fontScaling=1.3, color='k')
         self.layout.addItem(self.p)
 
@@ -105,9 +105,9 @@ class SweepDataPlot(GraphicsView):
         self.p.setYRange(-10, 10)
 
         # add legend
-        self.legend = LegendItem(brush=fn.mkBrush(255, 255, 255, 150),
-                                 labelTextColor='k',
-                                 offset=(20, -20))
+        self.legend = pg.LegendItem(brush=fn.mkBrush(255, 255, 255, 150),
+                                    labelTextColor='k',
+                                    offset=(20, -20))
         self.legend.setParentItem(self.p.vb)
 
         # update colors
@@ -150,7 +150,7 @@ class SweepDataPlot(GraphicsView):
 
         # plot data
         self.lines = []
-        for y, c in zip(ydata, itertools.cycle(self.COLORS)):
+        for y, c in zip(ydata, itertools.cycle(COLORS)):
             p = self.p.plot(xdata, y, pen=fn.mkPen(color=c, width=self.LW))
             self.lines.append(p)
 
@@ -167,7 +167,7 @@ class SweepDataPlot(GraphicsView):
         if text is None:
             self.p.setTitle(None)  # clears title and hides title column
         else:
-            self.p.setTitle('')  # makes title comlumn visible, sets placeholder text
+            self.p.setTitle('')  # makes title column visible, sets placeholder text
             self.p.titleLabel.item.setPlainText(text)  # replace HTML with plain text
 
         if color is not None:
@@ -200,7 +200,7 @@ class SweepDataPlot(GraphicsView):
         # set bg colors
         self.setBackground(None)  # reload background
         self.p.vb.setBackgroundColor(bg_color_rgb)
-        self.legend.setBrush(bg_color_rgb)
+        self.legend.opts['brush'] = fn.mkBrush(bg_color_rgb)
 
         # change label colors
         for pos in ['bottom', 'left', 'top', 'right']:
@@ -212,18 +212,9 @@ class SweepDataPlot(GraphicsView):
 
         self.x_axis.setTextPen(font_color_rgb)
         self.y_axis.setTextPen(font_color_rgb)
-        self.legend.setLabelTextColor(font_color_rgb)
+        self.legend.opts['labelTextColor'] = fn.mkColor(font_color_rgb)
         self.p.titleLabel.item.setDefaultTextColor(fn.mkColor(font_color_rgb))
 
-
-if __name__ == '__main__':
-
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    app.aboutToQuit.connect(app.deleteLater)
-
-    view = SweepDataPlot()
-    view.show()
-
-    app.exec_()
+        self.legend.update()
+        for sample, label in self.legend.items:
+            label.update()
