@@ -215,6 +215,8 @@ class SweepDataPlot(pg.GraphicsView):
         self.legend.opts['labelTextColor'] = fn.mkColor(font_color_rgb)
         self.p.titleLabel.item.setDefaultTextColor(fn.mkColor(font_color_rgb))
 
-        self.legend.update()
         for sample, label in self.legend.items:
-            label.update()
+            label.setAttr('color', fn.mkColor(font_color_rgb))
+            label.setText(label.text)  # force redraw
+
+        self.legend.update()
