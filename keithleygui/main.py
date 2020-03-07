@@ -629,7 +629,7 @@ def run():
 
     keithley_gui = KeithleyGuiApp()
     keithley_gui.show()
-    app.exec_()
+    app.exec()
 
 
 if __name__ == '__main__':

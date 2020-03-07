@@ -1,3 +1,14 @@
+### v1.1.7-dev
+
+#### Changed:
+
+- Create our own keithley instance if none is provided.
+
+#### Fixed:
+
+- Fixed an issue where the color of legend labels would not update when switching to a
+  dark UI.
+
 ### v1.1.6 (2020-03-06)
 
 This version drops support for Python 2.7. Only Python 3.6 and higher are supported.

@@ -1,2 +1,6 @@
 import keithleygui.config
-__version__ = 'v.1.1.6'
+from keithleygui.main import KeithleyGuiApp
+
+
+__version__ = 'v1.1.7-dev'
+__author__ = 'Sam Schott'
