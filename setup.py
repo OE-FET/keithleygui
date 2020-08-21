@@ -27,7 +27,7 @@ setup(
         'keithley2600>=1.2.1',
         'numpy',
         'pyvisa',
-        'pyqtgraph>=0.11.0rc0',
+        'pyqtgraph>=0.11.0',
         'PyQt5',
         'repr',
         'setuptools',
