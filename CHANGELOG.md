@@ -1,5 +1,9 @@
 ### v1.1.7-dev
 
+#### Added:
+
+- Provide option for high capacitance mode.
+
 #### Changed:
 
 - Create our own keithley instance if none is provided.
