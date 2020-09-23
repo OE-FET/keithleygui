@@ -18,9 +18,6 @@ setup(
         'console_scripts': [
             'keithleygui=keithleygui.main:run'
         ],
-        'gui_scripts': [
-            'keithleygui_gui=keithleygui.main:run'
-        ]
     },
     python_requires='>=3.6',
     install_requires=[
