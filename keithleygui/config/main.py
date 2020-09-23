@@ -61,6 +61,7 @@ for smu in Keithley2600.SMU_LIST:
                      'sense': 'SENSE_LOCAL',
                      'limitv': 200.0,
                      'limiti': 0.1,
+                     'highc': False,
                      })
     DEFAULTS.append(smu_settings)
 
