@@ -33,6 +33,7 @@ class SMUSettingsWidget(SettingsWidget):
         self.sense_type = self.addSelectionField('Sense type:', ['local (2-wire)', 'remote (4-wire)'])
         self.limit_i = self.addDoubleField('Current limit:', 0.1, 'A', limits=[0, 100])
         self.limit_v = self.addDoubleField('Voltage limit:', 200, 'V', limits=[0, 200])
+        self.high_c = self.addCheckBox('High capacitance mode', checked=False)
 
         self.load_defaults()
 
@@ -45,6 +46,7 @@ class SMUSettingsWidget(SettingsWidget):
 
         self.limit_i.setValue(CONF.get(self.smu_name, 'limiti'))
         self.limit_v.setValue(CONF.get(self.smu_name, 'limitv'))
+        self.high_c.setChecked(CONF.get(self.smu_name, 'highc'))
 
     def save_defaults(self):
 
@@ -55,6 +57,7 @@ class SMUSettingsWidget(SettingsWidget):
 
         CONF.set(self.smu_name, 'limiti', self.limit_i.value())
         CONF.set(self.smu_name, 'limitv', self.limit_v.value())
+        CONF.set(self.smu_name, 'highc', self.high_c.isChecked())
 
 
 # noinspection PyArgumentList
@@ -331,6 +334,8 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             lim_v = tab.limit_v.value()
             smu.source.limitv = lim_v
             smu.trigger.source.limitv = lim_v
+
+            smu.source.highc = int(tab.high_c.isChecked())
 
     @QtCore.pyqtSlot()
     def on_sweep_clicked(self):
