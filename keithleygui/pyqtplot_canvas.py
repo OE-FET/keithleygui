@@ -29,9 +29,10 @@ COLORS = [
 # The actual plot item
 # ========================================================================================
 
+
 class SweepDataPlot(pg.GraphicsView):
 
-    if sys.platform == 'darwin':
+    if sys.platform == "darwin":
         LW = 3
     else:
         LW = 1.5
@@ -44,43 +45,43 @@ class SweepDataPlot(pg.GraphicsView):
         # create layout
         self.layout = pg.GraphicsLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(-1.)
+        self.layout.setSpacing(-1.0)
         self.setBackground(None)
         self.setCentralItem(self.layout)
 
         # create axes and apply formatting
         axisItems = dict()
 
-        for pos in ['bottom', 'left', 'top', 'right']:
+        for pos in ["bottom", "left", "top", "right"]:
             axisItems[pos] = pg.AxisItem(orientation=pos, maxTickLength=-7)
 
         self.p = pg.PlotItem(axisItems=axisItems)
-        self.setTitle('Sweep data', fontScaling=1.3, color='k')
+        self.setTitle("Sweep data", fontScaling=1.3, color="k")
         self.layout.addItem(self.p)
 
-        self.p.vb.setBackgroundColor('w')
+        self.p.vb.setBackgroundColor("w")
         self.p.setContentsMargins(10, 10, 10, 10)
 
-        for pos in ['bottom', 'left', 'top', 'right']:
+        for pos in ["bottom", "left", "top", "right"]:
             ax = self.p.getAxis(pos)
             ax.setZValue(0)  # draw on top of patch
             ax.setVisible(True)  # make all axes visible
-            ax.setPen(width=self.LW*2/3, color=0.5)  # grey spines and ticks
+            ax.setPen(width=self.LW * 2 / 3, color=0.5)  # grey spines and ticks
             try:
-                ax.setTextPen('k')  # black text
+                ax.setTextPen("k")  # black text
             except AttributeError:
                 pass
             ax.setStyle(autoExpandTextSpace=True, tickTextOffset=4)
 
-        self.p.getAxis('top').setTicks([])
-        self.p.getAxis('top').setHeight(0)
-        self.p.getAxis('right').setTicks([])
+        self.p.getAxis("top").setTicks([])
+        self.p.getAxis("top").setHeight(0)
+        self.p.getAxis("right").setTicks([])
 
-        self.x_axis = self.p.getAxis('bottom')
-        self.y_axis = self.p.getAxis('left')
+        self.x_axis = self.p.getAxis("bottom")
+        self.y_axis = self.p.getAxis("left")
 
-        self.x_axis.setLabel('Voltage', units='V', color='k', size='12pt')
-        self.y_axis.setLabel('Current', units='A', color='k', size='12pt')
+        self.x_axis.setLabel("Voltage", units="V", color="k", size="12pt")
+        self.y_axis.setLabel("Current", units="A", color="k", size="12pt")
         self.y_axis.setStyle(tickTextWidth=35)
 
         # set auto range and mouse panning / zooming
@@ -93,7 +94,7 @@ class SweepDataPlot(pg.GraphicsView):
                 if axis == 0:
                     padding = 0
                 else:
-                    padding = np.clip(1./(length**0.5), 0.02, 0.1)
+                    padding = np.clip(1.0 / (length ** 0.5), 0.02, 0.1)
             else:
                 padding = 0.02
             return padding
@@ -105,9 +106,9 @@ class SweepDataPlot(pg.GraphicsView):
         self.p.setYRange(-10, 10)
 
         # add legend
-        self.legend = pg.LegendItem(brush=fn.mkBrush(255, 255, 255, 150),
-                                    labelTextColor='k',
-                                    offset=(20, -20))
+        self.legend = pg.LegendItem(
+            brush=fn.mkBrush(255, 255, 255, 150), labelTextColor="k", offset=(20, -20)
+        )
         self.legend.setParentItem(self.p.vb)
 
         # update colors
@@ -127,24 +128,24 @@ class SweepDataPlot(pg.GraphicsView):
         ydata = sweep_data.values()[1:]
 
         # format plot according to sweep type
-        unit = xdata_title.unit if xdata_title.has_unit() else 'a.u.'
+        unit = xdata_title.unit if xdata_title.has_unit() else "a.u."
         self.x_axis.setLabel(xdata_title.name, unit=unit)
-        self.y_axis.setLabel('Current', unit='A')
+        self.y_axis.setLabel("Current", unit="A")
 
-        if sweep_data.params['sweep_type'] == 'transfer':
-            self.setTitle('Transfer curve')
+        if sweep_data.params["sweep_type"] == "transfer":
+            self.setTitle("Transfer curve")
             self.p.setLogMode(x=False, y=True)
             self.legend.setOffset((20, -20))  # legend in bottom-left corner
             ydata = [np.abs(y) for y in ydata]
 
-        elif sweep_data.params['sweep_type'] == 'output':
-            self.setTitle('Output curve')
+        elif sweep_data.params["sweep_type"] == "output":
+            self.setTitle("Output curve")
             self.p.setLogMode(x=False, y=False)
             self.legend.setOffset((-20, 20))  # legend in top-right corner
             ydata = [np.abs(y) for y in ydata]
 
         else:
-            self.setTitle('Sweep curve')
+            self.setTitle("Sweep curve")
             self.p.setLogMode(x=False, y=False)
             ydata = [np.abs(y) for y in ydata]
 
@@ -167,7 +168,7 @@ class SweepDataPlot(pg.GraphicsView):
         if text is None:
             self.p.setTitle(None)  # clears title and hides title column
         else:
-            self.p.setTitle('')  # makes title column visible, sets placeholder text
+            self.p.setTitle("")  # makes title column visible, sets placeholder text
             self.p.titleLabel.item.setPlainText(text)  # replace HTML with plain text
 
         if color is not None:
@@ -179,8 +180,8 @@ class SweepDataPlot(pg.GraphicsView):
 
         if fontScaling is not None:
             font = self.p.titleLabel.item.font()
-            defaultFontSize = QtWidgets.QLabel('test').font().pointSize()
-            fontSize = round(defaultFontSize*fontScaling, 1)
+            defaultFontSize = QtWidgets.QLabel("test").font().pointSize()
+            fontSize = round(defaultFontSize * fontScaling, 1)
             font.setPointSize(fontSize)
             self.p.titleLabel.item.setFont(font)
 
@@ -200,10 +201,10 @@ class SweepDataPlot(pg.GraphicsView):
         # set bg colors
         self.setBackground(None)  # reload background
         self.p.vb.setBackgroundColor(bg_color_rgb)
-        self.legend.opts['brush'] = fn.mkBrush(bg_color_rgb)
+        self.legend.opts["brush"] = fn.mkBrush(bg_color_rgb)
 
         # change label colors
-        for pos in ['bottom', 'left', 'top', 'right']:
+        for pos in ["bottom", "left", "top", "right"]:
             ax = self.p.getAxis(pos)
             try:
                 ax.setTextPen(font_color_rgb)
@@ -212,11 +213,11 @@ class SweepDataPlot(pg.GraphicsView):
 
         self.x_axis.setTextPen(font_color_rgb)
         self.y_axis.setTextPen(font_color_rgb)
-        self.legend.opts['labelTextColor'] = fn.mkColor(font_color_rgb)
+        self.legend.opts["labelTextColor"] = fn.mkColor(font_color_rgb)
         self.p.titleLabel.item.setDefaultTextColor(fn.mkColor(font_color_rgb))
 
         for sample, label in self.legend.items:
-            label.setAttr('color', fn.mkColor(font_color_rgb))
+            label.setAttr("color", fn.mkColor(font_color_rgb))
             label.setText(label.text)  # force redraw
 
         self.legend.update()

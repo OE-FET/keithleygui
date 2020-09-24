@@ -25,7 +25,7 @@ from distutils.version import LooseVersion
 # Local imports
 from keithleygui.config.base import get_conf_path, get_home_dir
 
-PY2 = sys.version[0] == '2'
+PY2 = sys.version[0] == "2"
 
 
 def is_text_string(obj):
@@ -47,10 +47,10 @@ def is_stable_version(version):
     Not stable version: 1.2alpha, 1.3.4beta, 0.1.0rc1, 3.0.0dev
     """
     if not isinstance(version, tuple):
-        version = version.split('.')
+        version = version.split(".")
     last_part = version[-1]
 
-    if not re.search(r'[a-zA-Z]', last_part):
+    if not re.search(r"[a-zA-Z]", last_part):
         return True
     else:
         return False
@@ -70,27 +70,35 @@ def check_version(actver, version, cmp_op):
     Distributed under the terms of the BSD License.
     """
     if isinstance(actver, tuple):
-        actver = '.'.join([str(i) for i in actver])
+        actver = ".".join([str(i) for i in actver])
 
     # Hacks needed so that LooseVersion understands that (for example)
     # version = '3.0.0' is in fact bigger than actver = '3.0.0rc1'
-    if is_stable_version(version) and not is_stable_version(actver) and \
-      actver.startswith(version) and version != actver:
-        version = version + 'zz'
-    elif is_stable_version(actver) and not is_stable_version(version) and \
-      version.startswith(actver) and version != actver:
-        actver = actver + 'zz'
+    if (
+        is_stable_version(version)
+        and not is_stable_version(actver)
+        and actver.startswith(version)
+        and version != actver
+    ):
+        version = version + "zz"
+    elif (
+        is_stable_version(actver)
+        and not is_stable_version(version)
+        and version.startswith(actver)
+        and version != actver
+    ):
+        actver = actver + "zz"
 
     try:
-        if cmp_op == '>':
+        if cmp_op == ">":
             return LooseVersion(actver) > LooseVersion(version)
-        elif cmp_op == '>=':
+        elif cmp_op == ">=":
             return LooseVersion(actver) >= LooseVersion(version)
-        elif cmp_op == '=':
+        elif cmp_op == "=":
             return LooseVersion(actver) == LooseVersion(version)
-        elif cmp_op == '<':
+        elif cmp_op == "<":
             return LooseVersion(actver) < LooseVersion(version)
-        elif cmp_op == '<=':
+        elif cmp_op == "<=":
             return LooseVersion(actver) <= LooseVersion(version)
         else:
             return False
@@ -102,6 +110,7 @@ def check_version(actver, version, cmp_op):
 # Auxiliary classes
 # =============================================================================
 
+
 class NoDefault:
     pass
 
@@ -110,11 +119,13 @@ class NoDefault:
 # Defaults class
 # =============================================================================
 
+
 class DefaultsConfig(cp.ConfigParser):
     """
     Class used to save defaults to a file and as base class for
     UserConfig
     """
+
     def __init__(self, name, subfolder):
         if PY2:
             cp.ConfigParser.__init__(self)
@@ -135,7 +146,7 @@ class DefaultsConfig(cp.ConfigParser):
         if not is_text_string(value):
             value = repr(value)
         if verbose:
-            print('%s[ %s ] = %s' % (section, option, value))
+            print("%s[ %s ] = %s" % (section, option, value))
         cp.ConfigParser.set(self, section, option, value)
 
     def _save(self):
@@ -149,11 +160,11 @@ class DefaultsConfig(cp.ConfigParser):
         def _write_file(fname):
             if PY2:
                 # Python 2
-                with codecs.open(fname, 'w', encoding='utf-8') as configfile:
+                with codecs.open(fname, "w", encoding="utf-8") as configfile:
                     self.write(configfile)
             else:
                 # Python 3
-                with open(fname, 'w', encoding='utf-8') as configfile:
+                with open(fname, "w", encoding="utf-8") as configfile:
                     self.write(configfile)
 
         try:  # the "easy" way
@@ -167,23 +178,23 @@ class DefaultsConfig(cp.ConfigParser):
             except Exception as e:
                 print("Failed to write user configuration file.")
                 print("Please submit a bug report.")
-                raise(e)
+                raise (e)
 
     def filename(self):
         """Create a .ini filename located in user home directory.
         This .ini files stores the global package preferences.
         """
         if self.subfolder is None:
-            config_file = osp.join(get_home_dir(), '.%s.ini' % self.name)
+            config_file = osp.join(get_home_dir(), ".%s.ini" % self.name)
             return config_file
         else:
             folder = get_conf_path(self.subfolder)
             # Save defaults in a "defaults" dir of subfolder to not pollute it
-            if 'defaults' in self.name:
-                folder = osp.join(folder, 'defaults')
+            if "defaults" in self.name:
+                folder = osp.join(folder, "defaults")
                 if not osp.isdir(folder):
                     os.mkdir(folder)
-            config_file = osp.join(folder, '%s.ini' % self.name)
+            config_file = osp.join(folder, "%s.ini" % self.name)
             return config_file
 
     def set_defaults(self, defaults):
@@ -197,6 +208,7 @@ class DefaultsConfig(cp.ConfigParser):
 # User config class
 # =============================================================================
 
+
 class UserConfig(DefaultsConfig):
     """
     UserConfig class, based on ConfigParser
@@ -209,16 +221,26 @@ class UserConfig(DefaultsConfig):
     Note that 'get' and 'set' arguments number and type
     differ from the overriden methods
     """
-    DEFAULT_SECTION_NAME = 'main'
 
-    def __init__(self, name, defaults=None, load=True, version=None,
-                 subfolder=None, backup=False, raw_mode=False,
-                 remove_obsolete=False):
+    DEFAULT_SECTION_NAME = "main"
+
+    def __init__(
+        self,
+        name,
+        defaults=None,
+        load=True,
+        version=None,
+        subfolder=None,
+        backup=False,
+        raw_mode=False,
+        remove_obsolete=False,
+    ):
         DefaultsConfig.__init__(self, name, subfolder)
         self.raw = 1 if raw_mode else 0
-        if (version is not None and
-                re.match(r'^(\d+).(\d+).(\d+)$', version) is None):
-            raise ValueError("Version number %r is incorrect - must be in X.Y.Z format" % version)
+        if version is not None and re.match(r"^(\d+).(\d+).(\d+)$", version) is None:
+            raise ValueError(
+                "Version number %r is incorrect - must be in X.Y.Z format" % version
+            )
         if isinstance(defaults, dict):
             defaults = [(self.DEFAULT_SECTION_NAME, defaults)]
         self.defaults = defaults
@@ -234,8 +256,8 @@ class UserConfig(DefaultsConfig):
             # If config file already exists, it overrides Default options:
             self.load_from_ini()
             old_ver = self.get_version(version)
-            _major = lambda _t: _t[:_t.find('.')]
-            _minor = lambda _t: _t[:_t.rfind('.')]
+            _major = lambda _t: _t[: _t.find(".")]
+            _minor = lambda _t: _t[: _t.rfind(".")]
             # Save new defaults
             self._save_new_defaults(defaults, version, subfolder)
             # Updating defaults only if major/minor version is different
@@ -245,7 +267,7 @@ class UserConfig(DefaultsConfig):
                         shutil.copyfile(fname, "%s-%s.bak" % (fname, old_ver))
                     except IOError:
                         pass
-                if check_version(old_ver, '2.4.0', '<'):
+                if check_version(old_ver, "2.4.0", "<"):
                     self.reset_to_defaults(save=False)
                 else:
                     self._update_defaults(defaults, old_ver)
@@ -258,13 +280,13 @@ class UserConfig(DefaultsConfig):
                 # If no defaults are defined, set .ini file settings as default
                 self.set_as_defaults()
 
-    def get_version(self, version='0.0.0'):
+    def get_version(self, version="0.0.0"):
         """Return configuration (not application!) version"""
-        return self.get(self.DEFAULT_SECTION_NAME, 'version', version)
+        return self.get(self.DEFAULT_SECTION_NAME, "version", version)
 
-    def set_version(self, version='0.0.0', save=True):
+    def set_version(self, version="0.0.0", save=True):
         """Set configuration (not application!) version"""
-        self.set(self.DEFAULT_SECTION_NAME, 'version', version, save=save)
+        self.set(self.DEFAULT_SECTION_NAME, "version", version, save=save)
 
     def load_from_ini(self):
         """
@@ -274,7 +296,7 @@ class UserConfig(DefaultsConfig):
             fname = self.filename()
             if osp.isfile(fname):
                 try:
-                    with codecs.open(fname, encoding='utf-8') as configfile:
+                    with codecs.open(fname, encoding="utf-8") as configfile:
                         self.readfp(configfile)
                 except IOError:
                     print("Failed reading file", fname)
@@ -286,14 +308,15 @@ class UserConfig(DefaultsConfig):
         """Read old defaults"""
         old_defaults = cp.ConfigParser()
         path = osp.dirname(self.filename())
-        path = osp.join(path, 'defaults')
-        old_defaults.read(osp.join(path, 'defaults-'+old_version+'.ini'))
+        path = osp.join(path, "defaults")
+        old_defaults.read(osp.join(path, "defaults-" + old_version + ".ini"))
         return old_defaults
 
     def _save_new_defaults(self, defaults, new_version, subfolder):
         """Save new defaults"""
-        new_defaults = DefaultsConfig(name='defaults-'+new_version,
-                                      subfolder=subfolder)
+        new_defaults = DefaultsConfig(
+            name="defaults-" + new_version, subfolder=subfolder
+        )
         if not osp.isfile(new_defaults.filename()):
             new_defaults.set_defaults(defaults)
             new_defaults._save()
@@ -414,7 +437,7 @@ class UserConfig(DefaultsConfig):
         elif is_text_string(default_value):
             if PY2:
                 try:
-                    value = value.decode('utf-8')
+                    value = value.decode("utf-8")
                     try:
                         # Some str config values expect to be eval after
                         # decoding
