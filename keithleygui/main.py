@@ -7,7 +7,7 @@
 # system imports
 import os.path as osp
 import pkg_resources as pkgr
-import visa
+import pyvisa
 from PyQt5 import QtCore, QtWidgets, uic
 from keithley2600 import Keithley2600, FETResultTable
 import numpy as np
@@ -527,7 +527,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             try:
                 test = self.keithley.localnode.model
                 self._gui_state_idle()
-            except (visa.VisaIOError, visa.InvalidSession, OSError):
+            except (pyvisa.VisaIOError, pyvisa.InvalidSession, OSError):
                 self.keithley.disconnect()
                 self._gui_state_disconnected()
 
