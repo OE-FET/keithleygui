@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="keithleygui",
-    version="1.1.7",
+    version="1.1.8",
     description="A GUI for the Keithley 2600 series",
     author="Sam Schott",
     author_email="ss2151@cam.ac.uk",
