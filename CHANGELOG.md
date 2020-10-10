@@ -1,3 +1,9 @@
+### v1.1.8
+
+#### Changed:
+
+- Replaced deprecated `visa` import with `pyvisa`.
+
 ### v1.1.7
 
 #### Added:
@@ -7,15 +13,14 @@
 #### Changed:
 
 - Create our own keithley instance if none is provided.
-
+- Depend on the newly released pyqtgraph 0.11.
+  
 #### Fixed:
 
 - Fixed an issue where the color of legend labels would not update when switching to a
   dark UI.
 
 ### v1.1.6 (2020-03-06)
-
-This version drops support for Python 2.7. Only Python 3.6 and higher are supported.
 
 #### Changed:
 
