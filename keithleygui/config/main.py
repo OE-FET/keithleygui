@@ -10,7 +10,6 @@ keithleygui configuration options.
 
 # Local import
 from keithleygui.config.user import UserConfig
-from keithley2600 import Keithley2600
 
 PACKAGE_NAME = "keithleygui"
 SUBFOLDER = ".%s" % PACKAGE_NAME
@@ -47,18 +46,18 @@ DEFAULTS = [
             "VStart": -10.0,
             "VStop": 10.0,
             "VStep": 1.0,
-            "smu_sweep": Keithley2600.SMU_LIST[0],
+            "smu_sweep": "smua",
             "tInt": 0.1,
             "pulsed": False,
             "delay": -1.0,
-            "gate": Keithley2600.SMU_LIST[0],
-            "drain": Keithley2600.SMU_LIST[1],
+            "gate": "smua",
+            "drain": "smub",
         },
     ),
 ]
 
 
-for smu in Keithley2600.SMU_LIST:
+for smu in ["smua", "smub"]:
     smu_settings = (
         smu,
         {
