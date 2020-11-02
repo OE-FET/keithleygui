@@ -6,10 +6,14 @@
 
 # system imports
 import os.path as osp
+import configparser as cp
+
+# external imports
 import pkg_resources as pkgr
 import pyvisa
 from PyQt5 import QtCore, QtWidgets, uic
 from keithley2600 import Keithley2600, FETResultTable
+from keithley2600.keithley_driver import KeithleyIOError
 import numpy as np
 
 # local imports
@@ -20,13 +24,22 @@ from keithleygui.config.main import CONF
 MAIN_UI_PATH = pkgr.resource_filename("keithleygui", "main.ui")
 
 
+def _get_smus(keithley):
+    smu_list = [attr for attr in dir(keithley) if attr.startswith("smu")]
+
+    while len(smu_list) < 2:
+        smu_list.append("--")
+
+    return smu_list
+
+
 class SMUSettingsWidget(SettingsWidget):
 
     SENSE_LOCAL = 0
     SENSE_REMOTE = 1
 
     def __init__(self, smu_name):
-        SettingsWidget.__init__(self)
+        super().__init__()
 
         self.smu_name = smu_name
 
@@ -41,37 +54,43 @@ class SMUSettingsWidget(SettingsWidget):
 
     def load_defaults(self):
 
-        if CONF.get(self.smu_name, "sense") == "SENSE_LOCAL":
-            self.sense_type.setCurrentIndex(self.SENSE_LOCAL)
-        elif CONF.get(self.smu_name, "sense") == "SENSE_REMOTE":
-            self.sense_type.setCurrentIndex(self.SENSE_REMOTE)
+        if self.smu_name != "--":
 
-        self.limit_i.setValue(CONF.get(self.smu_name, "limiti"))
-        self.limit_v.setValue(CONF.get(self.smu_name, "limitv"))
-        self.high_c.setChecked(CONF.get(self.smu_name, "highc"))
+            try:
+                sense_mode = CONF.get(self.smu_name, "sense")
+
+                if sense_mode == "SENSE_LOCAL":
+                    self.sense_type.setCurrentIndex(self.SENSE_LOCAL)
+                elif sense_mode == "SENSE_REMOTE":
+                    self.sense_type.setCurrentIndex(self.SENSE_REMOTE)
+
+                self.limit_i.setValue(CONF.get(self.smu_name, "limiti"))
+                self.limit_v.setValue(CONF.get(self.smu_name, "limitv"))
+                self.high_c.setChecked(CONF.get(self.smu_name, "highc"))
+            except cp.NoSectionError:
+                pass
 
     def save_defaults(self):
 
-        if self.sense_type.currentIndex() == self.SENSE_LOCAL:
-            CONF.set(self.smu_name, "sense", "SENSE_LOCAL")
-        elif self.sense_type.currentIndex() == self.SENSE_REMOTE:
-            CONF.set(self.smu_name, "sense", "SENSE_REMOTE")
+        if self.smu_name != "--":
 
-        CONF.set(self.smu_name, "limiti", self.limit_i.value())
-        CONF.set(self.smu_name, "limitv", self.limit_v.value())
-        CONF.set(self.smu_name, "highc", self.high_c.isChecked())
+            if self.sense_type.currentIndex() == self.SENSE_LOCAL:
+                CONF.set(self.smu_name, "sense", "SENSE_LOCAL")
+            elif self.sense_type.currentIndex() == self.SENSE_REMOTE:
+                CONF.set(self.smu_name, "sense", "SENSE_REMOTE")
+
+            CONF.set(self.smu_name, "limiti", self.limit_i.value())
+            CONF.set(self.smu_name, "limitv", self.limit_v.value())
+            CONF.set(self.smu_name, "highc", self.high_c.isChecked())
 
 
 # noinspection PyArgumentList
 class SweepSettingsWidget(SettingsWidget):
     def __init__(self, keithley):
-        SettingsWidget.__init__(self)
+        super().__init__()
 
         self.keithley = keithley
-        self.smu_list = list(self.keithley.SMU_LIST)
-
-        while len(self.smu_list) < 2:
-            self.smu_list.append("--")
+        self.smu_list = _get_smus(self.keithley)
 
         self.t_int = self.addDoubleField("Integration time:", 0.1, "s", [0.000016, 0.5])
         self.t_settling = self.addDoubleField(
@@ -87,6 +106,19 @@ class SweepSettingsWidget(SettingsWidget):
 
         self.smu_gate.currentIndexChanged.connect(self.on_smu_gate_changed)
         self.smu_drain.currentIndexChanged.connect(self.on_smu_drain_changed)
+
+    def update_smu_list(self):
+
+        self.smu_list = _get_smus(self.keithley)
+
+        self.smu_gate.clear()
+        self.smu_drain.clear()
+
+        self.smu_gate.addItems(self.smu_list)
+        self.smu_drain.addItems(self.smu_list)
+
+        self.smu_gate.setCurrentIndex(0)
+        self.smu_drain.setCurrentIndex(1)
 
     def load_defaults(self):
 
@@ -123,7 +155,7 @@ class SweepSettingsWidget(SettingsWidget):
 
 class TransferSweepSettingsWidget(SettingsWidget):
     def __init__(self):
-        SettingsWidget.__init__(self)
+        super().__init__()
 
         self.vg_start = self.addDoubleField("Vg start:", 0, "V")
         self.vg_stop = self.addDoubleField("Vg stop:", 0, "V")
@@ -149,7 +181,7 @@ class TransferSweepSettingsWidget(SettingsWidget):
 
 class OutputSweepSettingsWidget(SettingsWidget):
     def __init__(self):
-        SettingsWidget.__init__(self)
+        super().__init__()
 
         self.vd_start = self.addDoubleField("Vd start:", 0, "V")
         self.vd_stop = self.addDoubleField("Vd stop:", 0, "V")
@@ -173,15 +205,23 @@ class OutputSweepSettingsWidget(SettingsWidget):
 
 
 class IVSweepSettingsWidget(SettingsWidget):
-    def __init__(self, smu_list):
-        SettingsWidget.__init__(self)
+    def __init__(self, keithley):
+        super().__init__()
+        self.keithley = keithley
+        self.smu_list = _get_smus(self.keithley)
 
         self.v_start = self.addDoubleField("Vd start:", 0, "V")
         self.v_stop = self.addDoubleField("Vd stop:", 0, "V")
         self.v_step = self.addDoubleField("Vd step:", 0, "V")
-        self.smu_sweep = self.addSelectionField("Sweep SMU:", smu_list, 0)
+        self.smu_sweep = self.addSelectionField("Sweep SMU:", self.smu_list, 0)
 
         self.load_defaults()
+
+    def update_smu_list(self):
+        self.smu_list = _get_smus(self.keithley)
+        self.smu_sweep.clear()
+        self.smu_sweep.addItems(self.smu_list)
+        self.smu_sweep.setCurrentIndex(0)
 
     def load_defaults(self):
 
@@ -215,13 +255,13 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
             lib = CONF.get("Connection", "VISA_LIBRARY")
             self.keithley = Keithley2600(address, lib)
 
-        self.smu_list = list(self.keithley.SMU_LIST)
+        self.smu_list = _get_smus(self.keithley)
         self.sweep_data = None
 
         # create sweep settings panes
         self.transfer_sweep_settings = TransferSweepSettingsWidget()
         self.output_sweep_settings = OutputSweepSettingsWidget()
-        self.iv_sweep_settings = IVSweepSettingsWidget(self.smu_list)
+        self.iv_sweep_settings = IVSweepSettingsWidget(self.keithley)
         self.general_sweep_settings = SweepSettingsWidget(self.keithley)
 
         self.tabWidgetSweeps.widget(0).layout().addWidget(self.transfer_sweep_settings)
@@ -261,6 +301,21 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.connection_status_update = QtCore.QTimer()
         self.connection_status_update.timeout.connect(self.update_gui_connection)
         self.connection_status_update.start(10000)  # 10 sec
+
+    def update_smu_list(self):
+
+        self.smu_list = _get_smus(self.keithley)
+
+        # recreate tabs for smu settings
+        self.smu_tabs = []
+        self.tabWidgetSettings.clear()
+        for smu_name in self.smu_list:
+            tab = SMUSettingsWidget(smu_name)
+            self.tabWidgetSettings.addTab(tab, smu_name)
+            self.smu_tabs.append(tab)
+
+        self.iv_sweep_settings.update_smu_list()
+        self.general_sweep_settings.update_smu_list()
 
     @staticmethod
     def _string_to_vd(string):
@@ -440,6 +495,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot()
     def on_connect_clicked(self):
         self.keithley.connect()
+        self.update_smu_list()
         self.update_gui_connection()
         if not self.keithley.connected:
             msg = (
@@ -523,18 +579,20 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
     def update_gui_connection(self):
         """Check if Keithley is connected and update GUI."""
-        if self.keithley.connected and not self.keithley.busy:
+        if self.keithley.connected:
+
             try:
                 test = self.keithley.localnode.model
-                self._gui_state_idle()
-            except (pyvisa.VisaIOError, pyvisa.InvalidSession, OSError):
+            except (pyvisa.VisaIOError, pyvisa.InvalidSession, OSError, KeithleyIOError):
                 self.keithley.disconnect()
                 self._gui_state_disconnected()
+            else:
 
-        elif self.keithley.connected and self.keithley.busy:
-            self._gui_state_busy()
-
-        elif not self.keithley.connected:
+                if self.keithley.busy:
+                    self._gui_state_busy()
+                else:
+                    self._gui_state_idle()
+        else:
             self._gui_state_disconnected()
 
     def _gui_state_busy(self):
