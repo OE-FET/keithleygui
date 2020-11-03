@@ -54,20 +54,26 @@ DEFAULTS = [
             "drain": "smub",
         },
     ),
-]
-
-
-for smu in ["smua", "smub"]:
-    smu_settings = (
-        smu,
+    (
+        "smua",
         {
             "sense": "SENSE_LOCAL",
             "limitv": 200.0,
             "limiti": 0.1,
             "highc": False,
         },
-    )
-    DEFAULTS.append(smu_settings)
+    ),
+    (
+        "smub",
+        {
+            "sense": "SENSE_LOCAL",
+            "limitv": 200.0,
+            "limiti": 0.1,
+            "highc": False,
+        },
+    ),
+]
+
 
 # =============================================================================
 # Config instance
