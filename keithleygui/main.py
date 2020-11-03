@@ -487,6 +487,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         Aborts current measurement.
         """
         self.keithley.abort_event.set()
+        for smu in self.smu_list:
+            getattr(self.keithley, smu).abort()
+        self.keithley.reset()
 
     # =============================================================================
     # Interface callbacks
