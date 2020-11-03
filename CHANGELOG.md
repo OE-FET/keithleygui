@@ -1,3 +1,11 @@
+### v1.2.0
+
+#### Changed:
+
+- Don't make any assumptions about the number of available SMUs but adapt GUI after a
+  Keithley has been connected.
+- Adapt to work with v2.0.0 of the keithley2600 driver.
+
 ### v1.1.8
 
 #### Changed:
