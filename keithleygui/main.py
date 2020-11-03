@@ -25,8 +25,10 @@ MAIN_UI_PATH = pkgr.resource_filename("keithleygui", "main.ui")
 
 
 def _get_smus(keithley):
-    smu_list = [attr for attr in dir(keithley) if attr.startswith("smu")]
+    smu_list = [attr_name for attr_name in dir(keithley) if attr_name.startswith("smu")]
 
+    # we need at least two SMUs for GUI
+    # -> fill with placeholders if required
     while len(smu_list) < 2:
         smu_list.append("--")
 
