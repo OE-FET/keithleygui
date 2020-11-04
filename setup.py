@@ -19,7 +19,7 @@ setup(
     },
     python_requires=">=3.6",
     install_requires=[
-        "keithley2600>=1.2.1",
+        "keithley2600>=2.0.0",
         "numpy",
         "pyvisa",
         "pyqtgraph>=0.11.0",
