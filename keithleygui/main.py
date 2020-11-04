@@ -402,7 +402,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
         if self.keithley.busy:
             msg = "Keithley is currently busy. Please try again later."
-            QtWidgets.QMessageBox.information(self, str("error"), msg)
+            QtWidgets.QMessageBox.information(self, "Keithley Busy", msg)
 
             return
 
@@ -458,13 +458,14 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
                 "Integration time must be between 0.001 and 25 "
                 + "power line cycles of 1/(%s Hz)." % freq
             )
-            QtWidgets.QMessageBox.information(self, str("error"), msg)
+            QtWidgets.QMessageBox.information(self, "Parameter Error", msg)
 
             return
 
         # create measurement thread with params dictionary
         self.measureThread = MeasureThread(self.keithley, params)
         self.measureThread.finished_sig.connect(self.on_measure_done)
+        self.measureThread.error_sig.connect(self.on_measure_error)
 
         # run measurement
         self._gui_state_busy()
@@ -479,6 +480,13 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.canvas.plot(self.sweep_data)
         if not self.keithley.abort_event.is_set():
             self.on_save_clicked()
+
+    def on_measure_error(self, exc):
+        self.statusBar.showMessage("    Ready.")
+        self._gui_state_idle()
+        QtWidgets.QMessageBox.information(
+            self, "Sweep Error", f"{exc.__class__.__name__}: {exc.args[0]}"
+        )
 
     @QtCore.pyqtSlot()
     def on_abort_clicked(self):
@@ -501,11 +509,10 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         self.update_gui_connection()
         if not self.keithley.connected:
             msg = (
-                "Keithley cannot be reached at %s. " % self.keithley.visa_address
-                + "Please check if address is correct and Keithley is "
-                + "turned on."
+                f"Keithley cannot be reached at {self.keithley.visa_address}. "
+                f"Please check if address is correct and Keithley is turned on."
             )
-            QtWidgets.QMessageBox.information(self, str("error"), msg)
+            QtWidgets.QMessageBox.information(self, "Connection Error", msg)
 
     @QtCore.pyqtSlot()
     def on_disconnect_clicked(self):
@@ -585,7 +592,12 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 
             try:
                 test = self.keithley.localnode.model
-            except (pyvisa.VisaIOError, pyvisa.InvalidSession, OSError, KeithleyIOError):
+            except (
+                pyvisa.VisaIOError,
+                pyvisa.InvalidSession,
+                OSError,
+                KeithleyIOError,
+            ):
                 self.keithley.disconnect()
                 self._gui_state_disconnected()
             else:
@@ -637,6 +649,7 @@ class MeasureThread(QtCore.QThread):
 
     started_sig = QtCore.Signal()
     finished_sig = QtCore.Signal(object)
+    error_sig = QtCore.Signal(object)
 
     def __init__(self, keithley, params):
         QtCore.QThread.__init__(self)
@@ -647,63 +660,71 @@ class MeasureThread(QtCore.QThread):
         self.wait()
 
     def run(self):
+
         self.started_sig.emit()
-        sweep_data = None
 
-        if self.params["sweep_type"] == "transfer":
-            sweep_data = self.keithley.transfer_measurement(
-                self.params["smu_gate"],
-                self.params["smu_drain"],
-                self.params["VgStart"],
-                self.params["VgStop"],
-                self.params["VgStep"],
-                self.params["VdList"],
-                self.params["tInt"],
-                self.params["delay"],
-                self.params["pulsed"],
-            )
-        elif self.params["sweep_type"] == "output":
-            sweep_data = self.keithley.output_measurement(
-                self.params["smu_gate"],
-                self.params["smu_drain"],
-                self.params["VdStart"],
-                self.params["VdStop"],
-                self.params["VdStep"],
-                self.params["VgList"],
-                self.params["tInt"],
-                self.params["delay"],
-                self.params["pulsed"],
-            )
+        try:
+            sweep_data = None
 
-        elif self.params["sweep_type"] == "iv":
-            direction = np.sign(self.params["VStop"] - self.params["VStart"])
-            stp = direction * abs(self.params["VStep"])
-            sweeplist = np.arange(
-                self.params["VStart"], self.params["VStop"] + stp, stp
-            )
-            v, i = self.keithley.voltage_sweep_single_smu(
-                self.params["smu_sweep"],
-                sweeplist,
-                self.params["tInt"],
-                self.params["delay"],
-                self.params["pulsed"],
-            )
+            if self.params["sweep_type"] == "transfer":
+                sweep_data = self.keithley.transfer_measurement(
+                    self.params["smu_gate"],
+                    self.params["smu_drain"],
+                    self.params["VgStart"],
+                    self.params["VgStop"],
+                    self.params["VgStep"],
+                    self.params["VdList"],
+                    self.params["tInt"],
+                    self.params["delay"],
+                    self.params["pulsed"],
+                )
+            elif self.params["sweep_type"] == "output":
+                sweep_data = self.keithley.output_measurement(
+                    self.params["smu_gate"],
+                    self.params["smu_drain"],
+                    self.params["VdStart"],
+                    self.params["VdStop"],
+                    self.params["VdStep"],
+                    self.params["VgList"],
+                    self.params["tInt"],
+                    self.params["delay"],
+                    self.params["pulsed"],
+                )
 
-            self.keithley.beeper.beep(0.3, 2400)
-            self.keithley.reset()
+            elif self.params["sweep_type"] == "iv":
+                direction = np.sign(self.params["VStop"] - self.params["VStart"])
+                stp = direction * abs(self.params["VStep"])
+                sweeplist = np.arange(
+                    self.params["VStart"], self.params["VStop"] + stp, stp
+                )
+                v, i = self.keithley.voltage_sweep_single_smu(
+                    self.params["smu_sweep"],
+                    sweeplist,
+                    self.params["tInt"],
+                    self.params["delay"],
+                    self.params["pulsed"],
+                )
 
-            params = {
-                "sweep_type": "iv",
-                "t_int": self.params["tInt"],
-                "delay": self.params["delay"],
-                "pulsed": self.params["pulsed"],
-            }
+                self.keithley.beeper.beep(0.3, 2400)
+                self.keithley.reset()
 
-            sweep_data = FETResultTable(
-                ["Voltage", "Current"], ["V", "A"], np.array([v, i]).transpose(), params
-            )
+                params = {
+                    "sweep_type": "iv",
+                    "t_int": self.params["tInt"],
+                    "delay": self.params["delay"],
+                    "pulsed": self.params["pulsed"],
+                }
 
-        self.finished_sig.emit(sweep_data)
+                sweep_data = FETResultTable(
+                    column_titles=["Voltage", "Current"],
+                    units=["V", "A"],
+                    data=np.array([v, i]).transpose(),
+                    params=params,
+                )
+
+            self.finished_sig.emit(sweep_data)
+        except Exception as exc:
+            self.error_sig.emit(exc)
 
 
 def run():
