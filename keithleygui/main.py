@@ -401,10 +401,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
         """ Start a transfer measurement with current settings."""
 
         if self.keithley.busy:
-            msg = (
-                "Keithley is currently used by another program. "
-                + "Please try again later."
-            )
+            msg = "Keithley is currently busy. Please try again later."
             QtWidgets.QMessageBox.information(self, str("error"), msg)
 
             return
@@ -654,7 +651,7 @@ class MeasureThread(QtCore.QThread):
         sweep_data = None
 
         if self.params["sweep_type"] == "transfer":
-            sweep_data = self.keithley.transferMeasurement(
+            sweep_data = self.keithley.transfer_measurement(
                 self.params["smu_gate"],
                 self.params["smu_drain"],
                 self.params["VgStart"],
@@ -666,7 +663,7 @@ class MeasureThread(QtCore.QThread):
                 self.params["pulsed"],
             )
         elif self.params["sweep_type"] == "output":
-            sweep_data = self.keithley.outputMeasurement(
+            sweep_data = self.keithley.output_measurement(
                 self.params["smu_gate"],
                 self.params["smu_drain"],
                 self.params["VdStart"],
@@ -684,7 +681,7 @@ class MeasureThread(QtCore.QThread):
             sweeplist = np.arange(
                 self.params["VStart"], self.params["VStop"] + stp, stp
             )
-            v, i = self.keithley.voltageSweepSingleSMU(
+            v, i = self.keithley.voltage_sweep_single_smu(
                 self.params["smu_sweep"],
                 sweeplist,
                 self.params["tInt"],
