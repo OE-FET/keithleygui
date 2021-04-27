@@ -694,9 +694,13 @@ class MeasureThread(QtCore.QThread):
             elif self.params["sweep_type"] == "iv":
                 direction = np.sign(self.params["VStop"] - self.params["VStart"])
                 stp = direction * abs(self.params["VStep"])
+
+                # forward and reverse sweeps
                 sweeplist = np.arange(
                     self.params["VStart"], self.params["VStop"] + stp, stp
                 )
+                sweeplist = np.append(sweeplist, np.flip(sweeplist))
+
                 v, i = self.keithley.voltage_sweep_single_smu(
                     self.params["smu_sweep"],
                     sweeplist,
@@ -704,9 +708,6 @@ class MeasureThread(QtCore.QThread):
                     self.params["delay"],
                     self.params["pulsed"],
                 )
-
-                self.keithley.beeper.beep(0.3, 2400)
-                self.keithley.reset()
 
                 params = {
                     "sweep_type": "iv",
@@ -721,6 +722,9 @@ class MeasureThread(QtCore.QThread):
                     data=np.array([v, i]).transpose(),
                     params=params,
                 )
+
+            self.keithley.beeper.beep(0.3, 2400)
+            self.keithley.reset()
 
             self.finished_sig.emit(sweep_data)
         except Exception as exc:
