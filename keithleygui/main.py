@@ -647,9 +647,9 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
 # noinspection PyUnresolvedReferences
 class MeasureThread(QtCore.QThread):
 
-    started_sig = QtCore.Signal()
-    finished_sig = QtCore.Signal(object)
-    error_sig = QtCore.Signal(object)
+    started_sig = QtCore.pyqtSignal()
+    finished_sig = QtCore.pyqtSignal(object)
+    error_sig = QtCore.pyqtSignal(object)
 
     def __init__(self, keithley, params):
         QtCore.QThread.__init__(self)
