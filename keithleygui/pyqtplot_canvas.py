@@ -181,7 +181,7 @@ class SweepDataPlot(pg.GraphicsView):
         if fontScaling is not None:
             font = self.p.titleLabel.item.font()
             defaultFontSize = QtWidgets.QLabel("test").font().pointSize()
-            fontSize = round(defaultFontSize * fontScaling, 1)
+            fontSize = round(defaultFontSize * fontScaling)
             font.setPointSize(fontSize)
             self.p.titleLabel.item.setFont(font)
 
