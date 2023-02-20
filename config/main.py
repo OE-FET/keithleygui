@@ -30,7 +30,7 @@ DEFAULTS = [
     ),
     (
         "Connection",
-        {"VISA_ADDRESS": "TCPIP0::192.168.1.121::INSTR", "VISA_LIBRARY": ""},
+        {"VISA_ADDRESS": "GPIB0::26::INSTR", "VISA_LIBRARY": ""},
     ),
     (
         "Sweep",

@@ -518,7 +518,7 @@ class KeithleyGuiApp(QtWidgets.QMainWindow):
     def on_disconnect_clicked(self):
         self.keithley.disconnect()
         self.update_gui_connection()
-        self.statusBar.showMessage("    No Keithley connected.")
+        self.statusBar.showMessage("    No Keithley connected!!!!!.")
 
     @QtCore.pyqtSlot()
     def on_save_clicked(self):
